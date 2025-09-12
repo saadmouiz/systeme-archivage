@@ -43,7 +43,7 @@ class CommunicationController extends Controller
             'titre' => 'required|string|max:255',
             'description' => 'nullable|string',
             'date_publication' => 'required|date',
-            'fichier' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,mp4,mov|max:20480',
+            'fichier' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,mp4,mov',
             'format_type' => 'required|string',
             'metadata' => 'nullable|array'
         ]);

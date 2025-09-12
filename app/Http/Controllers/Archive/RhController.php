@@ -22,7 +22,8 @@ class RhController extends Controller
             'Contrat' => 'Contrat',
             'Fiche de paie' => 'Fiche de paie',
             'Registre du personnel' => 'Registre du personnel',
-            'Document de formation' => 'Document de formation'
+            'Dossier juridique' => 'Dossier juridique',
+            'Rapport d\'activité' => 'Rapport d\'activité',
         ];
 
         $statuts = [
@@ -40,9 +41,7 @@ class RhController extends Controller
         $validator = Validator::make($request->all(), [
             'titre' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'date_document' => 'required|date', // Add this line
-            'date_debut' => 'required|date',
-            'date_fin' => 'nullable|date|after_or_equal:date_debut',
+            'date_document' => 'required|date',
             'statut' => 'required|string|max:255',
             
         ]);
@@ -82,7 +81,9 @@ class RhController extends Controller
             'Contrat' => 'Contrat',
             'Fiche de paie' => 'Fiche de paie',
             'Registre du personnel' => 'Registre du personnel',
-            'Document de formation' => 'Document de formation'
+            'Document de formation' => 'Document de formation',
+            'Dossier juridique' => 'Dossier juridique',
+            'Rapport d\'activité' => 'Rapport d\'activité',
         ];
 
         $statuts = [
@@ -99,8 +100,6 @@ class RhController extends Controller
         // Validate the request
         $validator = Validator::make($request->all(), [
             'type' => 'required|string|max:255',
-            'date_debut' => 'required|date',
-            'date_fin' => 'nullable|date|after_or_equal:date_debut',
             'statut' => 'required|string|max:255',
             'description' => 'nullable|string',
             'fichier' => 'nullable|file|max:10240', // 10MB max

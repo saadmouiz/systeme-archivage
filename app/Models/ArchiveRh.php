@@ -15,19 +15,14 @@ class ArchiveRh extends Model
         'titre',
         'type',
         'employe_nom',
-        'reference',
         'date_document',
-        'date_debut',
-        'date_fin',
         'statut',
         'description',
         'fichier'
     ];
 
     protected $casts = [
-        'date_document' => 'date',
-        'date_debut' => 'date',
-        'date_fin' => 'date'
+        'date_document' => 'date'
     ];
 
     public function getStatutColorAttribute()

@@ -43,6 +43,13 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
+          'public_uploads' => [
+        'driver' => 'local',
+        'root' => public_path('uploads'), // Ce dossier sera directement dans votre dossier public
+        'url' => env('APP_URL').'/uploads',
+        'visibility' => 'public',
+        'throw' => false,
+    ],
 
         's3' => [
             'driver' => 's3',

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Archive;
 
 use App\Http\Controllers\Controller;
 use App\Models\ArchiveFinancier;
+use App\Exports\FinancierTemplateExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class FinancierController extends Controller
 {
@@ -25,7 +27,6 @@ class FinancierController extends Controller
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('titre', 'like', "%{$search}%")
-                  ->orWhere('reference', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
@@ -37,10 +38,11 @@ class FinancierController extends Controller
             'types' => [
                 'Budget prévisionnel',
                 'Bilan financier annuel',
-                'Rapport commissaire',
+                'Rapport Financier',
                 'Relevé bancaire',
                 'Facture/Justificatif',
-                'Registre dons/subventions'
+                'Registre dons/subventions',
+                'Journaux'
             ],
             'statuts' => [
                 'payé' => 'Payé',
@@ -48,7 +50,7 @@ class FinancierController extends Controller
                 'validé' => 'Validé',
                 'rejeté' => 'Rejeté'
             ],
-            'annees' => range(2018, now()->year + 1)
+            'annees' => range(2025, now()->year + 1)
         ]);
     }
 
@@ -58,10 +60,11 @@ class FinancierController extends Controller
             'types' => [
                 'Budget prévisionnel',
                 'Bilan financier annuel',
-                'Rapport commissaire',
+                'Rapport Financier',
                 'Relevé bancaire',
                 'Facture/Justificatif',
-                'Registre dons/subventions'
+                'Registre dons/subventions',
+                'Journaux'
             ],
             'statuts' => [
                 'payé' => 'Payé',
@@ -69,7 +72,7 @@ class FinancierController extends Controller
                 'validé' => 'Validé',
                 'rejeté' => 'Rejeté'
             ],
-            'annees' => range(2020, now()->year + 1)
+            'annees' => range(2025, now()->year + 1)
         ]);
     }
 
@@ -78,11 +81,41 @@ class FinancierController extends Controller
         $validated = $request->validate([
             'titre' => 'required|string|max:255',
             'type' => 'required|string',
-            'reference' => 'nullable|string|max:50',
+            'journal_type' => 'nullable|string|max:255',
             'montant' => 'nullable|numeric|min:0',
             'date_document' => 'required|date',
             'description' => 'nullable|string',
-            'fichier' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+            'fichier' => [
+                'required',
+                'file',
+                'max:10240',
+                function ($attribute, $value, $fail) {
+                    $allowedMimes = [
+                        'pdf' => 'application/pdf',
+                        'doc' => 'application/msword',
+                        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'xls' => 'application/vnd.ms-excel',
+                        'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'csv' => 'text/csv'
+                    ];
+                    
+                    $extension = strtolower($value->getClientOriginalExtension());
+                    $mimeType = $value->getMimeType();
+                    
+                    if (!array_key_exists($extension, $allowedMimes)) {
+                        $fail('Le fichier doit être de type: PDF, DOC, DOCX, XLS, XLSX ou CSV.');
+                        return;
+                    }
+                    
+                    if ($allowedMimes[$extension] !== $mimeType) {
+                        // Accepter aussi les fichiers HTML générés comme Excel
+                        if ($extension === 'xls' && $mimeType === 'text/html') {
+                            return;
+                        }
+                        $fail('Le type de fichier ne correspond pas à l\'extension.');
+                    }
+                }
+            ],
             'annee_financiere' => 'required|integer|min:2020|max:' . (now()->year + 1),
             'statut' => 'required|string'
         ]);
@@ -111,10 +144,11 @@ class FinancierController extends Controller
             'types' => [
                 'Budget prévisionnel',
                 'Bilan financier annuel',
-                'Rapport commissaire',
+                'Rapport Financier',
                 'Relevé bancaire',
                 'Facture/Justificatif',
-                'Registre dons/subventions'
+                'Registre dons/subventions',
+                'Journaux'
             ],
             'statuts' => [
                 'payé' => 'Payé',
@@ -122,7 +156,7 @@ class FinancierController extends Controller
                 'validé' => 'Validé',
                 'rejeté' => 'Rejeté'
             ],
-            'annees' => range(2020, now()->year + 1)
+            'annees' => range(2025, now()->year + 1)
         ]);
     }
 
@@ -131,11 +165,11 @@ class FinancierController extends Controller
         $validated = $request->validate([
             'titre' => 'required|string|max:255',
             'type' => 'required|string',
-            'reference' => 'nullable|string|max:50',
+            'journal_type' => 'nullable|string|max:255',
             'montant' => 'nullable|numeric|min:0',
             'date_document' => 'required|date',
             'description' => 'nullable|string',
-            'fichier' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
+            'fichier' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,csv|mimetypes:application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv|max:10240',
             'annee_financiere' => 'required|integer|min:2020|max:' . (now()->year + 1),
             'statut' => 'required|string'
         ]);
@@ -183,6 +217,22 @@ class FinancierController extends Controller
 
         // Renvoyer le fichier avec le bon type MIME
         return response()->download($path, $originalName);
+    }
+
+    public function excelTemplate()
+    {
+        $exporter = new FinancierTemplateExport();
+        $spreadsheet = $exporter->export();
+        
+        $writer = new Xlsx($spreadsheet);
+        
+        $filename = 'modele_document_financier.xlsx';
+        
+        // Créer un fichier temporaire
+        $tempFile = tempnam(sys_get_temp_dir(), 'excel_');
+        $writer->save($tempFile);
+        
+        return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
     }
 
 }

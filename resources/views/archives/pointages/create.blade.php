@@ -71,10 +71,11 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         @if($employee->photo)
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full object-cover" src="{{ asset('storage/' . $employee->photo) }}" alt="">
-                                            </div>
-                                        @endif
+    <div class="flex-shrink-0 h-20 w-20 mr-4">
+        <img class="h-20 w-20 rounded-full object-cover" 
+             src="{{ asset('uploads/' . $employee->photo) }}" alt="">
+    </div>
+@endif
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $employee->prenom }} {{ $employee->nom }}</div>
                                             <div class="text-sm text-gray-500">{{ $employee->fonction }}</div>
@@ -91,7 +92,7 @@
                                     </select>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <input type="time" name="employees[{{ $employee->id }}][heure_arrivee]" value="{{ $pointage ? $pointage->heure_arrivee : '08:00' }}" class="rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 time-field-{{ $employee->id }}" {{ $pointage && $pointage->statut !== 'present' ? 'disabled' : '' }}>
+                                    <input type="time" name="employees[{{ $employee->id }}][heure_arrivee]" value="{{ $pointage ? $pointage->heure_arrivee : '10:00' }}" class="rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 time-field-{{ $employee->id }}" {{ $pointage && $pointage->statut !== 'present' ? 'disabled' : '' }}>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <input type="time" name="employees[{{ $employee->id }}][heure_sortie]" value="{{ $pointage ? $pointage->heure_sortie : '17:00' }}" class="rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 time-field-{{ $employee->id }}" {{ $pointage && $pointage->statut !== 'present' ? 'disabled' : '' }}>

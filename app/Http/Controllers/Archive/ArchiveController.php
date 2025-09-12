@@ -22,19 +22,19 @@ class ArchiveController extends Controller
 $accessibleCategories = [];
 
 if (auth()->user()->hasRole('admin1') ){
-    $accessibleCategories = array_merge($accessibleCategories, ['administratifs','employes' , 'financiers', 'rh']);
+    $accessibleCategories = array_merge($accessibleCategories, ['administratifs', 'employes' , 'financiers', 'rh']);
 }
 
 if (auth()->user()->hasRole('admin3') ) {
-    $accessibleCategories = array_merge($accessibleCategories, ['pointages','beneficiaires']);
+    $accessibleCategories = array_merge($accessibleCategories, ['pointages', 'beneficiaires', 'visiteurs']);
 }
 
 if (auth()->user()->hasRole('admin2') ) {
-    $accessibleCategories = array_merge($accessibleCategories, [  'communication', 'evenements','beneficiaires']);
+    $accessibleCategories = array_merge($accessibleCategories, ['communication', 'evenements', 'beneficiaires']);
 }
 
 if (auth()->user()->hasRole('superadmin')) {
-    $accessibleCategories = array_merge($accessibleCategories, ['administratifs','employes' , 'financiers', 'rh','partenaires', 'communication', 'evenements','beneficiaires','pointages']);
+    $accessibleCategories = array_merge($accessibleCategories, ['administratifs', 'employes' , 'financiers', 'rh', 'partenaires', 'communication', 'evenements', 'beneficiaires','pointages', 'visiteurs']);
 }
         
         // Récupérer les archives pour les catégories accessibles

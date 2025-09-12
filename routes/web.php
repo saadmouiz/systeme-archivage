@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -15,6 +15,7 @@ use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\CommunicationController;
 use App\Http\Controllers\LegalDocumentController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\VisiteurController;
 use Carbon\Carbon;
 
 // Routes d'authentification
@@ -30,17 +31,20 @@ Route::get('/', function () {
    return view('home');
 })->name('home');
 
-// Routes protégées par l'authentification
+// Routes protÃ©gÃ©es par l'authentification
 Route::middleware(['auth'])->group(function () {
-    // Dashboard accessible à tous les admins
+    // Dashboard accessible Ã  tous les admins
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Archives - page principale accessible à tous les admins authentifiés
+    // Routes pour les visiteurs
+    Route::resource('visiteurs', VisiteurController::class);
+    
+    // Archives - page principale accessible Ã  tous les admins authentifiÃ©s
     Route::prefix('archives')->name('archives.')->group(function () {
         Route::get('/', [ArchiveController::class, 'index'])->name('index');
         Route::post('/store', [ArchiveController::class, 'store'])->name('store');
 
-        // Admin 1 : Accès aux RH, administratifs, financiers, employés
+        // Admin 1 : AccÃ¨s aux RH, administratifs, financiers, employÃ©s
         Route::middleware(['can:access-rh'])->group(function () {
             Route::resource('rh', RhController::class);
             Route::get('/rh/search', [RhController::class, 'search'])->name('rh.search');
@@ -60,22 +64,25 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/financiers/search', [FinancierController::class, 'search'])->name('financiers.search');
             Route::get('/financiers/filter/{type}', [FinancierController::class, 'filter'])->name('financiers.filter');
             Route::get('/financiers/{financier}/download', [FinancierController::class, 'download'])->name('financiers.download');
+            Route::get('/financiers/excel/template', [FinancierController::class, 'excelTemplate'])->name('financiers.excel-template');
         });
 
         Route::middleware(['can:access-employes'])->group(function () {
             Route::resource('employees', EmployeeController::class);
         });
-                                            
-     
 
-Route::middleware(['can:access-pointages'])->group(function () {
-    Route::get('/pointages', [PointageController::class, 'index'])->name('pointages.index');
-    Route::get('/pointages/create', [PointageController::class, 'create'])->name('pointages.create');
-    Route::post('/pointages', [PointageController::class, 'store'])->name('pointages.store');
-    Route::get('/pointages/{employee}', [PointageController::class, 'show'])->name('pointages.show');
-    Route::get('/pointages/export', [PointageController::class, 'exportPdf'])->name('pointages.export');
-});                                     
-        // Admin 2 : Accès aux bénéficiaires, partenaires, communications, événements  
+        Route::middleware(['can:access-pointages'])->group(function () {
+            Route::get('/pointages', [PointageController::class, 'index'])->name('pointages.index');
+            Route::get('/pointages/create', [PointageController::class, 'create'])->name('pointages.create');
+            Route::post('/pointages', [PointageController::class, 'store'])->name('pointages.store');
+            Route::get('/pointages/{employee}', [PointageController::class, 'show'])->name('pointages.show');
+            Route::get('/pointages/{pointage}/edit', [PointageController::class, 'edit'])->name('pointages.edit');
+            Route::put('/pointages/{pointage}', [PointageController::class, 'update'])->name('pointages.update');
+            Route::delete('/pointages/{pointage}', [PointageController::class, 'destroy'])->name('pointages.destroy');
+            Route::get('/pointages/export-pdf', [PointageController::class, 'exportPdf'])->name('pointages.export-pdf');
+        });
+
+        // Admin 2 : AccÃ¨s aux bÃ©nÃ©ficiaires, partenaires, communications, Ã©vÃ©nements  
         Route::middleware(['can:access-beneficiaires'])->group(function () {
             Route::resource('beneficiaires', BeneficiaireController::class);
             Route::get('/beneficiaires/{beneficiaire}/download', [BeneficiaireController::class, 'download'])
@@ -102,7 +109,11 @@ Route::middleware(['can:access-pointages'])->group(function () {
 Route::get('/unauthorized', function () {
     return view('unauthorized');
 })->name('unauthorized');
-// Route pour tester l'authentification et l'utilisateur connecté
+// Route pour tester l'authentification et l'utilisateur connectÃ©
 Route::get('/test-auth', function () {
     return response()->json(Auth::user());
-});
+}); 
+  
+Route::get('/simple', function () { return 'Hello'; }); 
+  
+Route::get('/test', function () { return 'Test OK'; }); 

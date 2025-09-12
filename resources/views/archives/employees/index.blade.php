@@ -37,12 +37,12 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                  
-                                @if($employee->photo)
-                        <div class="flex-shrink-0 h-20 w-20 mr-4">
-                            <img class="h-20 w-20 rounded-full object-cover" src="{{ asset('storage/' . $employee->photo) }}" alt="">
-                        </div>
-                    @endif
-
+                               @if($employee->photo)
+    <div class="flex-shrink-0 h-20 w-20 mr-4">
+        <img class="h-20 w-20 rounded-full object-cover" 
+             src="{{ asset('uploads/' . $employee->photo) }}" alt="">
+    </div>
+@endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $employee->nom }} {{ $employee->prenom }}</div>

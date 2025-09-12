@@ -18,8 +18,6 @@ class PointageController extends Controller
         // Appliquer le middleware 'auth' pour s'assurer que l'utilisateur est connecté
         $this->middleware('auth');
 
-        
-
         // Appliquer le middleware 'can' pour vérifier les permissions spécifiques
         $this->middleware('can:access-pointages');
     }
@@ -44,21 +42,21 @@ class PointageController extends Controller
         // Créer un tableau avec tous les jours du mois
         $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
         $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
-        $joursDuMois = CarbonPeriod::create($debut, $fin);
+        $joursDuMois = collect(CarbonPeriod::create($debut, $fin));
 
         // Récupérer tous les pointages pour ce mois
         $pointages = Pointage::whereBetween('date', [$debut, $fin])
-    ->get()
-    ->groupBy(['employee_id', function ($item) {
-        return $item->date->format('Y-m-d');
-    }])
-    ->map(function ($employeePointages) {
-        return $employeePointages->map(function ($datePointages) {
-            // Si plusieurs pointages existent pour la même date, prenez le premier
-            return $datePointages instanceof \Illuminate\Support\Collection ? 
-                   $datePointages->first() : $datePointages;
-        });
-    });
+            ->get()
+            ->groupBy(['employee_id', function ($item) {
+                return $item->date->format('Y-m-d');
+            }])
+            ->map(function ($employeePointages) {
+                return $employeePointages->map(function ($datePointages) {
+                    // Si plusieurs pointages existent pour la même date, prenez le premier
+                    return $datePointages instanceof \Illuminate\Support\Collection ? 
+                           $datePointages->first() : $datePointages;
+                });
+            });
 
         return view('archives.pointages.index', compact('employees', 'pointages', 'joursDuMois', 'mois', 'annee'));
     }
@@ -139,11 +137,14 @@ class PointageController extends Controller
         $mois = $request->mois ?? Carbon::now()->month;
         $annee = $request->annee ?? Carbon::now()->year;
 
+        // Créer les dates de début et fin du mois
         $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
         $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
 
-        $joursDuMois = CarbonPeriod::create($debut, $fin);
+        // Générer tous les jours du mois (weekends inclus)
+        $joursDuMois = collect(CarbonPeriod::create($debut, $fin));
 
+        // Récupérer les pointages de l'employé pour ce mois
         $pointages = $employee->pointages()
             ->whereBetween('date', [$debut, $fin])
             ->orderBy('date')
@@ -152,16 +153,101 @@ class PointageController extends Controller
                 return $item->date->format('Y-m-d');
             });
 
+        // Calculer les statistiques
         $statistiques = [
             'jours_travailles' => $pointages->where('statut', 'present')->count(),
             'absences' => $pointages->where('statut', 'absent')->count(),
             'retards' => $pointages->where('statut', 'retard')->count(),
             'conges' => $pointages->where('statut', 'conge')->count(),
             'maladies' => $pointages->where('statut', 'maladie')->count(),
-            'total_heures' => $pointages->sum('duree_travail')
+            'total_heures' => $this->calculerTotalHeures($pointages)
         ];
 
         return view('archives.pointages.show', compact('employee', 'pointages', 'joursDuMois', 'mois', 'annee', 'statistiques'));
+    }
+
+    /**
+     * Calcule le total des heures travaillées
+     */
+    private function calculerTotalHeures($pointages)
+    {
+        return $pointages->where('statut', 'present')->sum(function ($pointage) {
+            if ($pointage->heure_arrivee && $pointage->heure_sortie) {
+                $arrivee = Carbon::parse($pointage->heure_arrivee);
+                $sortie = Carbon::parse($pointage->heure_sortie);
+                return $sortie->diffInHours($arrivee) + ($sortie->diffInMinutes($arrivee) % 60) / 60;
+            }
+            return 0;
+        });
+    }
+
+    /**
+     * Affiche le formulaire d'édition d'un pointage.
+     */
+    public function edit(Pointage $pointage)
+    {
+        // Vérifier la permission avant de continuer
+        if (!auth()->user()->can('edit_pointages')) {
+            abort(403, 'Accès interdit.');
+        }
+
+        $employees = Employee::actif()->orderBy('nom')->get();
+
+        return view('archives.pointages.edit', compact('pointage', 'employees'));
+    }
+
+    /**
+     * Met à jour un pointage existant.
+     */
+    public function update(Request $request, Pointage $pointage)
+    {
+        // Vérifier la permission avant de continuer
+        if (!auth()->user()->can('update_pointages')) {
+            abort(403, 'Accès interdit.');
+        }
+
+        $request->validate([
+            'statut' => 'required|in:present,absent,retard,conge,maladie',
+            'heure_arrivee' => 'nullable|date_format:H:i',
+            'heure_sortie' => 'nullable|date_format:H:i',
+            'commentaire' => 'nullable|string',
+        ]);
+
+        $pointage->statut = $request->statut;
+        $pointage->heure_arrivee = $request->statut === 'present' ? $request->heure_arrivee : null;
+        $pointage->heure_sortie = $request->statut === 'present' ? $request->heure_sortie : null;
+        $pointage->commentaire = $request->commentaire;
+
+        $pointage->save();
+
+        return redirect()->route('archives.pointages.show', [
+            'employee' => $pointage->employee,
+            'mois' => $pointage->date->month,
+            'annee' => $pointage->date->year
+        ])->with('success', 'Le pointage a été mis à jour avec succès.');
+    }
+
+    /**
+     * Supprime un pointage.
+     */
+    public function destroy(Pointage $pointage)
+    {
+        // Vérifier la permission avant de continuer
+        if (!auth()->user()->can('delete_pointages')) {
+            abort(403, 'Accès interdit.');
+        }
+
+        $employee = $pointage->employee;
+        $mois = $pointage->date->month;
+        $annee = $pointage->date->year;
+
+        $pointage->delete();
+
+        return redirect()->route('archives.pointages.show', [
+            'employee' => $employee,
+            'mois' => $mois,
+            'annee' => $annee
+        ])->with('success', 'Le pointage a été supprimé avec succès.');
     }
 
     /**
@@ -198,19 +284,21 @@ class PointageController extends Controller
             return back()->with('error', 'Erreur lors de l\'export PDF : ' . $e->getMessage());
         }
     }
+
+    /**
+     * Méthode alternative pour afficher la fiche d'un employé
+     */
     public function fiche(Employee $employee, Request $request)
-{
-    $mois = $request->input('mois', now()->month);
-    $annee = $request->input('annee', now()->year);
+    {
+        $mois = $request->input('mois', now()->month);
+        $annee = $request->input('annee', now()->year);
 
-    // Récupérer les pointages de l'employé selon le mois et l'année
-    $pointages = $employee->pointages()
-        ->whereMonth('date', $mois)
-        ->whereYear('date', $annee)
-        ->get();
+        // Récupérer les pointages de l'employé selon le mois et l'année
+        $pointages = $employee->pointages()
+            ->whereMonth('date', $mois)
+            ->whereYear('date', $annee)
+            ->get();
 
-    return view('archives.pointages.show', compact('employee', 'mois', 'annee', 'pointages'));
+        return view('archives.pointages.show', compact('employee', 'mois', 'annee', 'pointages'));
+    }
 }
-
-}
-

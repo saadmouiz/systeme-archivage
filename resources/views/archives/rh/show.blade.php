@@ -51,16 +51,13 @@
                             @if($rh->employe_nom)
                                 <p><span class="font-medium">Employé:</span> {{ $rh->employe_nom }}</p>
                             @endif
-                            @if($rh->reference)
-                                <p><span class="font-medium">Référence:</span> {{ $rh->reference }}</p>
-                            @endif
-                            <p><span class="font-medium">Date du document:</span> {{ $rh->date_document->format('d/m/Y') }}</p>
-                            @if($rh->date_debut)
-                                <p><span class="font-medium">Date de début:</span> {{ $rh->date_debut->format('d/m/Y') }}</p>
-                            @endif
-                            @if($rh->date_fin)
-                                <p><span class="font-medium">Date de fin:</span> {{ $rh->date_fin->format('d/m/Y') }}</p>
-                            @endif
+                            <p><span class="font-medium">Date du document:</span> 
+                                @if($rh->date_document instanceof \DateTime)
+                                    {{ $rh->date_document->format('d/m/Y') }}
+                                @else
+                                    {{ \Carbon\Carbon::parse($rh->date_document)->format('d/m/Y') }}
+                                @endif
+                            </p>
                             <p><span class="font-medium">Type:</span> {{ $rh->type }}</p>
                             <p><span class="font-medium">Statut:</span> {{ ucfirst($rh->statut) }}</p>
                         </div>

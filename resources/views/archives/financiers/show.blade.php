@@ -15,7 +15,13 @@
                                    'bg-blue-100 text-blue-800') }}">
                                 {{ ucfirst($financier->statut) }}
                             </span>
-                            <span class="text-sm text-gray-500">{{ $financier->type }}</span>
+                            <span class="text-sm text-gray-500">
+                                @if($financier->type === 'Journaux' && $financier->journal_type)
+                                    {{ $financier->journal_type }}
+                                @else
+                                    {{ $financier->type }}
+                                @endif
+                            </span>
                         </div>
                     </div>
                     
@@ -48,15 +54,18 @@
                     <div>
                         <h3 class="text-lg font-medium text-gray-900 mb-2">Informations générales</h3>
                         <div class="bg-gray-50 rounded-lg p-4 space-y-2">
-                            @if($financier->reference)
-                                <p><span class="font-medium">Référence:</span> {{ $financier->reference }}</p>
-                            @endif
                             <p><span class="font-medium">Date du document:</span> {{ $financier->date_document->format('d/m/Y') }}</p>
                             <p><span class="font-medium">Année financière:</span> {{ $financier->annee_financiere }}</p>
                             @if($financier->montant)
                                 <p><span class="font-medium">Montant:</span> {{ $financier->formatted_montant }}</p>
                             @endif
-                            <p><span class="font-medium">Type:</span> {{ $financier->type }}</p>
+                            <p><span class="font-medium">Type:</span> 
+                                @if($financier->type === 'Journaux' && $financier->journal_type)
+                                    {{ $financier->journal_type }}
+                                @else
+                                    {{ $financier->type }}
+                                @endif
+                            </p>
                             <p><span class="font-medium">Statut:</span> {{ ucfirst($financier->statut) }}</p>
                         </div>
                     </div>
@@ -72,11 +81,7 @@
                                 <div>
                                     <p class="text-sm text-gray-600">{{ basename($financier->fichier) }}</p>
                                     <div class="flex space-x-3 mt-2">
-                                        <a href="{{ Storage::url($financier->fichier) }}" 
-                                           class="text-sm text-blue-600 hover:text-blue-800"    
-                                           target="_blank">
-                                            Voir
-                                        </a>
+                                      
                                         <a href="{{ route('archives.financiers.download', $financier) }}"
                                            class="text-sm text-green-600 hover:text-green-800">
                                             Télécharger

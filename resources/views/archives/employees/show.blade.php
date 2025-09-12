@@ -21,13 +21,14 @@
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="md:flex">
                 <div class="md:w-1/3 bg-gray-50 p-6 flex flex-col items-center justify-center">
-                    @if($employee->photo)
-                        <img src="{{ asset('storage/'.$employee->photo) }}" alt="{{ $employee->nom }}" class="h-48 w-48 rounded-full object-cover">
+                  @if($employee->photo)
+                        <img src="{{ asset('uploads/' . $employee->photo) }}"  alt="{{ $employee->nom }}" class="h-48 w-48 rounded-full object-cover">
                     @else
                         <div class="h-48 w-48 rounded-full bg-gray-200 flex items-center justify-center">
                             <span class="text-4xl text-gray-500">{{ substr($employee->prenom, 0, 1) . substr($employee->nom, 0, 1) }}</span>
                         </div>
                     @endif
+
                     <div class="mt-4 text-center">
                         <h2 class="text-xl font-semibold text-gray-900">{{ $employee->prenom }} {{ $employee->nom }}</h2>
                         <p class="text-gray-600">{{ $employee->fonction }}</p>

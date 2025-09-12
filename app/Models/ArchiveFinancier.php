@@ -12,7 +12,7 @@ class ArchiveFinancier extends Model
     protected $fillable = [
         'titre',
         'type',
-        'reference',
+        'journal_type',
         'montant',
         'date_document',
         'description',

@@ -59,54 +59,23 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="employe_nom" class="block text-sm font-medium text-gray-700">Nom de l'employé</label>
-                            <input type="text" 
-                                   name="employe_nom" 
-                                   id="employe_nom" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                   value="{{ old('employe_nom', $rh->employe_nom) }}">
-                        </div>
-
-                        <div>
-                            <label for="reference" class="block text-sm font-medium text-gray-700">Référence</label>
-                            <input type="text" 
-                                   name="reference" 
-                                   id="reference" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                   value="{{ old('reference', $rh->reference) }}">
-                        </div>
+                    <div>
+                        <label for="employe_nom" class="block text-sm font-medium text-gray-700">Nom de l'employé</label>
+                        <input type="text" 
+                               name="employe_nom" 
+                               id="employe_nom" 
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               value="{{ old('employe_nom', $rh->employe_nom) }}">
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            <label for="date_document" class="block text-sm font-medium text-gray-700">Date du document</label>
-                            <input type="date" 
-                                   name="date_document" 
-                                   id="date_document" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                   value="{{ old('date_document', $rh->date_document->format('Y-m-d')) }}"
-                                   required>
-                        </div>
-
-                        <div>
-                            <label for="date_debut" class="block text-sm font-medium text-gray-700">Date de début</label>
-                            <input type="date" 
-                                   name="date_debut" 
-                                   id="date_debut" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                   value="{{ old('date_debut', optional($rh->date_debut)->format('Y-m-d')) }}">
-                        </div>
-
-                        <div>
-                            <label for="date_fin" class="block text-sm font-medium text-gray-700">Date de fin</label>
-                            <input type="date" 
-                                   name="date_fin" 
-                                   id="date_fin" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                   value="{{ old('date_fin', optional($rh->date_fin)->format('Y-m-d')) }}">
-                        </div>
+                    <div>
+                        <label for="date_document" class="block text-sm font-medium text-gray-700">Date du document</label>
+                        <input type="date" 
+                               name="date_document" 
+                               id="date_document" 
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               value="{{ old('date_document', $rh->date_document->format('Y-m-d')) }}"
+                               required>
                     </div>
 
                     <div>

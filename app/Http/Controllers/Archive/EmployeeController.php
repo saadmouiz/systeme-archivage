@@ -20,12 +20,12 @@ class EmployeeController extends Controller
         return view('archives.employees.create');
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
-            'photo' => 'nullable|image|max:2048',
+            'photo' => 'nullable|image',
             'fonction' => 'required|string|max:255',
             'type_contrat' => 'required|in:CDI,CDD,Stage,Autre',
             'actif' => 'required|boolean',
@@ -35,15 +35,14 @@ class EmployeeController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('employees', 'public');
-            $validated['photo'] = $path;
-        }
-
-        Employee::create($validated);
-
-        return redirect()->route('archives.employees.index')
-            ->with('success', 'Employé ajouté avec succès.');
+        $path = $request->file('photo')->store('employees', 'public_uploads');
+        $validated['photo'] = $path;
     }
+
+         Employee::create($validated);
+    return redirect()->route('archives.employees.index')
+        ->with('success', 'Employé ajouté avec succès.');
+}
 
     public function show(Employee $employee)
     {
@@ -70,14 +69,14 @@ class EmployeeController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // Supprimer l'ancienne photo si elle existe
-            if ($employee->photo) {
-                Storage::disk('public')->delete($employee->photo);
-            }
-            
-            $path = $request->file('photo')->store('employees', 'public');
-            $validated['photo'] = $path;
+        // Supprimer l'ancienne photo si elle existe
+        if ($employee->photo) {
+            Storage::disk('public_uploads')->delete($employee->photo);
         }
+        
+        $path = $request->file('photo')->store('employees', 'public_uploads');
+        $validated['photo'] = $path;
+    }
 
         $employee->update($validated);
 
@@ -87,10 +86,9 @@ class EmployeeController extends Controller
 
     public function destroy(Employee $employee)
     {
-        // Supprimer la photo si elle existe
-        if ($employee->photo) {
-            Storage::disk('public')->delete($employee->photo);
-        }
+       if ($employee->photo) {
+        Storage::disk('public_uploads')->delete($employee->photo);
+    }
         
         $employee->delete();
 

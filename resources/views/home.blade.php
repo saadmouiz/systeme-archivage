@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIAIS Connect</title>
+    <link rel="shortcut icon" href="{{ asset('asset/image copy.png') }}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -159,8 +160,7 @@
         <div class="p-8">
             <div class="flex justify-between items-center mb-12">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('asset/hhh.jpeg') }}" alt="Logo Al Amal" class="mobile-logo-img rounded-full">
-                    <h2 class="text-lg font-bold text-red-600">Al Amal</h2>
+                   
                 </div>
                 <button onclick="toggleMenu()" class="p-2 hover:bg-red-50 rounded-full transition-colors">
                     <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,17 +168,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="space-y-6 mb-12">
-                <a href="#services" class="block py-4 px-6 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors" onclick="toggleMenu()">
-                    Services
-                </a>
-                <a href="#about" class="block py-4 px-6 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors" onclick="toggleMenu()">
-                    À propos
-                </a>
-                <a href="#projects" class="block py-4 px-6 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors" onclick="toggleMenu()">
-                    Projets
-                </a>
-            </div>
+           
             <a href="{{ route('dashboard') }}" class="block w-full px-6 py-3 text-center red-gradient-bg text-white rounded-xl hover:shadow-lg transition-all">
                 Connexion
             </a>
@@ -206,7 +196,7 @@
                         L'Association Initiative Al Amal s'engage à créer un impact positif et durable pour notre communauté à travers des projets innovants et inclusifs.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                        <a href="#services" class="cta-button px-8 py-4 red-gradient-bg text-white rounded-full hover:shadow-lg transition-all text-center group">
+                        <a href="https://aiais.org/Cequenousfaisons" class="cta-button px-8 py-4 red-gradient-bg text-white rounded-full hover:shadow-lg transition-all text-center group">
                             <span class="inline-flex items-center">
                                 <span>Découvrir Nos Services</span>
                                 <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,7 +204,7 @@
                                 </svg>
                             </span>
                         </a>
-                        <a href="#about" class="px-8 py-4 bg-white text-red-600 border border-red-200 rounded-full hover:bg-red-50 transition-all text-center">
+                        <a href="https://aiais.org/" class="px-8 py-4 bg-white text-red-600 border border-red-200 rounded-full hover:bg-red-50 transition-all text-center">
                             En savoir plus
                         </a>
                     </div>
