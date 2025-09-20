@@ -33,22 +33,22 @@
                     @csrf
                     @method('PUT')
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <label for="titre" class="block text-sm font-medium text-gray-700">Titre</label>
+                            <label for="titre" class="block text-base font-medium text-gray-700 mb-2">Titre</label>
                             <input type="text" 
                                    name="titre" 
                                    id="titre" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                    value="{{ old('titre', $rh->titre) }}" 
                                    required>
                         </div>
 
                         <div>
-                            <label for="type" class="block text-sm font-medium text-gray-700">Type de document</label>
+                            <label for="type" class="block text-base font-medium text-gray-700 mb-2">Type de document</label>
                             <select name="type" 
                                     id="type" 
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                     required>
                                 @foreach($types as $key => $value)
                                     <option value="{{ $key }}" {{ old('type', $rh->type) == $key ? 'selected' : '' }}>
@@ -60,29 +60,29 @@
                     </div>
 
                     <div>
-                        <label for="employe_nom" class="block text-sm font-medium text-gray-700">Nom de l'employé</label>
+                        <label for="employe_nom" class="block text-base font-medium text-gray-700 mb-2">Nom de l'employé</label>
                         <input type="text" 
                                name="employe_nom" 
                                id="employe_nom" 
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                value="{{ old('employe_nom', $rh->employe_nom) }}">
                     </div>
 
                     <div>
-                        <label for="date_document" class="block text-sm font-medium text-gray-700">Date du document</label>
+                        <label for="date_document" class="block text-base font-medium text-gray-700 mb-2">Date du document</label>
                         <input type="date" 
                                name="date_document" 
                                id="date_document" 
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                value="{{ old('date_document', $rh->date_document->format('Y-m-d')) }}"
                                required>
                     </div>
 
                     <div>
-                        <label for="statut" class="block text-sm font-medium text-gray-700">Statut</label>
+                        <label for="statut" class="block text-base font-medium text-gray-700 mb-2">Statut</label>
                         <select name="statut" 
                                 id="statut" 
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                 required>
                             @foreach($statuts as $key => $value)
                                 <option value="{{ $key }}" {{ old('statut', $rh->statut) == $key ? 'selected' : '' }}>
@@ -93,20 +93,20 @@
                     </div>
 
                     <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <label for="description" class="block text-base font-medium text-gray-700 mb-2">Description</label>
                         <textarea name="description" 
                                   id="description" 
-                                  rows="4" 
-                                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description', $rh->description) }}</textarea>
+                                  rows="6" 
+                                  class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description', $rh->description) }}</textarea>
                     </div>
 
                     <!-- Fichier actuel -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Document actuel</label>
-                        <div class="mt-1 flex items-center">
-                            <span class="text-sm text-gray-500">{{ basename($rh->fichier) }}</span>
+                        <label class="block text-base font-medium text-gray-700 mb-2">Document actuel</label>
+                        <div class="mt-1 flex items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="text-base text-gray-700">{{ basename($rh->fichier) }}</span>
                             <a href="{{ Storage::url($rh->fichier) }}" 
-                               class="ml-2 text-sm text-blue-600 hover:text-blue-500"
+                               class="ml-3 text-base text-blue-600 hover:text-blue-500 font-medium"
                                target="_blank">
                                 Voir le document
                             </a>
@@ -115,33 +115,33 @@
 
                     <!-- Nouveau fichier -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Nouveau document (optionnel)</label>
-                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                            <div class="space-y-1 text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <label class="block text-base font-medium text-gray-700 mb-2">Nouveau document (optionnel)</label>
+                        <div class="mt-1 flex justify-center px-8 pt-8 pb-8 border-2 border-gray-300 border-dashed rounded-lg">
+                            <div class="space-y-2 text-center">
+                                <svg class="mx-auto h-16 w-16 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" 
                                           stroke-width="2" 
                                           stroke-linecap="round" 
                                           stroke-linejoin="round"/>
                                 </svg>
-                                <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                                <div class="flex text-base text-gray-600">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-lg font-medium text-blue-600 hover:text-blue-500 hover:underline px-4 py-2">
                                         <span>Téléverser un nouveau fichier</span>
                                         <input id="fichier" name="fichier" type="file" class="sr-only">
                                     </label>
                                 </div>
-                                <p class="text-xs text-gray-500">PDF, DOC, DOCX, JPG, PNG jusqu'à 10MB</p>
+                                <p class="text-sm text-gray-500">PDF, DOC, DOCX, JPG, PNG jusqu'à 10MB</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex justify-end space-x-3">
+                    <div class="flex justify-end space-x-4">
                         <a href="{{ route('archives.rh.index') }}" 
-                           class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200">
+                           class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200">
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700">
                             Mettre à jour
                         </button>
                     </div>

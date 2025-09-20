@@ -55,13 +55,123 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="cin" class="block text-sm font-medium text-gray-700">CIN</label>
-                        <input type="text" 
-                               name="cin" 
-                               id="cin" 
-                               value="{{ old('cin', $beneficiaire->cin) }}"
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="cin" class="block text-sm font-medium text-gray-700">CIN</label>
+                            <input type="text" 
+                                   name="cin" 
+                                   id="cin" 
+                                   value="{{ old('cin', $beneficiaire->cin) }}"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label for="age" class="block text-sm font-medium text-gray-700">Age</label>
+                            <input type="number" 
+                                   name="age" 
+                                   id="age" 
+                                   value="{{ old('age', $beneficiaire->age) }}" 
+                                   min="1" 
+                                   max="120"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Champs conditionnels pour Dossier individuel -->
+                    <div id="niveau_fields" class="grid grid-cols-1 md:grid-cols-2 gap-6" style="display: none;">
+                        <div>
+                            <label for="niveau" class="block text-sm font-medium text-gray-700">Niveau</label>
+                            <select name="niveau" 
+                                    id="niveau" 
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                <option value="">Sélectionnez un niveau</option>
+                                @foreach($niveaux as $value => $label)
+                                    <option value="{{ $value }}" {{ old('niveau', $beneficiaire->niveau) == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="specialite" class="block text-sm font-medium text-gray-700">Spécialité</label>
+                            <input type="text" 
+                                   name="specialite" 
+                                   id="specialite" 
+                                   value="{{ old('specialite', $beneficiaire->specialite) }}"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Champs supplémentaires pour Dossier individuel -->
+                    <div id="genre_type_intervention_fields" class="grid grid-cols-1 md:grid-cols-2 gap-6" style="display: none;">
+                        <div>
+                            <label for="genre_individuel" class="block text-sm font-medium text-gray-700">Genre</label>
+                            <select name="genre" 
+                                    id="genre_individuel" 
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                <option value="">Sélectionnez un genre</option>
+                                <option value="Homme" {{ old('genre', $beneficiaire->genre) == 'Homme' ? 'selected' : '' }}>Homme</option>
+                                <option value="Femme" {{ old('genre', $beneficiaire->genre) == 'Femme' ? 'selected' : '' }}>Femme</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="type_intervention" class="block text-sm font-medium text-gray-700">Type d'intervention</label>
+                            <select name="type_intervention" 
+                                    id="type_intervention" 
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                <option value="">Sélectionnez un type d'intervention</option>
+                                <option value="IP" {{ old('type_intervention', $beneficiaire->type_intervention) == 'IP' ? 'selected' : '' }}>IP</option>
+                                <option value="AGR" {{ old('type_intervention', $beneficiaire->type_intervention) == 'AGR' ? 'selected' : '' }}>AGR</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Champs conditionnels pour Document éducatif -->
+                    <div id="educatif_fields" class="grid grid-cols-1 md:grid-cols-2 gap-6" style="display: none;">
+                        <div>
+                            <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
+                            <select name="genre" 
+                                    id="genre" 
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                <option value="">Sélectionnez un genre</option>
+                                <option value="Homme" {{ old('genre', $beneficiaire->genre) == 'Homme' ? 'selected' : '' }}>Homme</option>
+                                <option value="Femme" {{ old('genre', $beneficiaire->genre) == 'Femme' ? 'selected' : '' }}>Femme</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select name="status" 
+                                    id="status" 
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                <option value="">Sélectionnez un status</option>
+                                <option value="Accepter" {{ old('status', $beneficiaire->status) == 'Accepter' ? 'selected' : '' }}>Accepter</option>
+                                <option value="Refuser" {{ old('status', $beneficiaire->status) == 'Refuser' ? 'selected' : '' }}>Refuser</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="ass_eps" class="block text-sm font-medium text-gray-700">Ass/Eps</label>
+                            <select name="ass_eps" 
+                                    id="ass_eps" 
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                <option value="">Sélectionnez un type</option>
+                                <option value="Association" {{ old('ass_eps', $beneficiaire->ass_eps) == 'Association' ? 'selected' : '' }}>Association</option>
+                                <option value="Eps" {{ old('ass_eps', $beneficiaire->ass_eps) == 'Eps' ? 'selected' : '' }}>Eps</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="ecole_id" class="block text-sm font-medium text-gray-700">École</label>
+                            <select name="ecole_id" 
+                                    id="ecole_id" 
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                <option value="">Sélectionnez une école</option>
+                                @foreach($ecoles as $id => $nom)
+                                    <option value="{{ $id }}" {{ old('ecole_id', $beneficiaire->ecole_id) == $id ? 'selected' : '' }}>{{ $nom }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
 
                     <div>
@@ -70,12 +180,22 @@
                                 id="type" 
                                 class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md" 
                                 required>
-                            @foreach(['Dossier individuel', 'Document éducatif', 'Rapport de suivi', 'Photo/témoignage'] as $type)
-                                <option value="{{ $type }}" {{ old('type', $beneficiaire->type) == $type ? 'selected' : '' }}>
-                                    {{ $type }}
+                            @foreach($types as $value => $label)
+                                <option value="{{ $value }}" {{ old('type', $beneficiaire->type) == $value ? 'selected' : '' }}>
+                                    {{ $label }}
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div>
+                        <label for="societe" class="block text-sm font-medium text-gray-700">Société</label>
+                        <input type="text" 
+                               name="societe" 
+                               id="societe" 
+                               value="{{ old('societe', $beneficiaire->societe) }}"
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Nom de la société">
                     </div>
 
                     <div>
@@ -140,3 +260,62 @@
     </div>
 </div>
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const typeSelect = document.getElementById('type');
+    const educatifFields = document.getElementById('educatif_fields');
+    const niveauFields = document.getElementById('niveau_fields');
+    
+    function toggleConditionalFields() {
+        const genreTypeInterventionFields = document.getElementById('genre_type_intervention_fields');
+        
+        if (typeSelect.value === 'Document éducatif') {
+            educatifFields.style.display = 'grid';
+            niveauFields.style.display = 'none';
+            genreTypeInterventionFields.style.display = 'none';
+            
+            // Champs requis pour Document éducatif
+            document.getElementById('genre').setAttribute('required', 'required');
+            document.getElementById('status').setAttribute('required', 'required');
+            document.getElementById('ass_eps').setAttribute('required', 'required');
+            document.getElementById('ecole_id').setAttribute('required', 'required');
+            
+            // Champs non requis pour Document éducatif
+            document.getElementById('niveau').removeAttribute('required');
+            document.getElementById('specialite').removeAttribute('required');
+        } else if (typeSelect.value === 'Dossier individuel') {
+            educatifFields.style.display = 'none';
+            niveauFields.style.display = 'grid';
+            genreTypeInterventionFields.style.display = 'grid';
+            
+            // Champs requis pour Dossier individuel
+            document.getElementById('niveau').setAttribute('required', 'required');
+            document.getElementById('specialite').setAttribute('required', 'required');
+            
+            // Champs non requis pour Dossier individuel
+            document.getElementById('genre').removeAttribute('required');
+            document.getElementById('status').removeAttribute('required');
+            document.getElementById('ass_eps').removeAttribute('required');
+            document.getElementById('ecole_id').removeAttribute('required');
+        } else {
+            educatifFields.style.display = 'none';
+            niveauFields.style.display = 'none';
+            genreTypeInterventionFields.style.display = 'none';
+            
+            // Aucun champ requis
+            document.getElementById('genre').removeAttribute('required');
+            document.getElementById('status').removeAttribute('required');
+            document.getElementById('ass_eps').removeAttribute('required');
+            document.getElementById('ecole_id').removeAttribute('required');
+            document.getElementById('niveau').removeAttribute('required');
+            document.getElementById('specialite').removeAttribute('required');
+        }
+    }
+    
+    typeSelect.addEventListener('change', toggleConditionalFields);
+    
+    // Exécuter au chargement pour gérer le cas où le type est déjà sélectionné
+    toggleConditionalFields();
+});
+</script>

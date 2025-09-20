@@ -14,9 +14,18 @@ class BeneficiaireController extends Controller
 {
     protected $types = [
         'Dossier individuel' => 'Dossier individuel',
-        'Document éducatif' => 'Document éducatif',
-        'Rapport de suivi' => 'Rapport de suivi',
-        'Photo/témoignage' => 'Photo/témoignage'
+        'Document éducatif' => 'Document éducatif'
+    ];
+
+    protected $niveaux = [
+        '1ère année collège' => '1ère année collège',
+        '2ème année collège' => '2ème année collège',
+        '3ème année collège' => '3ème année collège',
+        'Tronc Commun' => 'Tronc Commun',
+        '1ère année bac' => '1ère année bac',
+        '2ème année bac' => '2ème année bac',
+        'Bac+2' => 'Bac+2',
+        'Bac+3' => 'Bac+3'
     ];
 
     public function index(Request $request)
@@ -67,6 +76,7 @@ class BeneficiaireController extends Controller
 
     return view('archives.beneficiaires.create', [
         'types' => $this->types,
+        'niveaux' => $this->niveaux,
         'ecoles' => $ecoles
     ]);
 }
@@ -77,6 +87,38 @@ class BeneficiaireController extends Controller
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'cin' => 'nullable|string',
+            'age' => 'nullable|integer|min:1|max:120',
+            'genre' => [
+                'nullable',
+                Rule::requiredIf(fn() => $request->type === 'Document éducatif'),
+                'in:Homme,Femme'
+            ],
+            'status' => [
+                'nullable',
+                Rule::requiredIf(fn() => $request->type === 'Document éducatif'),
+                'in:Accepter,Refuser'
+            ],
+            'ass_eps' => [
+                'nullable',
+                Rule::requiredIf(fn() => $request->type === 'Document éducatif'),
+                'in:Association,Eps'
+            ],
+            'niveau' => [
+                'nullable',
+                Rule::requiredIf(fn() => $request->type === 'Dossier individuel'),
+                'in:1ère année collège,2ème année collège,3ème année collège,Tronc Commun,1ère année bac,2ème année bac,Bac+2,Bac+3'
+            ],
+            'specialite' => [
+                'nullable',
+                Rule::requiredIf(fn() => $request->type === 'Dossier individuel'),
+                'string',
+                'max:255'
+            ],
+            'type_intervention' => [
+                'nullable',
+                'in:IP,AGR'
+            ],
+            'societe' => 'nullable|string|max:255',
             'description' => 'nullable|string',                
             'ecole_id' => [
                 'nullable',
@@ -93,11 +135,38 @@ class BeneficiaireController extends Controller
                 $validated['fichier'] = $file->storeAs('beneficiaires', $fileName, 'public');
             }
     
+            // Nettoyer les données selon le type de dossier
+            if ($validated['type'] === 'Dossier individuel') {
+                // Pour Dossier individuel, supprimer les champs éducatifs (garder genre)
+                $validated['status'] = null;
+                $validated['ass_eps'] = null;
+                $validated['ecole_id'] = null;
+            } elseif ($validated['type'] === 'Document éducatif') {
+                // Pour Document éducatif, supprimer les champs académiques
+                $validated['niveau'] = null;
+                $validated['specialite'] = null;
+                $validated['type_intervention'] = null;
+            } else {
+                // Pour les autres types, supprimer tous les champs conditionnels
+                $validated['genre'] = null;
+                $validated['status'] = null;
+                $validated['ass_eps'] = null;
+                $validated['ecole_id'] = null;
+                $validated['niveau'] = null;
+                $validated['specialite'] = null;
+                $validated['type_intervention'] = null;
+            }
+    
             Beneficiaire::create($validated);
     
             return redirect()->route('archives.beneficiaires.index')
                 ->with('success', 'Dossier bénéficiaire ajouté avec succès');
         } catch (\Exception $e) {
+            \Log::error('Erreur lors de la création du bénéficiaire:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $request->all()
+            ]);
             return back()->withInput()->withErrors(['error' => 'Erreur lors de la création: ' . $e->getMessage()]);
         }
     }
@@ -118,6 +187,7 @@ class BeneficiaireController extends Controller
         return view('archives.beneficiaires.edit', [
             'beneficiaire' => $beneficiaire,
             'types' => $this->types,
+            'niveaux' => $this->niveaux,
             'ecoles' => $ecoles
         ]);
     }
@@ -129,6 +199,38 @@ class BeneficiaireController extends Controller
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'cin' => 'nullable|string|max:20',
+            'age' => 'nullable|integer|min:1|max:120',
+            'genre' => [
+                'nullable',
+                'required_if:type,Document éducatif',
+                'in:Homme,Femme'
+            ],
+            'status' => [
+                'nullable',
+                'required_if:type,Document éducatif',
+                'in:Accepter,Refuser'
+            ],
+            'ass_eps' => [
+                'nullable',
+                'required_if:type,Document éducatif',
+                'in:Association,Eps'
+            ],
+            'niveau' => [
+                'nullable',
+                'required_if:type,Dossier individuel',
+                'in:1ère année collège,2ème année collège,3ème année collège,Tronc Commun,1ère année bac,2ème année bac,Bac+2,Bac+3'
+            ],
+            'specialite' => [
+                'nullable',
+                'required_if:type,Dossier individuel',
+                'string',
+                'max:255'
+            ],
+            'type_intervention' => [
+                'nullable',
+                'in:IP,AGR'
+            ],
+            'societe' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'ecole_id' => [
                 'nullable',
@@ -146,6 +248,28 @@ class BeneficiaireController extends Controller
             $file = $request->file('fichier');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $validated['fichier'] = $file->storeAs('beneficiaires', $fileName, 'public');
+        }
+
+        // Nettoyer les données selon le type de dossier
+        if ($validated['type'] === 'Dossier individuel') {
+            // Pour Dossier individuel, supprimer les champs éducatifs (garder genre)
+            $validated['status'] = null;
+            $validated['ass_eps'] = null;
+            $validated['ecole_id'] = null;
+        } elseif ($validated['type'] === 'Document éducatif') {
+            // Pour Document éducatif, supprimer les champs académiques
+            $validated['niveau'] = null;
+            $validated['specialite'] = null;
+            $validated['type_intervention'] = null;
+        } else {
+            // Pour les autres types, supprimer tous les champs conditionnels
+            $validated['genre'] = null;
+            $validated['status'] = null;
+            $validated['ass_eps'] = null;
+            $validated['ecole_id'] = null;
+            $validated['niveau'] = null;
+            $validated['specialite'] = null;
+            $validated['type_intervention'] = null;
         }
 
         $beneficiaire->update($validated);

@@ -86,14 +86,91 @@
                         </div>
                     </div>
 
-                    <!-- CIN -->
-                    <div class="mt-5">
-                        <label for="cin" class="block text-sm font-medium text-gray-700 mb-1">CIN</label>
-                        <input type="text" name="cin" id="cin" value="{{ old('cin') }}"
-                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                        @error('cin')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <!-- CIN et Age -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+                        <div>
+                            <label for="cin" class="block text-sm font-medium text-gray-700 mb-1">CIN</label>
+                            <input type="text" name="cin" id="cin" value="{{ old('cin') }}"
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                            @error('cin')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Age -->
+                        <div>
+                            <label for="age" class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                            <input type="number" name="age" id="age" value="{{ old('age') }}" min="1" max="120"
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                            @error('age')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Niveau et Spécialité (conditionnel pour Dossier individuel) -->
+                <div id="niveau_div" class="bg-gray-50 p-4 rounded-lg border border-gray-200 hidden">
+                    <h3 class="text-md font-medium text-gray-700 mb-4">Informations académiques</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Niveau -->
+                        <div>
+                            <label for="niveau" class="block text-sm font-medium text-gray-700 mb-1">Niveau <span class="text-red-500">*</span></label>
+                            <select name="niveau" id="niveau" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un niveau</option>
+                                @foreach($niveaux as $value => $label)
+                                    <option value="{{ $value }}" {{ old('niveau') === $value ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('niveau')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Spécialité -->
+                        <div>
+                            <label for="specialite" class="block text-sm font-medium text-gray-700 mb-1">Spécialité <span class="text-red-500">*</span></label>
+                            <input type="text" name="specialite" id="specialite" value="{{ old('specialite') }}"
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                            @error('specialite')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Genre et Type d'intervention -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <!-- Genre -->
+                        <div>
+                            <label for="genre_individuel" class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
+                            <select name="genre" id="genre_individuel" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un genre</option>
+                                <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
+                                <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
+                            </select>
+                            @error('genre')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Type d'intervention -->
+                        <div>
+                            <label for="type_intervention" class="block text-sm font-medium text-gray-700 mb-1">Type d'intervention</label>
+                            <select name="type_intervention" id="type_intervention" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un type d'intervention</option>
+                                <option value="IP" {{ old('type_intervention') === 'IP' ? 'selected' : '' }}>IP</option>
+                                <option value="AGR" {{ old('type_intervention') === 'AGR' ? 'selected' : '' }}>AGR</option>
+                            </select>
+                            @error('type_intervention')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                 </div>
 
@@ -101,7 +178,52 @@
                 <div id="ecole_div" class="bg-gray-50 p-4 rounded-lg border border-gray-200 hidden">
                     <h3 class="text-md font-medium text-gray-700 mb-4">Informations éducatives</h3>
                     
-                    <div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Genre -->
+                        <div>
+                            <label for="genre" class="block text-sm font-medium text-gray-700 mb-1">Genre <span class="text-red-500">*</span></label>
+                            <select name="genre" id="genre" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un genre</option>
+                                <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
+                                <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
+                            </select>
+                            @error('genre')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Status -->
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
+                            <select name="status" id="status" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un status</option>
+                                <option value="Accepter" {{ old('status') === 'Accepter' ? 'selected' : '' }}>Accepter</option>
+                                <option value="Refuser" {{ old('status') === 'Refuser' ? 'selected' : '' }}>Refuser</option>
+                            </select>
+                            @error('status')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Ass/Eps -->
+                        <div>
+                            <label for="ass_eps" class="block text-sm font-medium text-gray-700 mb-1">Ass/Eps <span class="text-red-500">*</span></label>
+                            <select name="ass_eps" id="ass_eps" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un type</option>
+                                <option value="Association" {{ old('ass_eps') === 'Association' ? 'selected' : '' }}>Association</option>
+                                <option value="Eps" {{ old('ass_eps') === 'Eps' ? 'selected' : '' }}>Eps</option>
+                            </select>
+                            @error('ass_eps')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- École -->
+                    <div class="mt-6">
                         <label for="ecole_id" class="block text-sm font-medium text-gray-700 mb-1">École <span class="text-red-500">*</span></label>
                         <select name="ecole_id" id="ecole_id" 
                                 class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
@@ -120,6 +242,17 @@
 
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                     <h3 class="text-md font-medium text-gray-700 mb-4">Détails supplémentaires</h3>
+                    
+                    <!-- Société -->
+                    <div class="mb-5">
+                        <label for="societe" class="block text-sm font-medium text-gray-700 mb-1">Société</label>
+                        <input type="text" name="societe" id="societe" value="{{ old('societe') }}"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                            placeholder="Nom de la société">
+                        @error('societe')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                     
                     <!-- Description -->
                     <div>
@@ -180,24 +313,63 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Gestion de l'affichage du champ école
+    // Gestion de l'affichage des champs conditionnels
     const typeSelect = document.getElementById('type');
     const ecoleDiv = document.getElementById('ecole_div');
+    const niveauDiv = document.getElementById('niveau_div');
     
-    function toggleEcoleField() {
+    function toggleConditionalFields() {
         if (typeSelect.value === 'Document éducatif') {
             ecoleDiv.classList.remove('hidden');
+            niveauDiv.classList.add('hidden');
+            
+            // Champs requis pour Document éducatif
             document.getElementById('ecole_id').setAttribute('required', 'required');
+            const genreEducatif = document.getElementById('genre');
+            if (genreEducatif) genreEducatif.setAttribute('required', 'required');
+            document.getElementById('status').setAttribute('required', 'required');
+            document.getElementById('ass_eps').setAttribute('required', 'required');
+            
+            // Champs non requis pour Document éducatif
+            document.getElementById('niveau').removeAttribute('required');
+            document.getElementById('specialite').removeAttribute('required');
+            const genreIndividuel = document.getElementById('genre_individuel');
+            if (genreIndividuel) genreIndividuel.removeAttribute('required');
+        } else if (typeSelect.value === 'Dossier individuel') {
+            ecoleDiv.classList.add('hidden');
+            niveauDiv.classList.remove('hidden');
+            
+            // Champs requis pour Dossier individuel
+            document.getElementById('niveau').setAttribute('required', 'required');
+            document.getElementById('specialite').setAttribute('required', 'required');
+            
+            // Champs non requis pour Dossier individuel
+            document.getElementById('ecole_id').removeAttribute('required');
+            const genreEducatif = document.getElementById('genre');
+            if (genreEducatif) genreEducatif.removeAttribute('required');
+            document.getElementById('status').removeAttribute('required');
+            document.getElementById('ass_eps').removeAttribute('required');
+            // Le genre pour dossier individuel est optionnel
         } else {
             ecoleDiv.classList.add('hidden');
+            niveauDiv.classList.add('hidden');
+            
+            // Aucun champ requis
             document.getElementById('ecole_id').removeAttribute('required');
+            const genreEducatif = document.getElementById('genre');
+            if (genreEducatif) genreEducatif.removeAttribute('required');
+            document.getElementById('status').removeAttribute('required');
+            document.getElementById('ass_eps').removeAttribute('required');
+            document.getElementById('niveau').removeAttribute('required');
+            document.getElementById('specialite').removeAttribute('required');
+            // Tous les champs genre sont optionnels pour les autres types
         }
     }
     
-    typeSelect.addEventListener('change', toggleEcoleField);
+    typeSelect.addEventListener('change', toggleConditionalFields);
     
     // Exécuter au chargement pour gérer le cas où le type est déjà sélectionné
-    toggleEcoleField();
+    toggleConditionalFields();
     
     // Afficher le nom du fichier sélectionné
     const fileInput = document.getElementById('fichier');

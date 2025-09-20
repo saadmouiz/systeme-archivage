@@ -87,6 +87,16 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('beneficiaires', BeneficiaireController::class);
             Route::get('/beneficiaires/{beneficiaire}/download', [BeneficiaireController::class, 'download'])
                 ->name('beneficiaires.download');
+            Route::get('/beneficiaires-dashboard', [App\Http\Controllers\BeneficiaireDashboardController::class, 'index'])
+                ->name('beneficiaires.dashboard');
+            Route::get('/dossiers-individuels-dashboard', [App\Http\Controllers\BeneficiaireDashboardController::class, 'dashboardIndividuels'])
+                ->name('dossiers-individuels.dashboard');
+            Route::get('/beneficiaires-stats', [App\Http\Controllers\BeneficiaireDashboardController::class, 'getStatsData'])
+                ->name('beneficiaires.stats');
+            Route::get('/beneficiaires-export', [App\Http\Controllers\BeneficiaireDashboardController::class, 'exportStats'])
+                ->name('beneficiaires.export');
+            Route::get('/beneficiaires-export-excel', [App\Http\Controllers\BeneficiaireDashboardController::class, 'exportExcel'])
+                ->name('beneficiaires.export.excel');
         });
         
         Route::middleware(['can:access-partenaires'])->group(function () {
