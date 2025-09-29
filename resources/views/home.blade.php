@@ -186,7 +186,7 @@
                     <h2 class="text-5xl md:text-6xl font-bold leading-tight mb-8">
                         Ensemble pour une<br class="hidden md:block">
                         <span class="text-red-600 relative">
-                            société inclusive
+                            société inclusive!
                             <svg class="absolute -bottom-3 left-0 w-full" viewBox="0 0 358 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3 9C118.957 4.47226 273.957 3.47226 355 3" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
                             </svg>
