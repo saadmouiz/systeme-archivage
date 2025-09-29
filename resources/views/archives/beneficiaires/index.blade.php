@@ -178,6 +178,11 @@
                                     <div class="flex items-start justify-between mb-6">
                                         <div class="flex-1">
                                             <h3 class="font-bold text-gray-900 text-lg leading-tight mb-2 hover:text-green-600 transition-colors duration-200">{{ $beneficiaire->nom_complet }}</h3>
+                                            @if($beneficiaire->reference)
+                                                <p class="text-sm text-orange-600 font-semibold bg-orange-50 px-3 py-1 rounded-lg inline-block hover:bg-orange-100 transition-all duration-200 mb-2">
+                                                    Réf: {{ $beneficiaire->reference }}
+                                                </p>
+                                            @endif
                                             @if($beneficiaire->cin)
                                                 <p class="text-sm text-gray-500 font-mono bg-gray-50 px-3 py-1 rounded-lg inline-block hover:bg-green-50 hover:text-green-700 transition-all duration-200">
                                                     CIN: {{ $beneficiaire->cin }}

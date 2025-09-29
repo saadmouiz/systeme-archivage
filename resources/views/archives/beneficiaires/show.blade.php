@@ -43,6 +43,13 @@
                                 <p><span class="font-medium">Société:</span> {{ $beneficiaire->societe }}</p>
                             @endif
                             <p><span class="font-medium">Type de document:</span> {{ $beneficiaire->type }}</p>
+                            @if($beneficiaire->reference)
+                                <p><span class="font-medium">Référence:</span> 
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ $beneficiaire->reference }}
+                                    </span>
+                                </p>
+                            @endif
                             
                             @if($beneficiaire->type === 'Document éducatif')
                                 @if($beneficiaire->genre)
@@ -87,6 +94,9 @@
                                         @else Non spécifié
                                         @endif
                                     </span>
+                                    @if(!$beneficiaire->genre)
+                                        <span class="ml-2 text-xs text-orange-600">(Peut être modifié)</span>
+                                    @endif
                                 </p>
                                 @if($beneficiaire->niveau)
                                     <p><span class="font-medium">Niveau:</span> 

@@ -62,6 +62,17 @@
                         @enderror
                     </div>
 
+                    <!-- Reference -->
+                    <div class="mb-5">
+                        <label for="reference" class="block text-sm font-medium text-gray-700 mb-1">Référence</label>
+                        <input type="text" name="reference" id="reference" value="{{ old('reference') }}"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                            placeholder="Référence du dossier">
+                        @error('reference')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Nom -->
                         <div>
@@ -107,6 +118,20 @@
                             @enderror
                         </div>
                     </div>
+
+                    <!-- Genre -->
+                    <div class="mt-5">
+                        <label for="genre" class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
+                        <select name="genre" id="genre" 
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                            <option value="">Sélectionnez un genre</option>
+                            <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
+                            <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
+                        </select>
+                        @error('genre')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <!-- Niveau et Spécialité (conditionnel pour Dossier individuel) -->
@@ -142,35 +167,18 @@
                         </div>
                     </div>
 
-                    <!-- Genre et Type d'intervention -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <!-- Genre -->
-                        <div>
-                            <label for="genre_individuel" class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
-                            <select name="genre" id="genre_individuel" 
-                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                                <option value="">Sélectionnez un genre</option>
-                                <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
-                                <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
-                            </select>
-                            @error('genre')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Type d'intervention -->
-                        <div>
-                            <label for="type_intervention" class="block text-sm font-medium text-gray-700 mb-1">Type d'intervention</label>
-                            <select name="type_intervention" id="type_intervention" 
-                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                                <option value="">Sélectionnez un type d'intervention</option>
-                                <option value="IP" {{ old('type_intervention') === 'IP' ? 'selected' : '' }}>IP</option>
-                                <option value="AGR" {{ old('type_intervention') === 'AGR' ? 'selected' : '' }}>AGR</option>
-                            </select>
-                            @error('type_intervention')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                    <!-- Type d'intervention -->
+                    <div class="mt-6">
+                        <label for="type_intervention" class="block text-sm font-medium text-gray-700 mb-1">Type d'intervention</label>
+                        <select name="type_intervention" id="type_intervention" 
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                            <option value="">Sélectionnez un type d'intervention</option>
+                            <option value="IP" {{ old('type_intervention') === 'IP' ? 'selected' : '' }}>IP</option>
+                            <option value="AGR" {{ old('type_intervention') === 'AGR' ? 'selected' : '' }}>AGR</option>
+                        </select>
+                        @error('type_intervention')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
@@ -179,20 +187,6 @@
                     <h3 class="text-md font-medium text-gray-700 mb-4">Informations éducatives</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Genre -->
-                        <div>
-                            <label for="genre" class="block text-sm font-medium text-gray-700 mb-1">Genre <span class="text-red-500">*</span></label>
-                            <select name="genre" id="genre" 
-                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                                <option value="">Sélectionnez un genre</option>
-                                <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
-                                <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
-                            </select>
-                            @error('genre')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         <!-- Status -->
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
@@ -325,16 +319,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Champs requis pour Document éducatif
             document.getElementById('ecole_id').setAttribute('required', 'required');
-            const genreEducatif = document.getElementById('genre');
-            if (genreEducatif) genreEducatif.setAttribute('required', 'required');
+            document.getElementById('genre').setAttribute('required', 'required');
             document.getElementById('status').setAttribute('required', 'required');
             document.getElementById('ass_eps').setAttribute('required', 'required');
             
             // Champs non requis pour Document éducatif
             document.getElementById('niveau').removeAttribute('required');
             document.getElementById('specialite').removeAttribute('required');
-            const genreIndividuel = document.getElementById('genre_individuel');
-            if (genreIndividuel) genreIndividuel.removeAttribute('required');
         } else if (typeSelect.value === 'Dossier individuel') {
             ecoleDiv.classList.add('hidden');
             niveauDiv.classList.remove('hidden');
@@ -345,23 +336,21 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Champs non requis pour Dossier individuel
             document.getElementById('ecole_id').removeAttribute('required');
-            const genreEducatif = document.getElementById('genre');
-            if (genreEducatif) genreEducatif.removeAttribute('required');
             document.getElementById('status').removeAttribute('required');
             document.getElementById('ass_eps').removeAttribute('required');
             // Le genre pour dossier individuel est optionnel
+            document.getElementById('genre').removeAttribute('required');
         } else {
             ecoleDiv.classList.add('hidden');
             niveauDiv.classList.add('hidden');
             
             // Aucun champ requis
             document.getElementById('ecole_id').removeAttribute('required');
-            const genreEducatif = document.getElementById('genre');
-            if (genreEducatif) genreEducatif.removeAttribute('required');
             document.getElementById('status').removeAttribute('required');
             document.getElementById('ass_eps').removeAttribute('required');
             document.getElementById('niveau').removeAttribute('required');
             document.getElementById('specialite').removeAttribute('required');
+            document.getElementById('genre').removeAttribute('required');
             // Tous les champs genre sont optionnels pour les autres types
         }
     }

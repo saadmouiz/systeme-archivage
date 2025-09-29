@@ -6,7 +6,6 @@
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="p-8">
                 <h1 class="text-3xl font-bold text-gray-800 mb-8">Nouveau Document Administratif</h1>
-
                 @if ($errors->any())                                          
                     <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
                         <div class="flex">
@@ -27,13 +26,11 @@
                         </div>
                     </div>
                 @endif
-
                 <form action="{{ route('archives.administratifs.store') }}" 
                       method="POST" 
                       enctype="multipart/form-data"
                       class="space-y-8">
                     @csrf
-
                     <div>
                         <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Type de document</label>
                         <select name="type" 
@@ -46,7 +43,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <div>
                         <label for="titre" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
                         <input type="text" 
@@ -55,7 +51,6 @@
                                class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors" 
                                required>
                     </div>
-
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                         <textarea name="description" 
@@ -63,7 +58,6 @@
                                   rows="5" 
                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors resize-none"></textarea>
                     </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Fichier</label>
                         <div class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
@@ -90,7 +84,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="flex justify-end space-x-4 pt-6">
                         <a href="{{ route('archives.administratifs.index') }}" 
                            class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
@@ -106,4 +99,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

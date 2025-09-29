@@ -11,6 +11,7 @@ class Beneficiaire extends Model
 
     protected $fillable = [
         'type',
+        'reference',
         'nom',
         'prenom',
         'cin',

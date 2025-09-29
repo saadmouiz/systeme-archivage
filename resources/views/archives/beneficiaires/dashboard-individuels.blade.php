@@ -254,6 +254,22 @@
                                 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                     <div class="flex items-center">
                                         <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                        </svg>
+                                        Référence
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                        </svg>
+                                        Genre
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                         </svg>
                                         Niveau
@@ -306,6 +322,23 @@
                                             <div class="text-xs text-gray-500">{{ $dossier->created_at->format('d/m/Y') }}</div>
                                         </div>
                                 </div>
+                            </td>
+                                <td class="px-6 py-5 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 shadow-sm">
+                                        {{ $dossier->reference ?? 'Non spécifiée' }}
+                                </span>
+                            </td>
+                                <td class="px-6 py-5 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold shadow-sm
+                                        @if($dossier->genre === 'Homme') bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800
+                                        @elseif($dossier->genre === 'Femme') bg-gradient-to-r from-pink-100 to-pink-200 text-pink-800
+                                        @else bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600
+                                        @endif">
+                                        @if($dossier->genre === 'Homme') 👨 {{ $dossier->genre }}
+                                        @elseif($dossier->genre === 'Femme') 👩 {{ $dossier->genre }}
+                                        @else Non spécifié
+                                        @endif
+                                </span>
                             </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
                                     <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-800 shadow-sm">

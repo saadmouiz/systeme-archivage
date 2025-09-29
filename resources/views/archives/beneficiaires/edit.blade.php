@@ -77,6 +77,17 @@
                         </div>
                     </div>
 
+                    <div>
+                        <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
+                        <select name="genre" 
+                                id="genre" 
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                            <option value="">Sélectionnez un genre</option>
+                            <option value="Homme" {{ old('genre', $beneficiaire->genre) == 'Homme' ? 'selected' : '' }}>Homme</option>
+                            <option value="Femme" {{ old('genre', $beneficiaire->genre) == 'Femme' ? 'selected' : '' }}>Femme</option>
+                        </select>
+                    </div>
+
                     <!-- Champs conditionnels pour Dossier individuel -->
                     <div id="niveau_fields" class="grid grid-cols-1 md:grid-cols-2 gap-6" style="display: none;">
                         <div>
@@ -101,44 +112,20 @@
                         </div>
                     </div>
 
-                    <!-- Champs supplémentaires pour Dossier individuel -->
-                    <div id="genre_type_intervention_fields" class="grid grid-cols-1 md:grid-cols-2 gap-6" style="display: none;">
-                        <div>
-                            <label for="genre_individuel" class="block text-sm font-medium text-gray-700">Genre</label>
-                            <select name="genre" 
-                                    id="genre_individuel" 
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
-                                <option value="">Sélectionnez un genre</option>
-                                <option value="Homme" {{ old('genre', $beneficiaire->genre) == 'Homme' ? 'selected' : '' }}>Homme</option>
-                                <option value="Femme" {{ old('genre', $beneficiaire->genre) == 'Femme' ? 'selected' : '' }}>Femme</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="type_intervention" class="block text-sm font-medium text-gray-700">Type d'intervention</label>
-                            <select name="type_intervention" 
-                                    id="type_intervention" 
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
-                                <option value="">Sélectionnez un type d'intervention</option>
-                                <option value="IP" {{ old('type_intervention', $beneficiaire->type_intervention) == 'IP' ? 'selected' : '' }}>IP</option>
-                                <option value="AGR" {{ old('type_intervention', $beneficiaire->type_intervention) == 'AGR' ? 'selected' : '' }}>AGR</option>
-                            </select>
-                        </div>
+                    <!-- Type d'intervention pour Dossier individuel -->
+                    <div id="type_intervention_field" class="mt-6" style="display: none;">
+                        <label for="type_intervention" class="block text-sm font-medium text-gray-700">Type d'intervention</label>
+                        <select name="type_intervention" 
+                                id="type_intervention" 
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                            <option value="">Sélectionnez un type d'intervention</option>
+                            <option value="IP" {{ old('type_intervention', $beneficiaire->type_intervention) == 'IP' ? 'selected' : '' }}>IP</option>
+                            <option value="AGR" {{ old('type_intervention', $beneficiaire->type_intervention) == 'AGR' ? 'selected' : '' }}>AGR</option>
+                        </select>
                     </div>
 
                     <!-- Champs conditionnels pour Document éducatif -->
                     <div id="educatif_fields" class="grid grid-cols-1 md:grid-cols-2 gap-6" style="display: none;">
-                        <div>
-                            <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
-                            <select name="genre" 
-                                    id="genre" 
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
-                                <option value="">Sélectionnez un genre</option>
-                                <option value="Homme" {{ old('genre', $beneficiaire->genre) == 'Homme' ? 'selected' : '' }}>Homme</option>
-                                <option value="Femme" {{ old('genre', $beneficiaire->genre) == 'Femme' ? 'selected' : '' }}>Femme</option>
-                            </select>
-                        </div>
-
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                             <select name="status" 
@@ -186,6 +173,16 @@
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div>
+                        <label for="reference" class="block text-sm font-medium text-gray-700">Référence</label>
+                        <input type="text" 
+                               name="reference" 
+                               id="reference" 
+                               value="{{ old('reference', $beneficiaire->reference) }}"
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Référence du dossier">
                     </div>
 
                     <div>
@@ -268,12 +265,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const niveauFields = document.getElementById('niveau_fields');
     
     function toggleConditionalFields() {
-        const genreTypeInterventionFields = document.getElementById('genre_type_intervention_fields');
+        const typeInterventionField = document.getElementById('type_intervention_field');
         
         if (typeSelect.value === 'Document éducatif') {
             educatifFields.style.display = 'grid';
             niveauFields.style.display = 'none';
-            genreTypeInterventionFields.style.display = 'none';
+            typeInterventionField.style.display = 'none';
             
             // Champs requis pour Document éducatif
             document.getElementById('genre').setAttribute('required', 'required');
@@ -287,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (typeSelect.value === 'Dossier individuel') {
             educatifFields.style.display = 'none';
             niveauFields.style.display = 'grid';
-            genreTypeInterventionFields.style.display = 'grid';
+            typeInterventionField.style.display = 'block';
             
             // Champs requis pour Dossier individuel
             document.getElementById('niveau').setAttribute('required', 'required');
@@ -301,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             educatifFields.style.display = 'none';
             niveauFields.style.display = 'none';
-            genreTypeInterventionFields.style.display = 'none';
+            typeInterventionField.style.display = 'none';
             
             // Aucun champ requis
             document.getElementById('genre').removeAttribute('required');

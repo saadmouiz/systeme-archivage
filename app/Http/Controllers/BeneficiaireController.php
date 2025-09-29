@@ -84,6 +84,7 @@ class BeneficiaireController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string',
+            'reference' => 'nullable|string|max:255',
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'cin' => 'nullable|string',
@@ -196,6 +197,7 @@ class BeneficiaireController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|string',
+            'reference' => 'nullable|string|max:255',
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'cin' => 'nullable|string|max:20',
