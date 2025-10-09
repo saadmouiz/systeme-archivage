@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 py-6">
@@ -11,7 +11,7 @@
             </div>
             <div class="flex flex-wrap gap-3 justify-end">
                 <a href="{{ route('archives.beneficiaires.create') }}" 
-                   class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors">
+                   class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 transition-colors">
                     <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -19,7 +19,7 @@
                     <span class="sm:hidden">Ajouter</span>
                 </a>
                 <a href="{{ route('archives.beneficiaires.index') }}" 
-                   class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                   class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 transition-colors">
                     <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
@@ -44,8 +44,8 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
                         </div>
@@ -65,8 +65,8 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                             </svg>
                         </div>
@@ -74,7 +74,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Croissance Mensuelle</dt>
-                                <dd class="text-2xl font-bold {{ $croissanceMensuelle >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                <dd class="text-2xl font-bold {{ $croissanceMensuelle >= 0 ? 'text-red-900' : 'text-red-600' }}">
                             {{ $croissanceMensuelle >= 0 ? '+' : '' }}{{ $croissanceMensuelle }}%
                                 </dd>
                             </dl>
@@ -88,8 +88,8 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                             </svg>
                         </div>
@@ -97,7 +97,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Croissance Annuelle</dt>
-                                <dd class="text-2xl font-bold {{ $croissanceAnnuelle >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                <dd class="text-2xl font-bold {{ $croissanceAnnuelle >= 0 ? 'text-red-900' : 'text-red-600' }}">
                             {{ $croissanceAnnuelle >= 0 ? '+' : '' }}{{ $croissanceAnnuelle }}%
                                 </dd>
                             </dl>
@@ -111,8 +111,8 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
                         </div>
@@ -146,7 +146,7 @@
                             <p class="text-sm text-gray-500 leading-relaxed">Analyse détaillée des dossiers par niveau académique</p>
                         </div>
                         <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-7 h-7 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                             </svg>
                         </div>
@@ -159,7 +159,7 @@
                         <div id="niveauEmptyState" class="hidden absolute inset-0 flex items-center justify-center">
                             <div class="text-center py-12">
                                 <div class="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                                    <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-10 h-10 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                             </svg>
                         </div>
@@ -186,7 +186,7 @@
                             <p class="text-sm text-gray-500 leading-relaxed">Vue d'ensemble des spécialités académiques</p>
                             </div>
                         <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 via-teal-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-7 h-7 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
                             </svg>
@@ -200,7 +200,7 @@
                         <div id="specialiteEmptyState" class="hidden absolute inset-0 flex items-center justify-center">
                             <div class="text-center py-12">
                                 <div class="w-20 h-20 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                                    <svg class="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-10 h-10 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
                             </svg>
                         </div>
@@ -218,21 +218,21 @@
         @if($dossiersRecents->count() > 0)
         <div class="bg-white shadow-xl rounded-3xl p-8 mb-12 border border-gray-100/50 backdrop-blur-sm relative overflow-hidden">
             <!-- Décoration de fond -->
-            <div class="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-blue-50/30 to-transparent rounded-full -translate-y-20 -translate-x-20"></div>
+            <div class="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-red-50/30 to-transparent rounded-full -translate-y-20 -translate-x-20"></div>
             <div class="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-purple-50/30 to-transparent rounded-full translate-y-16 translate-x-16"></div>
             
             <div class="relative z-10">
             <div class="flex items-center justify-between mb-8">
                 <div class="flex items-center">
-                        <div class="w-3 h-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mr-4"></div>
+                        <div class="w-3 h-3 bg-gradient-to-r from-red-900 to-purple-600 rounded-full mr-4"></div>
                         <div>
                             <h3 class="text-2xl font-bold text-gray-900 mb-2">Statistiques Détaillées</h3>
                             <p class="text-sm text-gray-500">Aperçu complet des dossiers individuels récents</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-900 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2z"></path>
                         </svg>
                     </div>
@@ -311,10 +311,10 @@
                     </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
                             @foreach($dossiersRecents as $index => $dossier)
-                            <tr class="hover:bg-gradient-to-r hover:from-blue-50/30 hover:to-purple-50/30 transition-all duration-200 group">
+                            <tr class="hover:bg-gradient-to-r hover:from-red-50/30 hover:to-purple-50/30 transition-all duration-200 group">
                                 <td class="px-6 py-5 whitespace-nowrap">
                                 <div class="flex items-center">
-                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4 group-hover:scale-110 transition-transform duration-200">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-red-900 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4 group-hover:scale-110 transition-transform duration-200">
                                             {{ substr($dossier->nom, 0, 1) }}{{ substr($dossier->prenom, 0, 1) }}
                                         </div>
                                         <div>
@@ -324,14 +324,14 @@
                                 </div>
                             </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 shadow-sm">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-orange-100 to-orange-200 text-red-900 shadow-sm">
                                         {{ $dossier->reference ?? 'Non spécifiée' }}
                                 </span>
                             </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
                                     <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold shadow-sm
-                                        @if($dossier->genre === 'Homme') bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800
-                                        @elseif($dossier->genre === 'Femme') bg-gradient-to-r from-pink-100 to-pink-200 text-pink-800
+                                        @if($dossier->genre === 'Homme') bg-gradient-to-r from-red-100 to-red-200 text-red-900
+                                        @elseif($dossier->genre === 'Femme') bg-gradient-to-r from-pink-100 to-pink-200 text-red-900
                                         @else bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600
                                         @endif">
                                         @if($dossier->genre === 'Homme') 👨 {{ $dossier->genre }}
@@ -341,31 +341,31 @@
                                 </span>
                             </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-800 shadow-sm">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-100 to-indigo-200 text-red-900 shadow-sm">
                                         {{ $dossier->niveau ?? 'Non spécifié' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-teal-100 to-teal-200 text-teal-800 shadow-sm">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-teal-100 to-teal-200 text-red-900 shadow-sm">
                                         {{ $dossier->specialite ?? 'Non spécifiée' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-100 to-amber-200 text-amber-800 shadow-sm">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-100 to-amber-200 text-red-900 shadow-sm">
                                         {{ $dossier->age ? $dossier->age . ' ans' : 'Non spécifié' }}
                                 </span>
                             </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
                                     <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold shadow-sm
-                                        @if($dossier->type_intervention === 'IP') bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800
-                                        @elseif($dossier->type_intervention === 'AGR') bg-gradient-to-r from-green-100 to-green-200 text-green-800
+                                        @if($dossier->type_intervention === 'IP') bg-gradient-to-r from-red-100 to-red-200 text-red-900
+                                        @elseif($dossier->type_intervention === 'AGR') bg-gradient-to-r from-green-100 to-green-200 text-red-900
                                         @else bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600
                                         @endif">
                                         {{ $dossier->type_intervention ?? 'Non spécifié' }}
                                 </span>
                             </td>
                                 <td class="px-6 py-5 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 shadow-sm">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-purple-100 to-purple-200 text-red-900 shadow-sm">
                                         {{ $dossier->societe ?? 'Non spécifiée' }}
                                 </span>
                             </td>
@@ -378,7 +378,7 @@
                 @if($dossiersRecents->count() >= 10)
                 <div class="mt-6 text-center">
                     <p class="text-sm text-gray-500 mb-4">Affichage des 10 derniers dossiers</p>
-                    <a href="{{ route('archives.beneficiaires.index') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    <a href="{{ route('archives.beneficiaires.index') }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-900 to-purple-600 text-white font-semibold rounded-xl hover:from-red-800 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
@@ -400,12 +400,12 @@
                     @foreach($repartitionNiveaux->take(5) as $index => $niveau)
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div class="flex items-center">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                <span class="text-sm font-medium text-blue-600">{{ $index + 1 }}</span>
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center mr-3">
+                                <span class="text-sm font-medium text-red-900">{{ $index + 1 }}</span>
                     </div>
                             <span class="font-medium text-gray-900">{{ $niveau['niveau'] }}</span>
                     </div>
-                        <span class="text-lg font-bold text-blue-600">{{ $niveau['total'] }}</span>
+                        <span class="text-lg font-bold text-red-900">{{ $niveau['total'] }}</span>
                 </div>
                     @endforeach
                         </div>
@@ -732,3 +732,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+
+
+

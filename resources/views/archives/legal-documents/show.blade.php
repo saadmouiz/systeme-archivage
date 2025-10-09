@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gray-100 py-8">
@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="ml-4 flex-shrink-0 flex items-center space-x-3">
                                     <a href="{{ $file->file_url }}" target="_blank"
-                                       class="text-sm font-medium text-[#0d9488] hover:text-green-700">
+                                       class="text-sm font-medium text-[#0d9488] hover:text-red-900">
                                         Télécharger
                                     </a>
                                     <form action="{{ route('archives.legal-documents.files.delete', [$document, $file]) }}" 

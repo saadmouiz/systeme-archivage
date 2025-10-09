@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
@@ -37,7 +37,7 @@
                         <div class="w-36 font-medium text-gray-700">Date:</div>
                         <div class="flex items-center">
                             <span class="mr-2">{{ $date->format('d/m/Y') }}</span>
-                            <input type="date" name="date_alt" value="{{ $date->format('Y-m-d') }}" class="rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" onchange="window.location.href='{{ route('archives.pointages.create') }}?date=' + this.value">
+                            <input type="date" name="date_alt" value="{{ $date->format('Y-m-d') }}" class="rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50" onchange="window.location.href='{{ route('archives.pointages.create') }}?date=' + this.value">
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <select name="employees[{{ $employee->id }}][statut]" class="rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full" onchange="toggleTimeFields(this, {{ $employee->id }})">
+                                    <select name="employees[{{ $employee->id }}][statut]" class="rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 w-full" onchange="toggleTimeFields(this, {{ $employee->id }})">
                                         <option value="present" {{ $pointage && $pointage->statut === 'present' ? 'selected' : '' }}>Présent</option>
                                         <option value="absent" {{ $pointage && $pointage->statut === 'absent' ? 'selected' : '' }}>Absent</option>
                                         <option value="retard" {{ $pointage && $pointage->statut === 'retard' ? 'selected' : '' }}>Retard</option>
@@ -92,13 +92,13 @@
                                     </select>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <input type="time" name="employees[{{ $employee->id }}][heure_arrivee]" value="{{ $pointage ? $pointage->heure_arrivee : '10:00' }}" class="rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 time-field-{{ $employee->id }}" {{ $pointage && $pointage->statut !== 'present' ? 'disabled' : '' }}>
+                                    <input type="time" name="employees[{{ $employee->id }}][heure_arrivee]" value="{{ $pointage ? $pointage->heure_arrivee : '10:00' }}" class="rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 time-field-{{ $employee->id }}" {{ $pointage && $pointage->statut !== 'present' ? 'disabled' : '' }}>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <input type="time" name="employees[{{ $employee->id }}][heure_sortie]" value="{{ $pointage ? $pointage->heure_sortie : '17:00' }}" class="rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 time-field-{{ $employee->id }}" {{ $pointage && $pointage->statut !== 'present' ? 'disabled' : '' }}>
+                                    <input type="time" name="employees[{{ $employee->id }}][heure_sortie]" value="{{ $pointage ? $pointage->heure_sortie : '17:00' }}" class="rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 time-field-{{ $employee->id }}" {{ $pointage && $pointage->statut !== 'present' ? 'disabled' : '' }}>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <input type="text" name="employees[{{ $employee->id }}][commentaire]" value="{{ $pointage ? $pointage->commentaire : '' }}" class="rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full">
+                                    <input type="text" name="employees[{{ $employee->id }}][commentaire]" value="{{ $pointage ? $pointage->commentaire : '' }}" class="rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 w-full">
                                 </td>
                             </tr>
                         @endforeach
@@ -106,7 +106,7 @@
                 </table>
                 
                 <div class="px-6 py-4 bg-gray-50 text-right">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-900 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring ring-red-500 disabled:opacity-25 transition ease-in-out duration-150">
                         Enregistrer les pointages
                     </button>
                 </div>
@@ -135,3 +135,4 @@
     });
 </script>
 @endsection
+

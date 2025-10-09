@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Archives de Communication</h1>
         <a href="{{ route('archives.communications.create') }}" 
-           class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg inline-flex items-center">
+           class="bg-red-900 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-lg inline-flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
@@ -14,7 +14,7 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
+        <div class="bg-[#FEE2E2] border border-red-300 text-red-900 px-4 py-3 rounded relative mb-6" role="alert">
             <span class="block sm:inline">{{ session('success') }}</span>
         </div>
     @endif
@@ -40,7 +40,7 @@
                                 <p class="text-gray-600 text-sm mb-3">{{ Str::limit($doc->description, 100) }}</p>
                                 
                                 <div class="flex items-center text-sm text-gray-500 mb-3">
-                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                    <span class="bg-red-100 text-red-900 text-xs font-medium px-2.5 py-0.5 rounded">
                                         {{ $doc->format_type }}
                                     </span>
                                 </div>
@@ -48,7 +48,7 @@
                                 <div class="flex justify-between items-center">
                                     <div class="flex space-x-2">
                                         <a href="{{ route('archives.communications.show', $doc) }}" 
-                                           class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+                                           class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 transition-colors text-sm font-medium">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                                       d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -58,7 +58,7 @@
                                             Voir
                                         </a>
                                         <a href="{{ route('archives.communications.edit', $doc) }}" 
-                                           class="inline-flex items-center text-sm text-yellow-600 hover:text-yellow-800">
+                                           class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-800 rounded-md hover:bg-yellow-200 transition-colors text-sm font-medium">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>

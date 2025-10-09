@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -36,7 +36,7 @@
                         <label for="type" class="block text-sm font-medium text-gray-700">Type de document</label>
                         <select name="type" 
                                 id="type" 
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md" 
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md" 
                                 required>
                             <option value="">--Sélectionnez un type--</option>
                             @foreach($types as $key => $value)
@@ -53,7 +53,7 @@
                                name="titre" 
                                id="titre" 
                                value="{{ old('titre') }}"
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900" 
                                required>
                     </div>
 
@@ -62,7 +62,7 @@
                         <textarea name="description" 
                                   id="description" 
                                   rows="4" 
-                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ old('description') }}</textarea>
+                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">{{ old('description') }}</textarea>
                     </div>
 
                     <div>
@@ -71,7 +71,7 @@
                                name="date_publication" 
                                id="date_publication" 
                                value="{{ old('date_publication') }}"
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900" 
                                required>
                     </div>
 
@@ -79,7 +79,7 @@
                         <label for="format_type" class="block text-sm font-medium text-gray-700">Format</label>
                         <select name="format_type" 
                                 id="format_type" 
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md" 
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md" 
                                 required>
                             <option value="">--Sélectionnez un format--</option>
                             @foreach($formats as $key => $value)
@@ -101,7 +101,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-red-900 hover:text-red-900 hover:underline">
                                         <span>Téléverser un fichier</span>
                                         <input id="fichier" 
                                                name="fichier" 
@@ -122,7 +122,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900">
                             Sauvegarder
                         </button>
                     </div>

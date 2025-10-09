@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -36,6 +36,13 @@
                         <h3 class="text-lg font-medium text-gray-900 mb-2">Informations personnelles</h3>
                         <div class="bg-gray-50 rounded-lg p-4 space-y-2">
                             <p><span class="font-medium">CIN:</span> {{ $beneficiaire->cin ?? 'Non renseigné' }}</p>
+                            @if($beneficiaire->ville)
+                                <p><span class="font-medium">📍 Ville:</span> 
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                        {{ $beneficiaire->ville }}
+                                    </span>
+                                </p>
+                            @endif
                             @if($beneficiaire->age)
                                 <p><span class="font-medium">Age:</span> {{ $beneficiaire->age }} ans</p>
                             @endif
@@ -45,7 +52,7 @@
                             <p><span class="font-medium">Type de document:</span> {{ $beneficiaire->type }}</p>
                             @if($beneficiaire->reference)
                                 <p><span class="font-medium">Référence:</span> 
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
                                         {{ $beneficiaire->reference }}
                                     </span>
                                 </p>
@@ -69,7 +76,7 @@
                                 @if($beneficiaire->ass_eps)
                                     <p><span class="font-medium">Ass/Eps:</span> 
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            @if($beneficiaire->ass_eps === 'Association') bg-blue-100 text-blue-800
+                                            @if($beneficiaire->ass_eps === 'Association') bg-red-100 text-red-700
                                             @elseif($beneficiaire->ass_eps === 'Eps') bg-purple-100 text-purple-800
                                             @else bg-gray-100 text-gray-800
                                             @endif">
@@ -80,12 +87,19 @@
                                 @if($beneficiaire->ecole)
                                     <p><span class="font-medium">École:</span> {{ $beneficiaire->ecole->nom }}</p>
                                 @endif
+                                @if($beneficiaire->filiere)
+                                    <p><span class="font-medium">Filière:</span> 
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {{ $beneficiaire->filiere }}
+                                        </span>
+                                    </p>
+                                @endif
                             @endif
 
                             @if($beneficiaire->type === 'Dossier individuel')
                                 <p><span class="font-medium">Genre:</span> 
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                        @if($beneficiaire->genre === 'Homme') bg-blue-100 text-blue-800
+                                        @if($beneficiaire->genre === 'Homme') bg-red-100 text-red-700
                                         @elseif($beneficiaire->genre === 'Femme') bg-pink-100 text-pink-800
                                         @else bg-gray-100 text-gray-600
                                         @endif">
@@ -115,7 +129,7 @@
                                 @if($beneficiaire->type_intervention)
                                     <p><span class="font-medium">Type d'intervention:</span> 
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                            @if($beneficiaire->type_intervention === 'IP') bg-blue-100 text-blue-800
+                                            @if($beneficiaire->type_intervention === 'IP') bg-red-100 text-red-700
                                             @elseif($beneficiaire->type_intervention === 'AGR') bg-green-100 text-green-800
                                             @else bg-gray-100 text-gray-800
                                             @endif">

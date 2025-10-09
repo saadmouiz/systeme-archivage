@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -38,7 +38,7 @@
                             <input type="text" 
                                    name="nom" 
                                    id="nom" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                    value="{{ old('nom') }}" 
                                    required>
                         </div>
@@ -47,7 +47,7 @@
                             <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
                             <select name="type" 
                                     id="type" 
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                     required>
                                 <option value="">Sélectionnez un type</option>
                                 @foreach($types as $key => $value)
@@ -65,7 +65,7 @@
                             <input type="email" 
                                    name="email" 
                                    id="email" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                    value="{{ old('email') }}">
                         </div>
 
@@ -74,7 +74,7 @@
                             <input type="text" 
                                    name="telephone" 
                                    id="telephone" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                    value="{{ old('telephone') }}">
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                         <input type="text" 
                                name="adresse" 
                                id="adresse" 
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                value="{{ old('adresse') }}">
                     </div>
 
@@ -93,7 +93,7 @@
                         <input type="text" 
                                name="responsable" 
                                id="responsable" 
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                value="{{ old('responsable') }}">
                     </div>
 
@@ -102,7 +102,7 @@
                         <textarea name="description" 
                                   id="description" 
                                   rows="4" 
-                                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description') }}</textarea>
+                                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900">{{ old('description') }}</textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -111,7 +111,7 @@
                             <input type="date" 
                                    name="date_de_convention" 
                                    id="date_de_convention" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                    value="{{ old('date_de_convention') }}">
                         </div>
 
@@ -122,7 +122,7 @@
                         <label for="statut_partenariat" class="block text-sm font-medium text-gray-700">Statut</label>
                         <select name="statut_partenariat" 
                                 id="statut_partenariat" 
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                 required>
                             <option value="">Sélectionnez un statut</option>
                             @foreach($statuts as $key => $value)
@@ -144,7 +144,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-red-900 hover:text-red-900">
                                         <span>Téléverser un fichier</span>
                                         <input id="fichier" 
                                                name="fichier" 
@@ -164,7 +164,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900">
                             Créer le partenaire
                         </button>
                     </div>

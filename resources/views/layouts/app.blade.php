@@ -80,7 +80,7 @@
                 </div>
                 <!-- Admin Menu -->
                 <div class="hidden md:flex items-center ml-3 relative">
-                    <button id="admin-dropdown" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-150 ease-in-out">
+                    <button id="admin-dropdown" class="flex items-center px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-900 transition duration-150 ease-in-out">
                         {{ Auth::user()->name }}
                         <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -110,14 +110,14 @@
                 Archives
             </a>
             
-            <div class="block px-4 py-2 bg-blue-600 text-white">
+            <div class="block px-4 py-2 bg-red-900 text-white">
                 {{ Auth::user()->name }}
             </div>
             
             <form method="POST" action="{{ route('logout') }}" class="block px-4 py-2">
                 @csrf
                 <button type="submit" 
-                        class="w-full text-left bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        class="w-full text-left bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-900">
                     Déconnexion
                 </button>
             </form>

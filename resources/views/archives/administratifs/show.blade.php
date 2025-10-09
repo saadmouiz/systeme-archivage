@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -10,7 +10,7 @@
                     <h1 class="text-2xl font-bold text-gray-800">{{ $administratif->titre }}</h1>
                     <div class="flex space-x-2">
                         <a href="{{ route('archives.administratifs.edit', $administratif) }}" 
-                           class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700">
+                           class="inline-flex items-center px-4 py-2 bg-red-900 text-white rounded-md hover:bg-red-900">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
@@ -50,7 +50,7 @@
                             <div class="flex space-x-2 mt-3">
                                 
                                 <a href="{{ route('archives.administratifs.download', $administratif) }}" 
-                                   class="inline-flex items-center px-3 py-2 text-sm text-green-600 bg-green-100 rounded-md hover:bg-green-200">
+                                   class="inline-flex items-center px-3 py-2 text-sm text-red-900 bg-red-900 rounded-md hover:bg-red-900">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                     </svg>

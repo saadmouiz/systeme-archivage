@@ -1,17 +1,17 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-8 py-20">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Gestion des Événements</h1>
         <a href="{{ route('archives.evenements.create') }}" 
-           class="bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+           class="bg-red-900 text-white px-4 py-2 rounded-lg hover:bg-red-900 transition-colors">
             Nouvel Événement
         </a>
     </div>
 
     @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+    <div class="bg-[#FEE2E2] border border-red-300 text-red-900 px-4 py-3 rounded relative mb-4" role="alert">
         <span class="block sm:inline">{{ session('success') }}</span>
     </div>
     @endif
@@ -35,7 +35,7 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            {{ $evenement->type === 'interne' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' }}">
+                            {{ $evenement->type === 'interne' ? 'bg-red-100 text-red-900' : 'bg-red-100 text-red-900' }}">
                             {{ ucfirst($evenement->type) }}
                         </span>
                     </td>
@@ -49,27 +49,34 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                             @switch($evenement->statut)
-                                @case('planifie') bg-yellow-100 text-yellow-800 @break
-                                @case('en_cours') bg-blue-100 text-blue-800 @break
-                                @case('termine') bg-green-100 text-green-800 @break
+                                @case('planifie') bg-red-100 text-red-900 @break
+                                @case('en_cours') bg-red-100 text-red-900 @break
+                                @case('termine') bg-red-100 text-red-900 @break
                                 @case('annule') bg-red-100 text-red-800 @break
                             @endswitch">
                             {{ ucfirst($evenement->statut) }}
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a href="{{ route('archives.evenements.show', $evenement) }}" 
-                           class="text-indigo-600 hover:text-indigo-900 mr-3">Voir</a>
-                        <a href="{{ route('archives.evenements.edit', $evenement) }}" 
-                           class="text-yellow-600 hover:text-yellow-900 mr-3">Modifier</a>
-                        <form action="{{ route('archives.evenements.destroy', $evenement) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-900"
-                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">
-                                Supprimer
-                            </button>
-                        </form>
+                        <div class="flex items-center space-x-2">
+                            <a href="{{ route('archives.evenements.show', $evenement) }}" 
+                               class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 transition-colors text-sm font-medium">
+                                Voir
+                            </a>
+                            <a href="{{ route('archives.evenements.edit', $evenement) }}" 
+                               class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-800 rounded-md hover:bg-yellow-200 transition-colors text-sm font-medium">
+                                Modifier
+                            </a>
+                            <form action="{{ route('archives.evenements.destroy', $evenement) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="inline-flex items-center px-3 py-1 bg-red-100 text-red-800 rounded-md hover:bg-red-200 transition-colors text-sm font-medium"
+                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @endforeach

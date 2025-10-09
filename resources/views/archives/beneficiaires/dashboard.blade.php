@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 py-6">
@@ -11,7 +11,7 @@
             </div>
             <div class="flex flex-wrap gap-3 justify-end">
                 <a href="{{ route('archives.beneficiaires.create') }}" 
-                   class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors">
+                   class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 transition-colors">
                     <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -19,7 +19,7 @@
                     <span class="sm:hidden">Ajouter</span>
                 </a>
                 <a href="{{ route('archives.beneficiaires.export.excel') }}" 
-                   class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                   class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 transition-colors">
                     <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
@@ -44,8 +44,8 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
                             </div>
@@ -65,8 +65,8 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                                 </svg>
                             </div>
@@ -74,7 +74,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Croissance Mensuelle</dt>
-                                <dd class="text-2xl font-bold {{ $croissanceMensuelle >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                <dd class="text-2xl font-bold {{ $croissanceMensuelle >= 0 ? 'text-red-900' : 'text-red-600' }}">
                                     {{ $croissanceMensuelle >= 0 ? '+' : '' }}{{ $croissanceMensuelle }}%
                                 </dd>
                             </dl>
@@ -88,8 +88,8 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                 </svg>
                             </div>
@@ -97,7 +97,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Croissance Annuelle</dt>
-                                <dd class="text-2xl font-bold {{ $croissanceAnnuelle >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                <dd class="text-2xl font-bold {{ $croissanceAnnuelle >= 0 ? 'text-red-900' : 'text-red-600' }}">
                                     {{ $croissanceAnnuelle >= 0 ? '+' : '' }}{{ $croissanceAnnuelle }}%
                                 </dd>
                             </dl>
@@ -111,8 +111,8 @@
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                             </div>
@@ -141,7 +141,7 @@
                         <p class="text-sm text-gray-600">Analyse des bénéficiaires par genre (Homme/Femme)</p>
                     </div>
                     <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                     </div>
@@ -159,7 +159,7 @@
                         <p class="text-sm text-gray-600">Analyse des bénéficiaires par status (Inscrit/Refuser)</p>
                     </div>
                     <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
@@ -181,7 +181,7 @@
                         <p class="text-sm text-gray-600">Vue d'ensemble des statistiques globales</p>
                     </div>
                         <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
                         </svg>
@@ -218,12 +218,12 @@
                                 {{ $stat['etablissement'] }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $stat['candidat'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $stat['inscrit'] }}
                                 </span>
                             </td>
@@ -233,22 +233,22 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $stat['hommes'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $stat['femmes'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $stat['association'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $stat['eps'] }}
                                 </span>
                             </td>
@@ -268,12 +268,12 @@
                                 <strong>TOTAL</strong>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-200 text-blue-900">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $totauxStats['candidat'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-900">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $totauxStats['inscrit'] }}
                                 </span>
                             </td>
@@ -283,22 +283,22 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-200 text-blue-900">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $totauxStats['hommes'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-200 text-pink-900">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $totauxStats['femmes'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-200 text-indigo-900">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $totauxStats['association'] }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-200 text-purple-900">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                     {{ $totauxStats['eps'] }}
                                 </span>
                             </td>
@@ -318,12 +318,12 @@
                     @forelse($topEcoles as $index => $ecole)
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div class="flex items-center">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                <span class="text-sm font-medium text-blue-600">{{ $index + 1 }}</span>
+                            <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center mr-3">
+                                <span class="text-sm font-medium text-red-900">{{ $index + 1 }}</span>
                             </div>
                             <span class="font-medium text-gray-900">{{ $ecole['ecole'] }}</span>
                         </div>
-                        <span class="text-lg font-bold text-blue-600">{{ $ecole['total'] }}</span>
+                        <span class="text-lg font-bold text-red-900">{{ $ecole['total'] }}</span>
                     </div>
                     @empty
                     <p class="text-gray-500 text-center py-4">Aucune donnée disponible</p>
@@ -755,3 +755,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+
+
+

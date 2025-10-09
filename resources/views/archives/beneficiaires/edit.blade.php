@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -40,7 +40,7 @@
                                    name="nom" 
                                    id="nom" 
                                    value="{{ old('nom', $beneficiaire->nom) }}"
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900" 
                                    required>
                         </div>
 
@@ -50,9 +50,20 @@
                                    name="prenom" 
                                    id="prenom" 
                                    value="{{ old('prenom', $beneficiaire->prenom) }}"
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900" 
                                    required>
                         </div>
+                    </div>
+
+                    <!-- Ville -->
+                    <div class="mt-6">
+                        <label for="ville" class="block text-sm font-medium text-gray-700">Ville</label>
+                        <input type="text" 
+                               name="ville" 
+                               id="ville" 
+                               value="{{ old('ville', $beneficiaire->ville) }}"
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900" 
+                               required>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -62,7 +73,7 @@
                                    name="cin" 
                                    id="cin" 
                                    value="{{ old('cin', $beneficiaire->cin) }}"
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">
                         </div>
 
                         <div>
@@ -73,7 +84,7 @@
                                    value="{{ old('age', $beneficiaire->age) }}" 
                                    min="1" 
                                    max="120"
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">
                         </div>
                     </div>
 
@@ -81,7 +92,7 @@
                         <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
                         <select name="genre" 
                                 id="genre" 
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md">
                             <option value="">Sélectionnez un genre</option>
                             <option value="Homme" {{ old('genre', $beneficiaire->genre) == 'Homme' ? 'selected' : '' }}>Homme</option>
                             <option value="Femme" {{ old('genre', $beneficiaire->genre) == 'Femme' ? 'selected' : '' }}>Femme</option>
@@ -94,7 +105,7 @@
                             <label for="niveau" class="block text-sm font-medium text-gray-700">Niveau</label>
                             <select name="niveau" 
                                     id="niveau" 
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md">
                                 <option value="">Sélectionnez un niveau</option>
                                 @foreach($niveaux as $value => $label)
                                     <option value="{{ $value }}" {{ old('niveau', $beneficiaire->niveau) == $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -108,7 +119,7 @@
                                    name="specialite" 
                                    id="specialite" 
                                    value="{{ old('specialite', $beneficiaire->specialite) }}"
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">
                         </div>
                     </div>
 
@@ -117,7 +128,7 @@
                         <label for="type_intervention" class="block text-sm font-medium text-gray-700">Type d'intervention</label>
                         <select name="type_intervention" 
                                 id="type_intervention" 
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md">
                             <option value="">Sélectionnez un type d'intervention</option>
                             <option value="IP" {{ old('type_intervention', $beneficiaire->type_intervention) == 'IP' ? 'selected' : '' }}>IP</option>
                             <option value="AGR" {{ old('type_intervention', $beneficiaire->type_intervention) == 'AGR' ? 'selected' : '' }}>AGR</option>
@@ -130,7 +141,7 @@
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                             <select name="status" 
                                     id="status" 
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md">
                                 <option value="">Sélectionnez un status</option>
                                 <option value="Accepter" {{ old('status', $beneficiaire->status) == 'Accepter' ? 'selected' : '' }}>Accepter</option>
                                 <option value="Refuser" {{ old('status', $beneficiaire->status) == 'Refuser' ? 'selected' : '' }}>Refuser</option>
@@ -141,7 +152,7 @@
                             <label for="ass_eps" class="block text-sm font-medium text-gray-700">Ass/Eps</label>
                             <select name="ass_eps" 
                                     id="ass_eps" 
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md">
                                 <option value="">Sélectionnez un type</option>
                                 <option value="Association" {{ old('ass_eps', $beneficiaire->ass_eps) == 'Association' ? 'selected' : '' }}>Association</option>
                                 <option value="Eps" {{ old('ass_eps', $beneficiaire->ass_eps) == 'Eps' ? 'selected' : '' }}>Eps</option>
@@ -152,12 +163,22 @@
                             <label for="ecole_id" class="block text-sm font-medium text-gray-700">École</label>
                             <select name="ecole_id" 
                                     id="ecole_id" 
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md">
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md">
                                 <option value="">Sélectionnez une école</option>
                                 @foreach($ecoles as $id => $nom)
                                     <option value="{{ $id }}" {{ old('ecole_id', $beneficiaire->ecole_id) == $id ? 'selected' : '' }}>{{ $nom }}</option>
                                 @endforeach
                             </select>
+                        </div>
+
+                        <div>
+                            <label for="filiere" class="block text-sm font-medium text-gray-700">Filière</label>
+                            <input type="text" 
+                                   name="filiere" 
+                                   id="filiere" 
+                                   value="{{ old('filiere', $beneficiaire->filiere) }}"
+                                   placeholder="Ex: Informatique, Comptabilité, Marketing, etc."
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">
                         </div>
                     </div>
 
@@ -165,7 +186,7 @@
                         <label for="type" class="block text-sm font-medium text-gray-700">Type de document</label>
                         <select name="type" 
                                 id="type" 
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md" 
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md" 
                                 required>
                             @foreach($types as $value => $label)
                                 <option value="{{ $value }}" {{ old('type', $beneficiaire->type) == $value ? 'selected' : '' }}>
@@ -181,17 +202,17 @@
                                name="reference" 
                                id="reference" 
                                value="{{ old('reference', $beneficiaire->reference) }}"
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900"
                                placeholder="Référence du dossier">
                     </div>
 
-                    <div>
+                    <div id="societe_div">
                         <label for="societe" class="block text-sm font-medium text-gray-700">Société</label>
                         <input type="text" 
                                name="societe" 
                                id="societe" 
                                value="{{ old('societe', $beneficiaire->societe) }}"
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900"
                                placeholder="Nom de la société">
                     </div>
 
@@ -200,7 +221,7 @@
                         <textarea name="description" 
                                   id="description" 
                                   rows="4" 
-                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ old('description', $beneficiaire->description) }}</textarea>
+                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">{{ old('description', $beneficiaire->description) }}</textarea>
                     </div>
 
                     <!-- Fichier actuel -->
@@ -209,7 +230,7 @@
                         <div class="mt-1 flex items-center">
                             <span class="text-sm text-gray-500">{{ basename($beneficiaire->fichier) }}</span>
                             <a href="{{ Storage::url($beneficiaire->fichier) }}" 
-                               class="ml-2 text-sm text-blue-600 hover:text-blue-500"
+                               class="ml-2 text-sm text-red-900 hover:text-red-900"
                                target="_blank">
                                 Voir le fichier
                             </a>
@@ -228,7 +249,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-red-900 hover:text-red-900 hover:underline">
                                         <span>Téléverser un nouveau fichier</span>
                                         <input id="fichier" 
                                                name="fichier" 
@@ -247,7 +268,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900">
                             Mettre à jour
                         </button>
                     </div>
@@ -263,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeSelect = document.getElementById('type');
     const educatifFields = document.getElementById('educatif_fields');
     const niveauFields = document.getElementById('niveau_fields');
+    const societeDiv = document.getElementById('societe_div');
     
     function toggleConditionalFields() {
         const typeInterventionField = document.getElementById('type_intervention_field');
@@ -271,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
             educatifFields.style.display = 'grid';
             niveauFields.style.display = 'none';
             typeInterventionField.style.display = 'none';
+            societeDiv.style.display = 'none';
             
             // Champs requis pour Document éducatif
             document.getElementById('genre').setAttribute('required', 'required');
@@ -281,10 +304,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Champs non requis pour Document éducatif
             document.getElementById('niveau').removeAttribute('required');
             document.getElementById('specialite').removeAttribute('required');
+            document.getElementById('societe').removeAttribute('required');
         } else if (typeSelect.value === 'Dossier individuel') {
             educatifFields.style.display = 'none';
             niveauFields.style.display = 'grid';
             typeInterventionField.style.display = 'block';
+            societeDiv.style.display = 'block';
             
             // Champs requis pour Dossier individuel
             document.getElementById('niveau').setAttribute('required', 'required');

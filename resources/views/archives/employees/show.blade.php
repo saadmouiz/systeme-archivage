@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
@@ -12,7 +12,7 @@
                 <a href="{{ route('archives.employees.index') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg mr-2">
                     Retour à la liste
                 </a>
-                <a href="{{ route('archives.employees.edit', $employee->id) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg">
+                <a href="{{ route('archives.employees.edit', $employee->id) }}" class="bg-red-900 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-lg">
                     Modifier
                 </a>
             </div>
@@ -43,7 +43,7 @@
                         <div>
                             <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</h3>
                             <p class="mt-1">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $employee->actif ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $employee->actif ? 'bg-red-100 text-red-900' : 'bg-red-100 text-red-800' }}">
                                     {{ $employee->actif ? 'Actif' : 'Inactif' }}
                                 </span>
                             </p>
@@ -72,3 +72,4 @@
     </div>
 </div>
 @endsection
+

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
@@ -8,13 +8,13 @@
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="mb-6 lg:mb-0">
                     <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-gradient-to-r from-green-600 to-green-700 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-12 h-12 bg-[#FEE2E2] border border-red-300 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                            <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
                         </div>
                         <div>
-                            <h1 class="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                            <h1 class="text-4xl font-bold text-gray-900 whitespace-nowrap">
                                 Dossiers des Bénéficiaires
                             </h1>
                             <p class="text-gray-600 mt-2">Gestion centralisée des dossiers des bénéficiaires</p>
@@ -23,28 +23,25 @@
                 </div>
                 <div class="flex space-x-4">
                     <a href="{{ route('archives.beneficiaires.dashboard') }}" 
-                       class="group relative inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 via-green-700 to-green-800 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-green-500/25 transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-                        <svg class="w-5 h-5 mr-3 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="group relative inline-flex items-center px-6 py-3 bg-[#FEE2E2] border border-red-300 text-red-900 font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
-                        <span class="relative z-10">Dashboard Éducatifs</span>
+                        <span>Dashboard Éducatifs</span>
                     </a>
                     <a href="{{ route('archives.dossiers-individuels.dashboard') }}" 
-                       class="group relative inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-indigo-500/25 transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-                        <svg class="w-5 h-5 mr-3 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="group relative inline-flex items-center px-6 py-3 bg-[#FEE2E2] border border-red-300 text-red-900 font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                        <span class="relative z-10">Dashboard Individuels</span>
+                        <span>Dashboard Individuels</span>
                     </a>
                     <a href="{{ route('archives.beneficiaires.create') }}" 
-                       class="group relative inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-                        <svg class="w-5 h-5 mr-3 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="group relative inline-flex items-center px-8 py-4 bg-[#871C1C] border border-red-300 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                        <span class="relative z-10">Nouveau Dossier</span>
+                        <span>Nouveau Dossier</span>
                     </a>
                 </div>
             </div>
@@ -68,7 +65,7 @@
                                    class="w-full pl-12 pr-32 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
                                    value="{{ request('search') }}">
                             <button type="submit" 
-                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl transition-all duration-200">
+                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-[#FEE2E2] border border-red-300 text-red-900 rounded-xl hover:bg-red-200 shadow-lg hover:shadow-xl transition-all duration-200">
                                 Rechercher
                             </button>
                         </div>
@@ -82,12 +79,12 @@
                         <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Types de dossiers</h3>
                         <div class="flex flex-wrap gap-3">
                             <a href="{{ route('archives.beneficiaires.index') }}" 
-                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('type') ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('type') ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                 Tous
                             </a>
                             @foreach($types as $type)
                                 <a href="{{ route('archives.beneficiaires.index', ['type' => $type]) }}" 
-                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('type') === $type ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('type') === $type ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $type }}
                                 </a>
                             @endforeach
@@ -100,12 +97,12 @@
                         <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Écoles</h3>
                         <div class="flex flex-wrap gap-3">
                             <a href="{{ route('archives.beneficiaires.index', ['type' => request('type')]) }}" 
-                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('ecole') ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('ecole') ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                 Toutes
                             </a>
                             @foreach($ecoles as $ecole)
                                 <a href="{{ route('archives.beneficiaires.index', ['type' => request('type'), 'ecole' => $ecole->id]) }}" 
-                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('ecole') == $ecole->id ? 'bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('ecole') == $ecole->id ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $ecole->nom }}
                                 </a>
                             @endforeach
@@ -135,14 +132,15 @@
 
         <!-- Documents Section -->
         <div class="space-y-12">
-            @forelse($beneficiaires as $type => $typeBeneficiaires)
+            @if($beneficiaires->count() > 0)
+                @foreach($beneficiaires as $type => $typeBeneficiaires)
                 <div class="group">
                     <!-- Section Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
-                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-16 h-16 bg-[#FEE2E2] border border-red-300 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
+                                    <svg class="w-8 h-8 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                     </svg>
                                 </div>
@@ -199,6 +197,18 @@
                                     
                                     <!-- Card Content -->
                                     <div class="space-y-4 mb-6">
+                                        @if($beneficiaire->ville)
+                                        <div class="flex items-center p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl hover:from-purple-100 hover:to-purple-200 transition-all duration-200">
+                                            <div class="flex items-center text-purple-600 hover:text-purple-700 transition-colors duration-200">
+                                                <svg class="w-5 h-5 mr-3 text-purple-400 hover:text-purple-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                </svg>
+                                                <span class="font-medium">{{ $beneficiaire->ville }}</span>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        
                                         @if($beneficiaire->ecole)
                                         <div class="flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-green-50 hover:to-green-100 transition-all duration-200">
                                             <div class="flex items-center text-gray-600 hover:text-green-700 transition-colors duration-200">
@@ -255,7 +265,7 @@
                                             </a>
                                             @if($beneficiaire->fichier)
                                             <a href="{{ $beneficiaire->download_url }}" 
-                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-blue-600 hover:text-white hover:bg-blue-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                target="_blank"
                                                title="Télécharger le document"
                                                onclick="event.stopPropagation()">
@@ -295,7 +305,8 @@
                         </div>
                     </div>
                 </div>
-            @empty
+                @endforeach
+            @else
                 <div class="text-center py-20">
                     <div class="mx-auto w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-8 shadow-xl">
                         <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,16 +316,18 @@
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Aucun dossier trouvé</h3>
                     <p class="text-gray-600 text-lg mb-8">Commencez par ajouter votre premier dossier de bénéficiaire pour organiser vos archives.</p>
                     <a href="{{ route('archives.beneficiaires.create') }}" 
-                       class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                       class="inline-flex items-center px-8 py-4 bg-[#FEE2E2] border border-red-300 text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
                         Créer le premier dossier
                     </a>
                 </div>
-            @endforelse
+            @endif
         </div>
     </div>
 </div>
 </div>
 @endsection
+
+

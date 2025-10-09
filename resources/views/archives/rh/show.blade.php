@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -11,7 +11,7 @@
                         <div class="mt-2 flex items-center space-x-2">
                             <span class="px-3 py-1 rounded-full text-sm font-medium
                                 {{ $rh->statut === 'actif' ? 'bg-green-100 text-green-800' : 
-                                   ($rh->statut === 'en cours' ? 'bg-blue-100 text-blue-800' : 
+                                   ($rh->statut === 'en cours' ? 'bg-red-100 text-red-700' : 
                                    'bg-gray-100 text-gray-800') }}">
                                 {{ ucfirst($rh->statut) }}
                             </span>

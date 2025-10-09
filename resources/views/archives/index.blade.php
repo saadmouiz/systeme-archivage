@@ -1,8 +1,10 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
+
+@section('title', 'Archives')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen">
+    <div class="max-w-7xl mx-auto">
         <!-- En-tête -->
         <div class="mb-8 flex justify-between items-center">
             <div>
@@ -32,25 +34,25 @@
                 class="relative group">
                     <div class="h-full bg-white rounded-xl shadow-sm p-6 transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg border-2 {{ 
                         $category === 'rh' 
-                            ? (request()->routeIs('archives.rh.*') ? 'border-blue-500' : 'border-transparent')
-                            : (request()->routeIs('archives.' . strtolower($category) . '*') ? 'border-blue-500' : 'border-transparent') 
+                            ? (request()->routeIs('archives.rh.*') ? 'border-red-900' : 'border-transparent')
+                            : (request()->routeIs('archives.' . strtolower($category) . '*') ? 'border-red-900' : 'border-transparent') 
                     }}">
                         <!-- Icône spécifique à chaque catégorie -->
                         <div class="flex justify-center mb-4">
                             <div class="p-3 rounded-full {{ 
                                match($category) {
-    'administratifs' => 'bg-blue-100 text-blue-600',
-    'beneficiaires' => 'bg-green-100 text-green-600',
-    'partenaires' => 'bg-purple-100 text-purple-600',
-    'projets' => 'bg-yellow-100 text-yellow-600',
+    'administratifs' => 'bg-red-100 text-red-900',
+    'beneficiaires' => 'bg-red-100 text-red-900',
+    'partenaires' => 'bg-red-100 text-red-900',
+    'projets' => 'bg-red-100 text-red-900',
     'financiers' => 'bg-red-100 text-red-600',
-    'communication' => 'bg-indigo-100 text-indigo-600',
+    'communication' => 'bg-red-100 text-red-900',
     'juridiques' => 'bg-gray-100 text-gray-600',
-    'employes' => 'bg-pink-100 text-pink-600',
-    'evenements' => 'bg-orange-100 text-orange-600',
-    'pointages' => 'bg-amber-100 text-amber-600',
-    'rh' => 'bg-teal-100 text-teal-600',
-    'visiteurs' => 'bg-cyan-100 text-cyan-600',
+    'employes' => 'bg-red-100 text-red-900',
+    'evenements' => 'bg-red-100 text-red-900',
+    'pointages' => 'bg-red-100 text-red-900',
+    'rh' => 'bg-red-100 text-red-900',
+    'visiteurs' => 'bg-red-100 text-red-900',
     default => 'bg-gray-100 text-gray-600'
 }
                             }}">
@@ -107,6 +109,19 @@
             @endforeach
         </div>
 
+        <!-- Bouton Liste des Bénéficiaires -->
+        @if(in_array('beneficiaires', $accessibleCategories))
+        <div class="mb-8 flex justify-center">
+            <a href="{{ route('archives.beneficiaires.liste') }}" 
+               class="inline-flex items-center px-6 py-3 bg-[#7F1D1D] border border-red-900 text-white font-medium rounded-lg shadow-lg hover:bg-red-800 transform hover:scale-105 transition-all duration-200">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+                Voir la Liste des Bénéficiaires
+            </a>
+        </div>
+        @endif
+
         <!-- Message si aucune archive n'est disponible -->
         @if($archives->isEmpty())
           
@@ -117,7 +132,7 @@
                     <div class="py-6 first:pt-0 last:pb-0">
                         <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                             <span class="mr-3">{{ ucfirst($category) }}</span>
-                            <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800">
+                            <span class="px-3 py-1 text-sm rounded-full bg-red-100 text-red-900">
                                 {{ $categoryArchives->count() }}
                             </span>
                         </h2>
@@ -151,7 +166,7 @@
                                             <span class="text-sm text-gray-500">
                                                 {{ $archive->created_at->format('d/m/Y') }}
                                             </span>
-                                            <span class="mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <span class="mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                                 {{ $archive->created_at->diffForHumans() }}
                                             </span>
                                         </div>

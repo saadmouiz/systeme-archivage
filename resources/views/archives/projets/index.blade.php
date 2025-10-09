@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 py-8">
@@ -78,7 +78,7 @@
 
        <!-- Messages -->
        @if(session('success'))
-            <div class="mb-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg">
+            <div class="mb-6 bg-[#FEE2E2] border-l-4 border-red-300 text-red-900 p-4 rounded-lg">
                 {{ session('success') }}
             </div>
         @endif
@@ -96,10 +96,10 @@
                         </div>
                         <div class="flex flex-col items-end space-y-2">
                             <span class="px-3 py-1 rounded-full text-xs font-medium
-                                {{ $projet->statut === 'en cours' ? 'bg-blue-100 text-blue-800' : 
-                                   ($projet->statut === 'terminé' ? 'bg-green-100 text-green-800' : 
+                                {{ $projet->statut === 'en cours' ? 'bg-red-100 text-red-900' : 
+                                   ($projet->statut === 'terminé' ? 'bg-red-100 text-red-900' : 
                                    ($projet->statut === 'annulé' ? 'bg-red-100 text-red-800' : 
-                                   'bg-yellow-100 text-yellow-800')) }}">
+                                   'bg-red-100 text-red-900')) }}">
                                 {{ $statuts[$projet->statut] }}
                             </span>
                             <span class="text-xs text-gray-500">{{ $projet->type }}</span>

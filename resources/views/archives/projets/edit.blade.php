@@ -1,5 +1,5 @@
 <!-- resources/views/projets/edit.blade.php -->
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gray-100 py-8">
@@ -147,7 +147,7 @@
                                 <span class="text-sm text-gray-600">{{ $document->titre }}</span>
                                 <div class="flex items-center space-x-3">
                                     <a href="{{ $document->fichier_url }}" 
-                                       class="text-sm text-[#0d9488] hover:text-green-700"
+                                       class="text-sm text-[#0d9488] hover:text-red-900"
                                        target="_blank">Voir</a>
                                     <button type="button" 
                                             onclick="if(confirm('Supprimer ce document ?')) document.getElementById('delete-document-{{ $document->id }}').submit();"
@@ -166,7 +166,7 @@
                         <label class="block text-sm font-medium text-gray-700">Ajouter des documents</label>
                         <div class="mt-1">
                             <input type="file" name="documents[]" multiple
-                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#0d9488] file:text-white hover:file:bg-green-700">
+                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#0d9488] file:text-white hover:file:bg-red-900">
                         </div>
                         <p class="mt-2 text-sm text-gray-500">
                             Formats acceptés : PDF, Word, Excel, Images.
@@ -180,7 +180,7 @@
                         Annuler
                     </a>
                     <button type="submit"
-                            class="bg-[#0d9488] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0d9488]">
+                            class="bg-[#0d9488] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0d9488]">
                         Mettre à jour
                     </button>
                 </div>

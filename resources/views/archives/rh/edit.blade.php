@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -39,7 +39,7 @@
                             <input type="text" 
                                    name="titre" 
                                    id="titre" 
-                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                    value="{{ old('titre', $rh->titre) }}" 
                                    required>
                         </div>
@@ -48,7 +48,7 @@
                             <label for="type" class="block text-base font-medium text-gray-700 mb-2">Type de document</label>
                             <select name="type" 
                                     id="type" 
-                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                     required>
                                 @foreach($types as $key => $value)
                                     <option value="{{ $key }}" {{ old('type', $rh->type) == $key ? 'selected' : '' }}>
@@ -64,7 +64,7 @@
                         <input type="text" 
                                name="employe_nom" 
                                id="employe_nom" 
-                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                value="{{ old('employe_nom', $rh->employe_nom) }}">
                     </div>
 
@@ -73,7 +73,7 @@
                         <input type="date" 
                                name="date_document" 
                                id="date_document" 
-                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                value="{{ old('date_document', $rh->date_document->format('Y-m-d')) }}"
                                required>
                     </div>
@@ -82,7 +82,7 @@
                         <label for="statut" class="block text-base font-medium text-gray-700 mb-2">Statut</label>
                         <select name="statut" 
                                 id="statut" 
-                                class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                 required>
                             @foreach($statuts as $key => $value)
                                 <option value="{{ $key }}" {{ old('statut', $rh->statut) == $key ? 'selected' : '' }}>
@@ -97,7 +97,7 @@
                         <textarea name="description" 
                                   id="description" 
                                   rows="6" 
-                                  class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description', $rh->description) }}</textarea>
+                                  class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900">{{ old('description', $rh->description) }}</textarea>
                     </div>
 
                     <!-- Fichier actuel -->
@@ -106,7 +106,7 @@
                         <div class="mt-1 flex items-center p-3 bg-gray-50 rounded-lg">
                             <span class="text-base text-gray-700">{{ basename($rh->fichier) }}</span>
                             <a href="{{ Storage::url($rh->fichier) }}" 
-                               class="ml-3 text-base text-blue-600 hover:text-blue-500 font-medium"
+                               class="ml-3 text-base text-red-900 hover:text-red-900 font-medium"
                                target="_blank">
                                 Voir le document
                             </a>
@@ -125,7 +125,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-base text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-lg font-medium text-blue-600 hover:text-blue-500 hover:underline px-4 py-2">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-lg font-medium text-red-900 hover:text-red-900 hover:underline px-4 py-2">
                                         <span>Téléverser un nouveau fichier</span>
                                         <input id="fichier" name="fichier" type="file" class="sr-only">
                                     </label>
@@ -141,7 +141,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700">
+                                class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-red-900 hover:bg-red-800">
                             Mettre à jour
                         </button>
                     </div>

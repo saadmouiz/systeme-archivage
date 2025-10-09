@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -38,7 +38,7 @@
                             <input type="text" 
                                    name="titre" 
                                    id="titre" 
-                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                    value="{{ old('titre') }}" 
                                    required>
                         </div>
@@ -47,7 +47,7 @@
                             <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Type de document</label>
                             <select name="type" 
                                     id="type" 
-                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                     required>
                                 <option value="">Sélectionnez un type</option>
                                 @foreach($types as $key => $value)
@@ -64,7 +64,7 @@
                         <input type="text" 
                                name="employe_nom" 
                                id="employe_nom" 
-                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                value="{{ old('employe_nom') }}">
                     </div>
 
@@ -73,7 +73,7 @@
                         <input type="date" 
                                name="date_document" 
                                id="date_document" 
-                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                value="{{ old('date_document') }}"
                                required>
                     </div>
@@ -82,7 +82,7 @@
                         <label for="statut" class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
                         <select name="statut" 
                                 id="statut" 
-                                class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                                class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                 required>
                             <option value="">Sélectionnez un statut</option>
                             @foreach($statuts as $key => $value)
@@ -98,7 +98,7 @@
                         <textarea name="description" 
                                   id="description" 
                                   rows="5" 
-                                  class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors resize-none">{{ old('description') }}</textarea>
+                                  class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors resize-none">{{ old('description') }}</textarea>
                     </div>
 
                     <div>
@@ -112,7 +112,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-red-900 hover:text-red-900 hover:underline">
                                         <span>Téléverser un fichier</span>
                                         <input id="fichier" 
                                                name="fichier" 
@@ -133,7 +133,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900 transition-colors">
                             Créer le document
                         </button>
                     </div>

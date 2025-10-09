@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -8,7 +8,7 @@
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="mb-4 lg:mb-0">
                     <div class="flex items-center mb-2">
-                        <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+                        <div class="w-10 h-10 bg-gradient-to-r from-red-900 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
@@ -27,7 +27,7 @@
                 <div class="flex flex-col sm:flex-row gap-3">
                     <form method="GET" action="{{ route('archives.pointages.show', $employee) }}" class="flex items-center gap-2">
                         <div class="relative">
-                            <select name="mois" class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                            <select name="mois" class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent shadow-sm">
                                 @foreach(range(1, 12) as $m)
                                     <option value="{{ $m }}" {{ $mois == $m ? 'selected' : '' }}>
                                         {{ Carbon\Carbon::createFromDate(2023, $m, 1)->locale('fr')->monthName }}
@@ -41,7 +41,7 @@
                             </div>
                         </div>
                         <div class="relative">
-                            <select name="annee" class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+                            <select name="annee" class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent shadow-sm">
                                 @foreach(range(date('Y') - 2, date('Y') + 1) as $a)
                                     <option value="{{ $a }}" {{ $annee == $a ? 'selected' : '' }}>{{ $a }}</option>
                                 @endforeach
@@ -52,14 +52,14 @@
                                 </svg>
                             </div>
                         </div>
-                        <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <button type="submit" class="bg-gradient-to-r from-red-900 to-indigo-600 hover:from-red-800 hover:to-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl">
                             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"/>
                             </svg>
                             Filtrer
                         </button>
                     </form>
-                    <a href="{{ route('archives.pointages.index') }}?mois={{ $mois }}&annee={{ $annee }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
+                    <a href="{{ route('archives.pointages.index') }}?mois={{ $mois }}&annee={{ $annee }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-900 transition-all duration-200 shadow-sm">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
@@ -72,15 +72,15 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @if(session('success'))
-            <div class="mb-6 bg-green-50 border border-green-200 rounded-xl p-4 shadow-sm">
+            <div class="mb-6 bg-[#FEE2E2] border border-red-300 rounded-xl p-4 shadow-sm">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                        <svg class="h-5 w-5 text-red-900" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                         </svg>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                        <p class="text-sm font-medium text-red-900">{{ session('success') }}</p>
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
 
         <!-- Employee Profile Card -->
         <div class="bg-white rounded-2xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
+            <div class="bg-gradient-to-r from-red-900 to-indigo-600 p-6">
                 <div class="flex items-center">
                     @if($employee->photo)
                         <div class="flex-shrink-0 h-20 w-20 mr-6">
@@ -104,16 +104,16 @@
                     @endif
                     <div class="text-white">
                         <h2 class="text-2xl font-bold">{{ $employee->prenom }} {{ $employee->nom }}</h2>
-                        <p class="text-blue-100 text-lg">{{ $employee->fonction }}</p>
-                        <p class="text-blue-100">{{ $employee->email }}</p>
+                        <p class="text-red-900 text-lg">{{ $employee->fonction }}</p>
+                        <p class="text-red-900">{{ $employee->email }}</p>
                     </div>
                 </div>
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex items-center">
-                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-3">
-                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-10 h-10 bg-[#FEE2E2] flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                         </div>
@@ -123,8 +123,8 @@
                         </div>
                     </div>
                     <div class="flex items-center">
-                        <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mr-3">
-                            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-10 h-10 bg-[#FEE2E2] flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                             </svg>
                         </div>
@@ -144,11 +144,11 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 mb-1">Jours Travaillés</p>
-                        <p class="text-3xl font-bold text-blue-600">{{ $statistiques['jours_travailles'] }}</p>
+                        <p class="text-3xl font-bold text-red-900">{{ $statistiques['jours_travailles'] }}</p>
                         <p class="text-sm text-gray-500">sur {{ $joursDuMois->count() - $joursDuMois->filter(fn($jour) => $jour->isWeekend())->count() }} jours ouvrables</p>
                     </div>
-                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-[#FEE2E2] rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
@@ -160,7 +160,7 @@
                             : 0;
                     @endphp
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: {{ min($pourcentage, 100) }}%"></div>
+                        <div class="bg-red-900 h-2 rounded-full transition-all duration-500" style="width: {{ min($pourcentage, 100) }}%"></div>
                     </div>
                     <p class="text-xs text-gray-500 mt-1">{{ number_format($pourcentage, 1) }}% de présence</p>
                 </div>
@@ -171,11 +171,11 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 mb-1">Heures Total</p>
-                        <p class="text-3xl font-bold text-green-600">{{ number_format($statistiques['total_heures'], 2) }}</p>
+                        <p class="text-3xl font-bold text-red-900">{{ number_format($statistiques['total_heures'], 2) }}</p>
                         <p class="text-sm text-gray-500">heures travaillées</p>
                     </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 bg-[#FEE2E2] rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
@@ -205,11 +205,11 @@
                 <div class="mt-4">
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div class="text-center">
-                            <p class="font-semibold text-yellow-600">{{ $statistiques['retards'] }}</p>
+                            <p class="font-semibold text-red-900">{{ $statistiques['retards'] }}</p>
                             <p class="text-gray-500">Retards</p>
                         </div>
                         <div class="text-center">
-                            <p class="font-semibold text-blue-600">{{ $statistiques['conges'] }}</p>
+                            <p class="font-semibold text-red-900">{{ $statistiques['conges'] }}</p>
                             <p class="text-gray-500">Congés</p>
                         </div>
                     </div>
@@ -225,20 +225,20 @@
                             $scorePerformance = 100 - ($statistiques['absences'] * 10) - ($statistiques['retards'] * 5);
                             $scorePerformance = max(0, min(100, $scorePerformance));
                         @endphp
-                        <p class="text-3xl font-bold {{ $scorePerformance >= 80 ? 'text-green-600' : ($scorePerformance >= 60 ? 'text-yellow-600' : 'text-red-600') }}">
+                        <p class="text-3xl font-bold {{ $scorePerformance >= 80 ? 'text-red-900' : ($scorePerformance >= 60 ? 'text-red-900' : 'text-red-600') }}">
                             {{ $scorePerformance }}%
                         </p>
                         <p class="text-sm text-gray-500">score global</p>
                     </div>
-                    <div class="w-12 h-12 {{ $scorePerformance >= 80 ? 'bg-green-100' : ($scorePerformance >= 60 ? 'bg-yellow-100' : 'bg-red-100') }} rounded-xl flex items-center justify-center">
-                        <svg class="w-6 h-6 {{ $scorePerformance >= 80 ? 'text-green-600' : ($scorePerformance >= 60 ? 'text-yellow-600' : 'text-red-600') }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-12 h-12 {{ $scorePerformance >= 80 ? 'bg-[#FEE2E2] flex items-center justify-center">
+                        <svg class="w-6 h-6 {{ $scorePerformance >= 80 ? 'text-red-900' : ($scorePerformance >= 60 ? 'text-red-900' : 'text-red-600') }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
                     </div>
                 </div>
                 <div class="mt-4">
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="{{ $scorePerformance >= 80 ? 'bg-green-600' : ($scorePerformance >= 60 ? 'bg-yellow-600' : 'bg-red-600') }} h-2 rounded-full transition-all duration-500" style="width: {{ $scorePerformance }}%"></div>
+                        <div class="{{ $scorePerformance >= 80 ? 'bg-red-900' : ($scorePerformance >= 60 ? 'bg-red-900' : 'bg-red-600') }} h-2 rounded-full transition-all duration-500" style="width: {{ $scorePerformance }}%"></div>
                     </div>
                 </div>
             </div>
@@ -250,11 +250,11 @@
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-900">Détail des Pointages</h3>
                     <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <div class="w-3 h-3 bg-red-900 rounded-full"></div>
                         <span class="text-sm text-gray-600">Présent</span>
                         <div class="w-3 h-3 bg-red-500 rounded-full ml-3"></div>
                         <span class="text-sm text-gray-600">Absent</span>
-                        <div class="w-3 h-3 bg-yellow-500 rounded-full ml-3"></div>
+                        <div class="w-3 h-3 bg-red-900 rounded-full ml-3"></div>
                         <span class="text-sm text-gray-600">Retard</span>
                     </div>
                 </div>
@@ -300,17 +300,17 @@
                                 if ($jour->isWeekend()) {
                                     $rowClass = 'bg-gray-50';
                                 } elseif ($jour->isToday()) {
-                                    $rowClass = 'bg-blue-50 border-l-4 border-blue-500';
+                                    $rowClass = 'bg-[#FEE2E2] border-l-4 border-red-300';
                                 }
                             @endphp
                             <tr class="{{ $rowClass }} hover:bg-gray-50 transition-colors duration-200">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="text-sm font-medium {{ $jour->isToday() ? 'text-blue-600 font-bold' : 'text-gray-900' }}">
+                                        <div class="text-sm font-medium {{ $jour->isToday() ? 'text-red-900 font-bold' : 'text-gray-900' }}">
                                             {{ $jour->format('d/m/Y') }}
                                         </div>
                                         @if($jour->isToday())
-                                            <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <span class="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-900">
                                                 Aujourd'hui
                                             </span>
                                         @endif
@@ -328,11 +328,11 @@
                                     @elseif($pointage)
                                         @php
                                             $statusConfig = [
-                                                'present' => ['bg-green-100 text-green-800', 'bg-green-500', 'Présent'],
+                                                'present' => ['bg-red-100 text-red-900', 'bg-red-900', 'Présent'],
                                                 'absent' => ['bg-red-100 text-red-800', 'bg-red-500', 'Absent'],
-                                                'retard' => ['bg-yellow-100 text-yellow-800', 'bg-yellow-500', 'Retard'],
-                                                'conge' => ['bg-blue-100 text-blue-800', 'bg-blue-500', 'Congé'],
-                                                'maladie' => ['bg-purple-100 text-purple-800', 'bg-purple-500', 'Maladie'],
+                                                'retard' => ['bg-red-100 text-red-900', 'bg-red-900', 'Retard'],
+                                                'conge' => ['bg-red-100 text-red-900', 'bg-red-900', 'Congé'],
+                                                'maladie' => ['bg-red-100 text-red-900', 'bg-red-900', 'Maladie'],
                                             ][$pointage->statut];
                                         @endphp
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $statusConfig[0] }}">
@@ -367,7 +367,7 @@
                                             $sortie = Carbon\Carbon::parse($pointage->heure_sortie);
                                             $duree = $sortie->diffInHours($arrivee) + ($sortie->diffInMinutes($arrivee) % 60) / 60;
                                         @endphp
-                                        <span class="font-mono font-medium {{ $duree >= 8 ? 'text-green-600' : ($duree >= 6 ? 'text-yellow-600' : 'text-red-600') }}">
+                                        <span class="font-mono font-medium {{ $duree >= 8 ? 'text-red-900' : ($duree >= 6 ? 'text-red-900' : 'text-red-600') }}">
                                             {{ number_format($duree, 2) }}h
                                         </span>
                                     @else
@@ -380,14 +380,14 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     @if(!$jour->isWeekend() && !$jour->isFuture())
                                         @if($pointage)
-                                            <a href="{{ route('archives.pointages.edit', $pointage) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-lg text-blue-600 bg-blue-100 hover:bg-blue-200 transition-colors duration-200">
+                                            <a href="{{ route('archives.pointages.edit', $pointage) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-lg text-red-900 bg-red-900 hover:bg-red-800 transition-colors duration-200">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                 </svg>
                                                 Modifier
                                             </a>
                                         @else
-                                            <a href="{{ route('archives.pointages.create') }}?date={{ $jour->format('Y-m-d') }}&employee_id={{ $employee->id }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-lg text-green-600 bg-green-100 hover:bg-green-200 transition-colors duration-200">
+                                            <a href="{{ route('archives.pointages.create') }}?date={{ $jour->format('Y-m-d') }}&employee_id={{ $employee->id }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-lg text-red-900 bg-red-900 hover:bg-red-800 transition-colors duration-200">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                                                 </svg>
@@ -405,3 +405,4 @@
     </div>
 </div>
 @endsection
+

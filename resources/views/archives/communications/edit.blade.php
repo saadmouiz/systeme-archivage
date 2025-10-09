@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -81,7 +81,7 @@
                         <label class="block text-sm font-medium text-gray-700">Fichier actuel</label>
                         <div class="mt-1">
                             <a href="{{ Storage::url($communication->fichier) }}" 
-                               class="text-blue-600 hover:underline"
+                               class="text-red-900 hover:underline"
                                target="_blank">
                                 {{ basename($communication->fichier) }}
                             </a>
@@ -100,7 +100,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-red-900 hover:text-red-900">
                                         <span>Téléverser un nouveau fichier</span>
                                         <input id="fichier" name="fichier" type="file" class="sr-only">
                                     </label>
@@ -116,7 +116,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                class="px-4 py-2 text-white bg-red-900 rounded-md hover:bg-red-900">
                             Mettre à jour
                         </button>
                     </div>

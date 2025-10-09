@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
@@ -36,12 +36,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                            <input type="date" name="date" id="date" value="{{ $pointage->date->format('Y-m-d') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                            <input type="date" name="date" id="date" value="{{ $pointage->date->format('Y-m-d') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50" required>
                         </div>
 
                         <div>
                             <label for="statut" class="block text-sm font-medium text-gray-700">Statut</label>
-                            <select name="statut" id="statut" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" onchange="toggleTimeFields(this)" required>
+                            <select name="statut" id="statut" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50" onchange="toggleTimeFields(this)" required>
                                 <option value="present" {{ $pointage->statut === 'present' ? 'selected' : '' }}>Présent</option>
                                 <option value="absent" {{ $pointage->statut === 'absent' ? 'selected' : '' }}>Absent</option>
                                 <option value="retard" {{ $pointage->statut === 'retard' ? 'selected' : '' }}>Retard</option>
@@ -52,23 +52,23 @@
 
                         <div>
                             <label for="heure_arrivee" class="block text-sm font-medium text-gray-700">Heure d'arrivée</label>
-                            <input type="time" name="heure_arrivee" id="heure_arrivee" value="{{ $pointage->heure_arrivee }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 time-field" {{ $pointage->statut !== 'present' ? 'disabled' : '' }}>
+                            <input type="time" name="heure_arrivee" id="heure_arrivee" value="{{ $pointage->heure_arrivee }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 time-field" {{ $pointage->statut !== 'present' ? 'disabled' : '' }}>
                         </div>
 
                         <div>
                             <label for="heure_sortie" class="block text-sm font-medium text-gray-700">Heure de sortie</label>
-                            <input type="time" name="heure_sortie" id="heure_sortie" value="{{ $pointage->heure_sortie }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 time-field" {{ $pointage->statut !== 'present' ? 'disabled' : '' }}>
+                            <input type="time" name="heure_sortie" id="heure_sortie" value="{{ $pointage->heure_sortie }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 time-field" {{ $pointage->statut !== 'present' ? 'disabled' : '' }}>
                         </div>
 
                         <div class="md:col-span-2">
                             <label for="commentaire" class="block text-sm font-medium text-gray-700">Commentaire</label>
-                            <textarea name="commentaire" id="commentaire" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">{{ $pointage->commentaire }}</textarea>
+                            <textarea name="commentaire" id="commentaire" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50">{{ $pointage->commentaire }}</textarea>
                         </div>
                     </div>
                 </div>
                 
                 <div class="px-6 py-4 bg-gray-50 text-right">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-900 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring ring-red-500 disabled:opacity-25 transition ease-in-out duration-150">
                         Enregistrer les modifications
                     </button>
                 </div>
@@ -88,3 +88,4 @@
     }
 </script>
 @endsection
+

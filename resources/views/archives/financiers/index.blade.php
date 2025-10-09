@@ -1,15 +1,15 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50">
     <div class="container mx-auto px-4 py-12">
         <!-- Header Section -->
         <div class="mb-12">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="mb-6 lg:mb-0">
                     <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-12 h-12 bg-[#FEE2E2] border border-red-300 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                            <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </div>
@@ -22,8 +22,8 @@
                     </div>
                 </div>
                 <a href="{{ route('archives.financiers.create') }}" 
-                   class="group relative inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                   class="group relative inline-flex items-center px-8 py-4 bg-[#871C1C] border border-red-300 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-900/25 transition-all duration-300 hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-r from-red-900 to-red-700 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
                     <svg class="w-5 h-5 mr-3 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
@@ -47,10 +47,10 @@
                             <input type="text" 
                                    name="search" 
                                    placeholder="Rechercher un document..." 
-                                   class="w-full pl-12 pr-32 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                                   class="w-full pl-12 pr-32 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-red-900/20 focus:border-red-900 transition-all duration-300 bg-white/50 backdrop-blur-sm"
                                    value="{{ request('search') }}">
                             <button type="submit" 
-                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200">
+                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-[#FEE2E2] border border-red-300 text-#871C1C rounded-xl hover:from-red-800 hover:to-red-700 shadow-lg hover:shadow-xl transition-all duration-200">
                                 Rechercher
                             </button>
                         </div>
@@ -64,12 +64,12 @@
                         <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Types de documents</h3>
                         <div class="flex flex-wrap gap-3">
                             <a href="{{ route('archives.financiers.index') }}" 
-                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('type') ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('type') ? 'bg-[#FEE2E2] border border-red-300 text-#871C1C shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                 Tous
                             </a>
                             @foreach($types as $type)
                                 <a href="{{ route('archives.financiers.index', ['type' => $type]) }}" 
-                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('type') == $type ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('type') == $type ? 'bg-[#FEE2E2] border border-red-300 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $type }}
                                 </a>
                             @endforeach
@@ -82,7 +82,7 @@
                         <div class="flex flex-wrap gap-3">
                             @foreach($annees as $annee)
                                 <a href="{{ route('archives.financiers.index', ['annee' => $annee]) }}" 
-                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('annee') == $annee ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('annee') == $annee ? 'bg-[#FEE2E2] border border-red-300 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $annee }}
                                 </a>
                             @endforeach
@@ -93,17 +93,17 @@
         </div>
 
         @if(session('success'))
-            <div class="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-400 p-6 rounded-r-2xl shadow-lg">
+            <div class="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-red-900 p-6 rounded-r-2xl shadow-lg">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <div class="w-8 h-8 bg-[#FEE2E2] flex items-center justify-center">
                             <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                         </div>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                        <p class="text-sm font-medium text-red-900">{{ session('success') }}</p>
                     </div>
                 </div>
             </div>
@@ -117,16 +117,16 @@
                     <div class="mb-8">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
-                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-16 h-16 bg-[#FEE2E2] border border-red-300 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
+                                    <svg class="w-8 h-8 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>
                                 </div>
                                 <div>
                                     <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ $type }}</h2>
                                     <div class="flex items-center space-x-4">
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                            <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-900">
+                                            <div class="w-2 h-2 bg-red-900 rounded-full mr-2"></div>
                                             {{ $docs->count() }} document(s)
                                         </span>
                                         <span class="text-gray-500 text-sm">Dernière mise à jour: {{ now()->format('d/m/Y') }}</span>
@@ -154,14 +154,14 @@
                             @endphp
                             
                             @foreach($visibleDocs as $doc)
-                                <div class="card-hover relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-blue-200 hover:-translate-y-2 cursor-pointer" 
+                                <div class="card-hover relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-red-900 hover:-translate-y-2 cursor-pointer" 
                                      onclick="window.location.href='{{ route('archives.financiers.show', $doc['id']) }}'">
                                     <!-- Card Header -->
                                     <div class="flex items-start justify-between mb-6">
                                         <div class="flex-1">
-                                            <h3 class="font-bold text-gray-900 text-lg leading-tight mb-2 hover:text-blue-600 transition-colors duration-200">{{ $doc['titre'] }}</h3>
+                                            <h3 class="font-bold text-gray-900 text-lg leading-tight mb-2 hover:text-red-900 transition-colors duration-200">{{ $doc['titre'] }}</h3>
                                             @if(isset($doc['reference']) && $doc['reference'])
-                                                <p class="text-sm text-gray-500 font-mono bg-gray-50 px-3 py-1 rounded-lg inline-block hover:bg-blue-50 hover:text-blue-700 transition-all duration-200">
+                                                <p class="text-sm text-gray-500 font-mono bg-gray-50 px-3 py-1 rounded-lg inline-block hover:bg-red-900 hover:text-red-900 transition-all duration-200">
                                                     Réf: {{ $doc['reference'] }}
                                                 </p>
                                             @endif
@@ -169,9 +169,9 @@
                                         <!-- Statut à la place d'Actif -->
                                         <div class="flex items-center space-x-2">
                                             <span class="px-3 py-1 text-xs font-semibold rounded-full 
-                                                {{ $doc['statut'] === 'payé' ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300' : 
-                                                   ($doc['statut'] === 'en attente' ? 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300' : 
-                                                   ($doc['statut'] === 'validé' ? 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300' :
+                                                {{ $doc['statut'] === 'payé' ? 'bg-gradient-to-r from-green-100 to-green-200 text-red-900 border border-red-900' : 
+                                                   ($doc['statut'] === 'en attente' ? 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-red-900 border border-red-900' : 
+                                                   ($doc['statut'] === 'validé' ? 'bg-gradient-to-r from-red-100 to-red-200 text-red-900 border border-red-900' :
                                                    ($doc['statut'] === 'rejeté' ? 'bg-gradient-to-r from-red-100 to-red-200 text-red-800 border border-red-300' :
                                                    'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 border border-gray-300'))) }}">
                                                 {{ ucfirst($doc['statut']) }}
@@ -181,16 +181,16 @@
                                     
                                     <!-- Card Content -->
                                     <div class="space-y-4 mb-6">
-                                        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-blue-50 hover:to-blue-100 transition-all duration-200">
-                                            <div class="flex items-center text-gray-600 hover:text-blue-700 transition-colors duration-200">
-                                                <svg class="w-5 h-5 mr-3 text-gray-400 hover:text-blue-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-red-50 hover:to-red-100 transition-all duration-200">
+                                            <div class="flex items-center text-gray-600 hover:text-red-900 transition-colors duration-200">
+                                                <svg class="w-5 h-5 mr-3 text-gray-400 hover:text-red-900 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                                 </svg>
                                                 <span class="font-medium">{{ \Carbon\Carbon::parse($doc['date_document'])->format('d/m/Y') }}</span>
                                             </div>
                                             @if(isset($doc['montant']) && $doc['montant'])
                                                 <div class="text-right">
-                                                    <div class="text-lg font-bold text-gray-900 hover:text-blue-700 transition-colors duration-200">
+                                                    <div class="text-lg font-bold text-gray-900 hover:text-red-900 transition-colors duration-200">
                                                         {{ number_format($doc['montant'], 2, ',', ' ') }} DH
                                                     </div>
                                                 </div>
@@ -202,7 +202,7 @@
                                     <div class="flex justify-between items-center pt-6 border-t border-gray-100">
                                         <div class="flex space-x-2">
                                             <a href="{{ route('archives.financiers.show', $doc['id']) }}" 
-                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-blue-600 hover:text-white hover:bg-blue-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                title="Voir le document"
                                                onclick="event.stopPropagation()">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,7 +211,7 @@
                                                 </svg>
                                             </a>
                                             <a href="{{ Storage::url($doc['fichier']) }}" 
-                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-green-600 hover:text-white hover:bg-green-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                target="_blank"
                                                title="Ouvrir le fichier"
                                                onclick="event.stopPropagation()">
@@ -220,7 +220,7 @@
                                                 </svg>
                                             </a> 
                                             <a href="{{ route('archives.financiers.download', $doc['id']) }}" 
-                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-green-600 hover:text-white hover:bg-green-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                title="Télécharger"
                                                onclick="event.stopPropagation()">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@
                                                 </svg>
                                             </a>
                                             <a href="{{ route('archives.financiers.edit', $doc['id']) }}" 
-                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-yellow-600 hover:text-white hover:bg-yellow-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                title="Modifier"
                                                onclick="event.stopPropagation()">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,14 +260,14 @@
                             @if(count($hiddenDocs) > 0)
                                 <div class="hidden-docs hidden" id="hidden-docs-{{ $loop->index }}">
                                     @foreach($hiddenDocs as $doc)
-                                        <div class="card-hover relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-blue-200 hover:-translate-y-2 cursor-pointer" 
+                                        <div class="card-hover relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-red-900 hover:-translate-y-2 cursor-pointer" 
                                              onclick="window.location.href='{{ route('archives.financiers.show', $doc['id']) }}'">
                                             <!-- Card Header -->
                                             <div class="flex items-start justify-between mb-6">
                                                 <div class="flex-1">
-                                                    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-2 hover:text-blue-600 transition-colors duration-200">{{ $doc['titre'] }}</h3>
+                                                    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-2 hover:text-red-900 transition-colors duration-200">{{ $doc['titre'] }}</h3>
                                                     @if(isset($doc['reference']) && $doc['reference'])
-                                                        <p class="text-sm text-gray-500 font-mono bg-gray-50 px-3 py-1 rounded-lg inline-block hover:bg-blue-50 hover:text-blue-700 transition-all duration-200">
+                                                        <p class="text-sm text-gray-500 font-mono bg-gray-50 px-3 py-1 rounded-lg inline-block hover:bg-red-900 hover:text-red-900 transition-all duration-200">
                                                             Réf: {{ $doc['reference'] }}
                                                         </p>
                                                     @endif
@@ -275,9 +275,9 @@
                                                 <!-- Statut à la place d'Actif -->
                                                 <div class="flex items-center space-x-2">
                                                     <span class="px-3 py-1 text-xs font-semibold rounded-full 
-                                                        {{ $doc['statut'] === 'payé' ? 'bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300' : 
-                                                           ($doc['statut'] === 'en attente' ? 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300' : 
-                                                           ($doc['statut'] === 'validé' ? 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300' :
+                                                        {{ $doc['statut'] === 'payé' ? 'bg-gradient-to-r from-green-100 to-green-200 text-red-900 border border-red-900' : 
+                                                           ($doc['statut'] === 'en attente' ? 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-red-900 border border-red-900' : 
+                                                           ($doc['statut'] === 'validé' ? 'bg-gradient-to-r from-red-100 to-red-200 text-red-900 border border-red-900' :
                                                            ($doc['statut'] === 'rejeté' ? 'bg-gradient-to-r from-red-100 to-red-200 text-red-800 border border-red-300' :
                                                            'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 border border-gray-300'))) }}">
                                                         {{ ucfirst($doc['statut']) }}
@@ -287,16 +287,16 @@
                                             
                                             <!-- Card Content -->
                                             <div class="space-y-4 mb-6">
-                                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-blue-50 hover:to-blue-100 transition-all duration-200">
-                                                    <div class="flex items-center text-gray-600 hover:text-blue-700 transition-colors duration-200">
-                                                        <svg class="w-5 h-5 mr-3 text-gray-400 hover:text-blue-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-red-50 hover:to-red-100 transition-all duration-200">
+                                                    <div class="flex items-center text-gray-600 hover:text-red-900 transition-colors duration-200">
+                                                        <svg class="w-5 h-5 mr-3 text-gray-400 hover:text-red-900 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                                         </svg>
                                                         <span class="font-medium">{{ \Carbon\Carbon::parse($doc['date_document'])->format('d/m/Y') }}</span>
                                                     </div>
                                                     @if(isset($doc['montant']) && $doc['montant'])
                                                         <div class="text-right">
-                                                            <div class="text-lg font-bold text-gray-900 hover:text-blue-700 transition-colors duration-200">
+                                                            <div class="text-lg font-bold text-gray-900 hover:text-red-900 transition-colors duration-200">
                                                                 {{ number_format($doc['montant'], 2, ',', ' ') }} DH
                                                             </div>
                                                         </div>
@@ -308,7 +308,7 @@
                                             <div class="flex justify-between items-center pt-6 border-t border-gray-100">
                                                 <div class="flex space-x-2">
                                                     <a href="{{ route('archives.financiers.show', $doc['id']) }}" 
-                                                       class="group/btn inline-flex items-center justify-center w-10 h-10 text-blue-600 hover:text-white hover:bg-blue-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                                       class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                        title="Voir le document"
                                                        onclick="event.stopPropagation()">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -317,7 +317,7 @@
                                                         </svg>
                                                     </a>
                                                     <a href="{{ Storage::url($doc['fichier']) }}" 
-                                                       class="group/btn inline-flex items-center justify-center w-10 h-10 text-green-600 hover:text-white hover:bg-green-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                                       class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                        target="_blank"
                                                        title="Ouvrir le fichier"
                                                        onclick="event.stopPropagation()">
@@ -326,7 +326,7 @@
                                                         </svg>
                                                     </a> 
                                                     <a href="{{ route('archives.financiers.download', $doc['id']) }}" 
-                                                       class="group/btn inline-flex items-center justify-center w-10 h-10 text-green-600 hover:text-white hover:bg-green-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                                       class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                        title="Télécharger"
                                                        onclick="event.stopPropagation()">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -335,7 +335,7 @@
                                                         </svg>
                                                     </a>
                                                     <a href="{{ route('archives.financiers.edit', $doc['id']) }}" 
-                                                       class="group/btn inline-flex items-center justify-center w-10 h-10 text-yellow-600 hover:text-white hover:bg-yellow-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                                       class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-900 hover:text-white hover:bg-red-900 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                        title="Modifier"
                                                        onclick="event.stopPropagation()">
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -370,8 +370,8 @@
                             <div class="text-center mt-10">
                                 <button onclick="toggleDocuments({{ $loop->index }})" 
                                         id="toggle-btn-{{ $loop->index }}"
-                                        class="group relative inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
-                                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                                        class="group relative inline-flex items-center px-8 py-4 bg-[#FEE2E2] border border-red-300 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-900/25 transition-all duration-300 hover:scale-105">
+                                    <div class="absolute inset-0 bg-gradient-to-r from-red-900 to-red-700 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
                                     <span id="toggle-text-{{ $loop->index }}" class="relative z-10">Voir plus ({{ count($hiddenDocs) }})</span>
                                     <svg class="w-5 h-5 ml-3 relative z-10 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="toggle-icon-{{ $loop->index }}">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -391,7 +391,7 @@
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Aucun document trouvé</h3>
                     <p class="text-gray-600 text-lg mb-8">Commencez par ajouter votre premier document financier pour organiser vos archives.</p>
                     <a href="{{ route('archives.financiers.create') }}" 
-                       class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                       class="inline-flex items-center px-8 py-4 bg-[#FEE2E2] border border-red-300 text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
@@ -424,3 +424,5 @@ function toggleDocuments(typeIndex) {
 }
 </script>
 @endsection
+
+

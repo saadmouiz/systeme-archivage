@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -37,7 +37,7 @@
                         <label for="type" class="block text-sm font-medium text-gray-700">Type de document</label>
                         <select name="type" 
                                 id="type" 
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md" 
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md" 
                                 required>
                             @foreach($types as $key => $value)
                                 <option value="{{ $key }}" {{ $administratif->type === $key ? 'selected' : '' }}>
@@ -53,7 +53,7 @@
                                name="titre" 
                                id="titre" 
                                value="{{ old('titre', $administratif->titre) }}"
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900" 
                                required>
                     </div>
 
@@ -62,7 +62,7 @@
                         <textarea name="description" 
                                   id="description" 
                                   rows="4" 
-                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ old('description', $administratif->description) }}</textarea>
+                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">{{ old('description', $administratif->description) }}</textarea>
                     </div>
 
                     <div>
@@ -72,7 +72,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                             </svg>
                             <a href="{{ Storage::url($administratif->fichier) }}" 
-                               class="text-blue-600 hover:text-blue-800 text-sm">
+                               class="text-red-900 hover:text-red-900 text-sm">
                                 {{ basename($administratif->fichier) }}
                             </a>
                         </div>
@@ -89,7 +89,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-red-900 hover:text-red-900 hover:underline">
                                         <span>Téléverser un nouveau fichier</span>
                                         <input id="fichier" 
                                                name="fichier" 
@@ -109,7 +109,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900">
                             Mettre à jour
                         </button>
                     </div>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -39,7 +39,7 @@
                             <input type="text" 
                                    name="titre" 
                                    id="titre" 
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                    value="{{ old('titre', $financier->titre) }}" 
                                    required>
                         </div>
@@ -48,7 +48,7 @@
                             <label for="type" class="block text-sm font-medium text-gray-700">Type de document</label>
                             <select name="type" 
                                     id="type" 
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                     required>
                                 @foreach($types as $type)
                                     <option value="{{ $type }}" {{ old('type', $financier->type) == $type ? 'selected' : '' }}>
@@ -65,7 +65,7 @@
                             <label for="journal_type" class="block text-sm font-medium text-gray-700">Type de journal</label>
                             <select name="journal_type" 
                                     id="journal_type" 
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900">
                                 <option value="">Sélectionnez un type de journal</option>
                                 <option value="Journal des achats" {{ old('journal_type', $financier->journal_type) == 'Journal des achats' ? 'selected' : '' }}>Journal des achats</option>
                                 <option value="Journal des ventes" {{ old('journal_type', $financier->journal_type) == 'Journal des ventes' ? 'selected' : '' }}>Journal des ventes</option>
@@ -84,7 +84,7 @@
                                id="montant" 
                                step="0.01" 
                                value="{{ old('montant', $financier->montant) }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -94,7 +94,7 @@
                                    name="date_document" 
                                    id="date_document" 
                                    value="{{ old('date_document', $financier->date_document->format('Y-m-d')) }}"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                    required>
                         </div>
 
@@ -102,7 +102,7 @@
                             <label for="annee_financiere" class="block text-sm font-medium text-gray-700">Année financière</label>
                             <select name="annee_financiere" 
                                     id="annee_financiere" 
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                     required>
                                 @foreach($annees as $annee)
                                     <option value="{{ $annee }}" {{ old('annee_financiere', $financier->annee_financiere) == $annee ? 'selected' : '' }}>
@@ -117,7 +117,7 @@
                         <label for="statut" class="block text-sm font-medium text-gray-700">Statut</label>
                         <select name="statut" 
                                 id="statut" 
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900"
                                 required>
                             @foreach($statuts as $key => $value)
                                 <option value="{{ $key }}" {{ old('statut', $financier->statut) == $key ? 'selected' : '' }}>
@@ -132,7 +132,7 @@
                         <textarea name="description" 
                                   id="description" 
                                   rows="4" 
-                                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">{{ old('description', $financier->description) }}</textarea>
+                                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900">{{ old('description', $financier->description) }}</textarea>
                     </div>
 
                     <!-- Fichier actuel -->
@@ -142,7 +142,7 @@
                             <div class="mt-1 flex items-center">
                                 <span class="text-sm text-gray-500">{{ basename($financier->fichier) }}</span>
                                 <a href="{{ Storage::url($financier->fichier) }}" 
-                                   class="ml-2 text-sm text-blue-600 hover:text-blue-500"
+                                   class="ml-2 text-sm text-red-900 hover:text-red-900"
                                    target="_blank">
                                     Voir le document
                                 </a>
@@ -162,7 +162,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-red-900 hover:text-red-900 hover:underline">
                                         <span>Téléverser un nouveau fichier</span>
                                         <input id="fichier" name="fichier" type="file" class="sr-only">
                                     </label>
@@ -178,7 +178,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800">
                             Mettre à jour
                         </button>
                     </div>

@@ -26,6 +26,8 @@ class Beneficiaire extends Model
         'description',
         'fichier',  // Assurez-vous que ce champ est bien présent
         'ecole_id',
+        'filiere',
+        'ville',
         'metadata'
     ];
 

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gray-100 py-8">
@@ -92,14 +92,14 @@
                             <div class="relative pt-1">
                                 <div class="flex mb-2 items-center justify-between">
                                     <div>
-                                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-green-600 bg-green-200">
+                                        <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-red-900 bg-red-900">
                                             {{ $project->progression }}%
                                         </span>
                                     </div>
                                 </div>
-                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-green-200">
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-red-900">
                                     <div style="width:{{ $project->progression }}%" 
-                                         class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500">
+                                         class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-900">
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +145,7 @@
                                 </div>
                                 <div class="ml-4 flex-shrink-0 flex items-center space-x-3">
                                     <a href="{{ $document->file_url }}" target="_blank"
-                                       class="text-sm font-medium text-[#0d9488] hover:text-green-700">
+                                       class="text-sm font-medium text-[#0d9488] hover:text-red-900">
                                         Télécharger
                                     </a>
                                     <form action="{{ route('archives.projects.deleteDocument', [$project, $document]) }}" 

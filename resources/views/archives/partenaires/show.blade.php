@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="py-6 bg-gray-50">
@@ -11,7 +11,7 @@
             </div>
             <div class="flex flex-wrap gap-3">
                 <a href="{{ route('archives.partenaires.edit', $partenaire) }}" 
-                   class="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100">
+                   class="inline-flex items-center px-4 py-2 bg-red-50 text-red-800 rounded-lg hover:bg-red-100">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
@@ -41,7 +41,7 @@
                     <div>
                         <h2 class="text-xl font-semibold text-gray-900">{{ $partenaire->nom }}</h2>
                         <div class="mt-2 flex flex-wrap gap-2">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
                                 {{ $partenaire->type }}
                             </span>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
@@ -79,7 +79,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Email</p>
-                                    <a href="mailto:{{ $partenaire->email }}" class="mt-1 text-blue-600 hover:text-blue-800">
+                                    <a href="mailto:{{ $partenaire->email }}" class="mt-1 text-red-900 hover:text-red-700">
                                         {{ $partenaire->email }}
                                     </a>
                                 </div>
@@ -93,7 +93,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Téléphone</p>
-                                    <a href="tel:{{ $partenaire->telephone }}" class="mt-1 text-blue-600 hover:text-blue-800">
+                                    <a href="tel:{{ $partenaire->telephone }}" class="mt-1 text-red-900 hover:text-red-700">
                                         {{ $partenaire->telephone }}
                                     </a>
                                 </div>

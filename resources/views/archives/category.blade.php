@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="bg-gray-50 min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold">{{ ucfirst($category) }}</h1>
-            <a href="{{ route('archives.index') }}" class="text-blue-600 hover:underline">
+            <a href="{{ route('archives.index') }}" class="text-red-900 hover:underline">
                 Retour aux archives
             </a>
         </div>
@@ -21,7 +21,7 @@
                         <div class="mt-3 flex flex-wrap gap-2">
                             @foreach($archive->files as $file)
                                 <a href="{{ Storage::url($file) }}" 
-                                   class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100"
+                                   class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-900 hover:bg-red-900"
                                    target="_blank">
                                     Document {{ $loop->iteration }}
                                 </a>

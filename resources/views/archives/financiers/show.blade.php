@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -10,9 +10,9 @@
                         <h1 class="text-2xl font-bold text-gray-800">{{ $financier->titre }}</h1>
                         <div class="mt-2 flex items-center space-x-2">
                             <span class="px-3 py-1 rounded-full text-sm font-medium
-                                {{ $financier->statut === 'payé' ? 'bg-green-100 text-green-800' : 
-                                   ($financier->statut === 'en attente' ? 'bg-yellow-100 text-yellow-800' : 
-                                   'bg-blue-100 text-blue-800') }}">
+                                {{ $financier->statut === 'payé' ? 'bg-red-100 text-red-900' : 
+                                   ($financier->statut === 'en attente' ? 'bg-red-100 text-red-900' : 
+                                   'bg-red-100 text-red-900') }}">
                                 {{ ucfirst($financier->statut) }}
                             </span>
                             <span class="text-sm text-gray-500">
@@ -27,7 +27,7 @@
                     
                     <div class="flex space-x-2">
                         <a href="{{ route('archives.financiers.edit', $financier) }}" 
-                           class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700">
+                           class="inline-flex items-center px-4 py-2 bg-red-900 text-white rounded-md hover:bg-red-900">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
@@ -83,7 +83,7 @@
                                     <div class="flex space-x-3 mt-2">
                                       
                                         <a href="{{ route('archives.financiers.download', $financier) }}"
-                                           class="text-sm text-green-600 hover:text-green-800">
+                                           class="text-sm text-red-900 hover:text-red-900">
                                             Télécharger
                                         </a>
                                     </div>

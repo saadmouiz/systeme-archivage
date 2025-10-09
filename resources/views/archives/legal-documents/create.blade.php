@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gray-100 py-8">
@@ -94,7 +94,7 @@
                 <div class="mt-8 border-t pt-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Fichiers</h3>
                     <input type="file" name="files[]" multiple
-                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#0d9488] file:text-white hover:file:bg-green-700">
+                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#0d9488] file:text-white hover:file:bg-red-900">
                     <p class="mt-2 text-sm text-gray-500">
                         Formats acceptés : PDF, Word, Images (max 10MB)
                     </p>
@@ -106,7 +106,7 @@
                         Annuler
                     </a>
                     <button type="submit"
-                            class="bg-[#0d9488] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-green-700">
+                            class="bg-[#0d9488] py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-900">
                         Créer le document
                     </button>
                 </div>

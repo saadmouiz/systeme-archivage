@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -11,14 +11,14 @@
                         <h1 class="text-2xl font-bold text-gray-900">{{ $evenement->titre }}</h1>
                         <div class="mt-2 flex items-center">
                             <span class="px-2 py-1 text-xs rounded-full 
-                                {{ $evenement->type === 'interne' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' }}">
+                                {{ $evenement->type === 'interne' ? 'bg-red-100 text-red-900' : 'bg-red-100 text-red-900' }}">
                                 {{ ucfirst($evenement->type) }}
                             </span>
                             <span class="ml-2 px-2 py-1 text-xs rounded-full 
                                 @switch($evenement->statut)
-                                    @case('planifie') bg-yellow-100 text-yellow-800 @break
-                                    @case('en_cours') bg-blue-100 text-blue-800 @break
-                                    @case('termine') bg-green-100 text-green-800 @break
+                                    @case('planifie') bg-red-100 text-red-900 @break
+                                    @case('en_cours') bg-red-100 text-red-900 @break
+                                    @case('termine') bg-red-100 text-red-900 @break
                                     @case('annule') bg-red-100 text-red-800 @break
                                 @endswitch">
                                 {{ ucfirst($evenement->statut) }}

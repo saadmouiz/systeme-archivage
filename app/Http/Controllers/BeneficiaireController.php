@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use App\Models\ArchivePartenaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class BeneficiaireController extends Controller
 {
@@ -30,6 +31,10 @@ class BeneficiaireController extends Controller
 
     public function index(Request $request)
     {
+        // Forcer la reconnexion à la base de données
+        DB::purge();
+        DB::reconnect();
+        
         $query = Beneficiaire::with('ecole');
 
         // Filtrage par type
@@ -53,12 +58,21 @@ class BeneficiaireController extends Controller
             });
         }
 
-        $beneficiaires = $query->latest()->get()->groupBy('type');
+        $beneficiaires = $query->orderBy('id', 'asc')->get()->groupBy('type');
 
         // Récupérer les écoles pour le filtre
         $ecoles = ArchivePartenaire::where('type', 'école')
             ->orderBy('nom')
             ->get();
+
+        // Debug: Logger le nombre de bénéficiaires
+        \Log::info('Bénéficiaires trouvés: ' . $beneficiaires->count());
+        \Log::info('Types: ' . $beneficiaires->keys()->implode(', '));
+        
+        // Debug avancé
+        foreach ($beneficiaires as $type => $items) {
+            \Log::info("Type '$type': " . $items->count() . " éléments");
+        }
 
         return view('archives.beneficiaires.index', [
             'beneficiaires' => $beneficiaires,
@@ -82,11 +96,29 @@ class BeneficiaireController extends Controller
 }
     public function store(Request $request)
     {
+        // FIX: Vérifier et créer la colonne ville si elle n'existe pas
+        try {
+            // Log de la base de données utilisée
+            $dbName = \DB::connection()->getDatabaseName();
+            \Log::info('Base de données utilisée: ' . $dbName);
+            
+            $columnExists = \DB::select("SHOW COLUMNS FROM beneficiaires WHERE Field = 'ville'");
+            if (empty($columnExists)) {
+                \DB::statement("ALTER TABLE beneficiaires ADD COLUMN ville VARCHAR(255) NULL AFTER prenom");
+                \Log::info('Colonne ville ajoutée automatiquement à la table beneficiaires dans ' . $dbName);
+            } else {
+                \Log::info('Colonne ville existe déjà dans ' . $dbName);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la vérification de la colonne ville: ' . $e->getMessage());
+        }
+        
         $validated = $request->validate([
             'type' => 'required|string',
             'reference' => 'nullable|string|max:255',
             'nom' => 'required|string',
             'prenom' => 'required|string',
+            'ville' => 'required|string|max:255',
             'cin' => 'nullable|string',
             'age' => 'nullable|integer|min:1|max:120',
             'genre' => [
@@ -126,6 +158,12 @@ class BeneficiaireController extends Controller
                 Rule::requiredIf(fn() => $request->type === 'Document éducatif'),
                 'exists:archive_partenaires,id'
             ],
+            'filiere' => [
+                'nullable',
+                Rule::requiredIf(fn() => $request->type === 'Document éducatif'),
+                'string',
+                'max:255'
+            ],
             'fichier' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240'
         ]);
     
@@ -143,10 +181,11 @@ class BeneficiaireController extends Controller
                 $validated['ass_eps'] = null;
                 $validated['ecole_id'] = null;
             } elseif ($validated['type'] === 'Document éducatif') {
-                // Pour Document éducatif, supprimer les champs académiques
+                // Pour Document éducatif, supprimer les champs académiques et société
                 $validated['niveau'] = null;
                 $validated['specialite'] = null;
                 $validated['type_intervention'] = null;
+                $validated['societe'] = null;
             } else {
                 // Pour les autres types, supprimer tous les champs conditionnels
                 $validated['genre'] = null;
@@ -156,6 +195,7 @@ class BeneficiaireController extends Controller
                 $validated['niveau'] = null;
                 $validated['specialite'] = null;
                 $validated['type_intervention'] = null;
+                $validated['societe'] = null;
             }
     
             Beneficiaire::create($validated);
@@ -200,6 +240,7 @@ class BeneficiaireController extends Controller
             'reference' => 'nullable|string|max:255',
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
+            'ville' => 'required|string|max:255',
             'cin' => 'nullable|string|max:20',
             'age' => 'nullable|integer|min:1|max:120',
             'genre' => [
@@ -259,10 +300,11 @@ class BeneficiaireController extends Controller
             $validated['ass_eps'] = null;
             $validated['ecole_id'] = null;
         } elseif ($validated['type'] === 'Document éducatif') {
-            // Pour Document éducatif, supprimer les champs académiques
+            // Pour Document éducatif, supprimer les champs académiques et société
             $validated['niveau'] = null;
             $validated['specialite'] = null;
             $validated['type_intervention'] = null;
+            $validated['societe'] = null;
         } else {
             // Pour les autres types, supprimer tous les champs conditionnels
             $validated['genre'] = null;
@@ -272,6 +314,7 @@ class BeneficiaireController extends Controller
             $validated['niveau'] = null;
             $validated['specialite'] = null;
             $validated['type_intervention'] = null;
+            $validated['societe'] = null;
         }
 
         $beneficiaire->update($validated);
@@ -323,4 +366,85 @@ private function sanitizeFileName($baseFileName, $filePath)
     
     return $baseFileName . '.' . $extension;
 }
+
+    public function liste()
+    {
+        // Statistiques globales (avant pagination)
+        $total = Beneficiaire::count();
+        $totalFilles = Beneficiaire::where('genre', 'Femme')->count();
+        $totalGarcons = Beneficiaire::where('genre', 'Homme')->count();
+        
+        // Utiliser la méthode utilitaire (avec pagination)
+        $beneficiaires = $this->getBeneficiairesListData(true);
+
+        return view('archives.beneficiaires.liste', compact('beneficiaires', 'total', 'totalFilles', 'totalGarcons'));
+    }
+
+    public function exportListePdf()
+    {
+        // Utiliser exactement la même logique que la méthode liste() (SANS pagination pour PDF)
+        $beneficiaires = $this->getBeneficiairesListData(false);
+        
+        // Statistiques (MÊME LOGIQUE QUE liste())
+        $total = Beneficiaire::count();
+        $totalFilles = Beneficiaire::where('genre', 'Femme')->count();
+        $totalGarcons = Beneficiaire::where('genre', 'Homme')->count();
+
+        $pdf = \PDF::loadView('archives.beneficiaires.liste-pdf', compact('beneficiaires', 'total', 'totalFilles', 'totalGarcons'));
+        
+        return $pdf->download('liste_beneficiaires_' . date('Y-m-d') . '.pdf');
+    }
+
+    /**
+     * Méthode utilitaire pour récupérer les données des bénéficiaires
+     * Utilisée par liste() et exportListePdf() pour garantir la cohérence
+     */
+    private function getBeneficiairesListData($paginated = true)
+    {
+        $query = Beneficiaire::with('ecole')->orderBy('id', 'asc');
+        
+        if ($paginated) {
+            $beneficiairesPaginated = $query->paginate(15);
+            $beneficiaires = $beneficiairesPaginated->through(function ($beneficiaire) {
+                return $this->mapBeneficiaireData($beneficiaire);
+            });
+            return $beneficiaires;
+        } else {
+            return $query->get()->map(function ($beneficiaire) {
+                return $this->mapBeneficiaireData($beneficiaire);
+            });
+        }
+    }
+
+    /**
+     * Mapper les données d'un bénéficiaire
+     * Logique centralisée pour liste() et exportListePdf()
+     */
+    private function mapBeneficiaireData($beneficiaire)
+    {
+        $type = '-';
+        $filiere = '-';
+        $domaine = '-';
+        
+        if ($beneficiaire->type === 'Dossier individuel') {
+            $type = 'Employé';
+            $domaine = $beneficiaire->specialite ?? '-'; // Domaine pour les employés
+            // Filière reste vide (-) pour les employés
+        } elseif ($beneficiaire->type === 'Document éducatif') {
+            $type = 'Étudiant';
+            $filiere = $beneficiaire->filiere ?? '-'; // Filière pour les étudiants
+            // Domaine reste vide (-) pour les étudiants
+        }
+        
+        return [
+            'id' => $beneficiaire->id,
+            'nom_complet' => $beneficiaire->nom . ' ' . $beneficiaire->prenom,
+            'type' => $type,
+            'ville' => $beneficiaire->ville ?? '-',
+            'filiere' => $filiere,
+            'ecole' => $beneficiaire->ecole->nom ?? '-',
+            'domaine' => $domaine,
+            'genre' => $beneficiaire->genre ?? '-',
+        ];
+    }
 }

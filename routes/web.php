@@ -33,8 +33,11 @@ Route::get('/', function () {
 
 // Routes protÃ©gÃ©es par l'authentification
 Route::middleware(['auth'])->group(function () {
-    // Dashboard accessible Ã  tous les admins
+    // Dashboard accessible Ã  tous les admins
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Statistiques
+    Route::get('/statistics', [DashboardController::class, 'statistics'])->name('statistics');
     
     // Routes pour les visiteurs
     Route::resource('visiteurs', VisiteurController::class);
@@ -97,6 +100,10 @@ Route::middleware(['auth'])->group(function () {
                 ->name('beneficiaires.export');
             Route::get('/beneficiaires-export-excel', [App\Http\Controllers\BeneficiaireDashboardController::class, 'exportExcel'])
                 ->name('beneficiaires.export.excel');
+            Route::get('/beneficiaires-liste', [BeneficiaireController::class, 'liste'])
+                ->name('beneficiaires.liste');
+            Route::get('/beneficiaires-liste-export-pdf', [BeneficiaireController::class, 'exportListePdf'])
+                ->name('beneficiaires.liste.export.pdf');
         });
         
         Route::middleware(['can:access-partenaires'])->group(function () {

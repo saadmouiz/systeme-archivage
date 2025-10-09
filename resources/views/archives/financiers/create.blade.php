@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('head')
 <!-- Solution CSV native - Aucune dépendance externe nécessaire -->
@@ -42,7 +42,7 @@
                             <input type="text" 
                                    name="titre" 
                                    id="titre" 
-                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                    value="{{ old('titre') }}" 
                                    required>
                         </div>
@@ -51,7 +51,7 @@
                             <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Type de document</label>
                             <select name="type" 
                                     id="type" 
-                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                     required>
                                 <option value="">Sélectionnez un type</option>
                                 @foreach($types as $type)
@@ -69,7 +69,7 @@
                             <label for="journal_type" class="block text-sm font-medium text-gray-700 mb-2">Type de journal</label>
                             <select name="journal_type" 
                                     id="journal_type" 
-                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors">
+                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors">
                                 <option value="">Sélectionnez un type de journal</option>
                                 <option value="Journal des achats" {{ old('journal_type') == 'Journal des achats' ? 'selected' : '' }}>Journal des achats</option>
                                 <option value="Journal des ventes" {{ old('journal_type') == 'Journal des ventes' ? 'selected' : '' }}>Journal des ventes</option>
@@ -87,7 +87,7 @@
                                name="montant" 
                                id="montant" 
                                step="0.01" 
-                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                               class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                value="{{ old('montant') }}">
                     </div>
 
@@ -97,7 +97,7 @@
                             <input type="date" 
                                    name="date_document" 
                                    id="date_document" 
-                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                                   class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                    value="{{ old('date_document') }}"
                                    required>
                         </div>
@@ -106,7 +106,7 @@
                             <label for="annee_financiere" class="block text-sm font-medium text-gray-700 mb-2">Année financière</label>
                             <select name="annee_financiere" 
                                     id="annee_financiere" 
-                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                                    class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                     required>
                                 <option value="">Sélectionnez une année</option>
                                 @foreach($annees as $annee)
@@ -122,7 +122,7 @@
                         <label for="statut" class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
                         <select name="statut" 
                                 id="statut" 
-                                class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                                class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors"
                                 required>
                             <option value="">Sélectionnez un statut</option>
                             @foreach($statuts as $key => $value)
@@ -138,7 +138,7 @@
                         <textarea name="description" 
                                   id="description" 
                                   rows="5" 
-                                  class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors resize-none">{{ old('description') }}</textarea>
+                                  class="mt-1 block w-full px-4 py-3 text-base rounded-lg border-gray-300 shadow-sm focus:border-red-900 focus:ring-red-900 transition-colors resize-none">{{ old('description') }}</textarea>
                     </div>
 
                     <div>
@@ -148,7 +148,7 @@
                         <div class="mb-4">
                             <button type="button" 
                                     id="open-excel-btn"
-                                    class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                                    class="inline-flex items-center px-4 py-2 bg-red-900 text-white rounded-md hover:bg-red-900 transition-colors">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                 </svg>
@@ -157,7 +157,7 @@
                             <p class="text-xs text-gray-500 mt-1">Cliquez pour ouvrir l'éditeur Excel intégré. Éditez directement dans le navigateur et sauvegardez automatiquement.</p>
                         </div>
                         
-                        <div class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                        <div class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-gray-300 border-dashed rounded-lg hover:border-red-900 transition-colors">
                             <div class="space-y-2 text-center">
                                 <svg class="mx-auto h-16 w-16 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" 
@@ -166,7 +166,7 @@
                                           stroke-linejoin="round"/>
                                 </svg>
                                 <div class="flex text-sm text-gray-600">
-                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 hover:underline">
+                                    <label for="fichier" class="relative cursor-pointer bg-white rounded-md font-medium text-red-900 hover:text-red-900 hover:underline">
                                         <span>Téléverser un fichier</span>
                                         <input id="fichier" 
                                                name="fichier" 
@@ -184,7 +184,7 @@
                         <!-- Zone de prévisualisation du fichier -->
                         <div id="file-preview" class="hidden mt-4 p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center space-x-3">
-                                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-8 h-8 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                                 <div>
@@ -206,7 +206,7 @@
                             Annuler
                         </a>
                         <button type="submit" 
-                                class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900 transition-colors">
                             Créer le document
                         </button>
                     </div>
@@ -223,7 +223,7 @@
         <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white px-6 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 bg-[#FEE2E2] flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
@@ -234,19 +234,19 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <button id="save-excel-btn" class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <button id="save-excel-btn" class="inline-flex items-center px-6 py-3 bg-red-900 text-white font-medium rounded-lg hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"/>
                         </svg>
                         Enregistrer Document
                     </button>
-                    <button id="new-excel-document" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <button id="new-excel-document" class="inline-flex items-center px-6 py-3 bg-red-900 text-white font-medium rounded-lg hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
                         Nouveau Document
                     </button>
-                    <button id="close-excel-editor" class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <button id="close-excel-editor" class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
@@ -266,7 +266,7 @@
                     </div>
                     <div class="flex items-center space-x-3">
                         <div class="flex items-center space-x-2 text-sm text-gray-500">
-                            <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                            <div class="w-2 h-2 bg-red-900 rounded-full"></div>
                             <span>En ligne</span>
                         </div>
                     </div>
@@ -277,20 +277,20 @@
             <div class="bg-slate-100 border-b border-gray-300 px-6 py-3">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button id="add-row-btn" class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
+                        <button id="add-row-btn" class="inline-flex items-center px-4 py-2 bg-red-900 text-white text-sm font-medium rounded-lg hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2 transition-all duration-200 shadow-sm">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                             </svg>
                             Ajouter une ligne
                         </button>
-                        <button id="add-col-btn" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
+                        <button id="add-col-btn" class="inline-flex items-center px-4 py-2 bg-red-900 text-white text-sm font-medium rounded-lg hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2 transition-all duration-200 shadow-sm">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                             </svg>
                             Ajouter une colonne
                         </button>
                         <div class="h-6 w-px bg-gray-400"></div>
-                        <button id="clear-table-btn" class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-sm">
+                        <button id="clear-table-btn" class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2 transition-all duration-200 shadow-sm">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                             </svg>
@@ -386,17 +386,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     dropZone.addEventListener('dragover', function(e) {
         e.preventDefault();
-        dropZone.classList.add('border-blue-400', 'bg-blue-50');
+        dropZone.classList.add('border-red-900', 'bg-red-900');
     });
 
     dropZone.addEventListener('dragleave', function(e) {
         e.preventDefault();
-        dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+        dropZone.classList.remove('border-red-900', 'bg-red-900');
     });
 
     dropZone.addEventListener('drop', function(e) {
         e.preventDefault();
-        dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+        dropZone.classList.remove('border-red-900', 'bg-red-900');
         
         const files = e.dataTransfer.files;
         if (files.length > 0) {
@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Afficher un message de confirmation
             const successMessage = document.createElement('div');
-            successMessage.className = 'fixed top-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2 animate-pulse';
+            successMessage.className = 'fixed top-4 right-4 bg-red-900 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2 animate-pulse';
             successMessage.innerHTML = `
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < columnCount; i++) {
             rowHTML += `
                 <td class="px-4 py-3 border-r border-gray-200 bg-gray-50">
-                    <input type="text" class="w-full border-none outline-none text-sm text-gray-800 placeholder-gray-500 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:rounded-md px-2 py-1 transition-all duration-200" placeholder="">
+                    <input type="text" class="w-full border-none outline-none text-sm text-gray-800 placeholder-gray-500 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-red-900 focus:rounded-md px-2 py-1 transition-all duration-200" placeholder="">
                 </td>
             `;
         }
@@ -545,9 +545,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         for (let i = 0; i < columnCount; i++) {
             headerRow.innerHTML += `
-                <th class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 text-center font-semibold min-w-[140px] relative group border-r border-blue-500">
+                <th class="bg-[#FEE2E2] border border-red-300 text-white px-4 py-3 text-center font-semibold min-w-[140px] relative group border-r border-red-900">
                     <div class="flex items-center justify-center">
-                        <input type="text" value="" class="w-full border-none outline-none text-center font-semibold bg-transparent text-white placeholder-blue-200 focus:bg-blue-500 focus:rounded px-2 py-1 transition-all duration-200" placeholder="Colonne ${i + 1}">
+                        <input type="text" value="" class="w-full border-none outline-none text-center font-semibold bg-transparent text-white placeholder-blue-200 focus:bg-red-900 focus:rounded px-2 py-1 transition-all duration-200" placeholder="Colonne ${i + 1}">
                         <button onclick="deleteColumn(${i})" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-600 hover:scale-110 shadow-lg" title="Supprimer cette colonne">
                             <svg class="w-3 h-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = currentCellCount - 1; i < columnCount; i++) {
                 const newCell = document.createElement('td');
                 newCell.className = 'px-4 py-3 border-r border-gray-200 bg-gray-50';
-                newCell.innerHTML = `<input type="text" class="w-full border-none outline-none text-sm text-gray-800 placeholder-gray-500 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:rounded-md px-2 py-1 transition-all duration-200" placeholder="">`;
+                newCell.innerHTML = `<input type="text" class="w-full border-none outline-none text-sm text-gray-800 placeholder-gray-500 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-red-900 focus:rounded-md px-2 py-1 transition-all duration-200" placeholder="">`;
                 // Insérer avant le bouton de suppression de ligne
                 const deleteButtonCell = row.querySelector('td:last-child');
                 if (deleteButtonCell) {
@@ -754,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Afficher un message de succès plus visible
             const successMessage = document.createElement('div');
-            successMessage.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2 animate-pulse';
+            successMessage.className = 'fixed top-4 right-4 bg-red-900 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2 animate-pulse';
             successMessage.innerHTML = `
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -799,8 +799,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const filePreview = document.getElementById('file-preview');
                 if (filePreview) {
                     filePreview.innerHTML = `
-                        <div class="flex items-center space-x-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center space-x-3 p-3 bg-[#FEE2E2] border border-red-300 rounded-lg">
+                            <svg class="w-8 h-8 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                             <div class="flex-1">

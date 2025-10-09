@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 py-8">
@@ -95,6 +95,17 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+                    </div>
+
+                    <!-- Ville -->
+                    <div class="mt-5">
+                        <label for="ville" class="block text-sm font-medium text-gray-700 mb-1">Ville <span class="text-red-500">*</span></label>
+                        <input type="text" name="ville" id="ville" value="{{ old('ville') }}"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                            required>
+                        @error('ville')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- CIN et Age -->
@@ -232,13 +243,24 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <!-- Filière -->
+                    <div class="mt-6">
+                        <label for="filiere" class="block text-sm font-medium text-gray-700 mb-1">Filière <span class="text-red-500">*</span></label>
+                        <input type="text" name="filiere" id="filiere" value="{{ old('filiere') }}"
+                            placeholder="Ex: Informatique, Comptabilité, Marketing, etc."
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                        @error('filiere')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                     <h3 class="text-md font-medium text-gray-700 mb-4">Détails supplémentaires</h3>
                     
-                    <!-- Société -->
-                    <div class="mb-5">
+                    <!-- Société (uniquement pour Dossier individuel) -->
+                    <div class="mb-5" id="societe_div">
                         <label for="societe" class="block text-sm font-medium text-gray-700 mb-1">Société</label>
                         <input type="text" name="societe" id="societe" value="{{ old('societe') }}"
                             class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200"
@@ -311,11 +333,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeSelect = document.getElementById('type');
     const ecoleDiv = document.getElementById('ecole_div');
     const niveauDiv = document.getElementById('niveau_div');
+    const societeDiv = document.getElementById('societe_div');
     
     function toggleConditionalFields() {
         if (typeSelect.value === 'Document éducatif') {
             ecoleDiv.classList.remove('hidden');
             niveauDiv.classList.add('hidden');
+            societeDiv.classList.add('hidden');
             
             // Champs requis pour Document éducatif
             document.getElementById('ecole_id').setAttribute('required', 'required');
@@ -326,9 +350,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Champs non requis pour Document éducatif
             document.getElementById('niveau').removeAttribute('required');
             document.getElementById('specialite').removeAttribute('required');
+            document.getElementById('societe').removeAttribute('required');
         } else if (typeSelect.value === 'Dossier individuel') {
             ecoleDiv.classList.add('hidden');
             niveauDiv.classList.remove('hidden');
+            societeDiv.classList.remove('hidden');
             
             // Champs requis pour Dossier individuel
             document.getElementById('niveau').setAttribute('required', 'required');
@@ -343,6 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             ecoleDiv.classList.add('hidden');
             niveauDiv.classList.add('hidden');
+            societeDiv.classList.add('hidden');
             
             // Aucun champ requis
             document.getElementById('ecole_id').removeAttribute('required');

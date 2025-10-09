@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
@@ -154,7 +154,7 @@
                                       file:rounded-full file:border-0
                                       file:text-sm file:font-semibold
                                       file:bg-[#0d9488] file:text-white
-                                      hover:file:bg-green-700">
+                                      hover:file:bg-red-900">
                         <p class="mt-1 text-sm text-gray-500">Vous pouvez sélectionner plusieurs fichiers</p>
                     </div>
 
@@ -165,7 +165,7 @@
                             Annuler
                         </button>
                         <button type="submit"
-                                class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#0d9488] hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0d9488]">
+                                class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#0d9488] hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0d9488]">
                             Mettre à jour l'événement
                         </button>
                     </div>

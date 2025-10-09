@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
@@ -19,7 +19,7 @@
                     <div>
                         <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
                         <input type="text" name="nom" id="nom" value="{{ old('nom') }}" required
-                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('nom') border-red-300 @enderror">
+                            class="mt-1 focus:ring-red-900 focus:border-red-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('nom') border-red-300 @enderror">
                         @error('nom')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -29,7 +29,7 @@
                     <div>
                         <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
                         <input type="text" name="prenom" id="prenom" value="{{ old('prenom') }}" required
-                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('prenom') border-red-300 @enderror">
+                            class="mt-1 focus:ring-red-900 focus:border-red-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('prenom') border-red-300 @enderror">
                         @error('prenom')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -48,7 +48,7 @@
                     <div class="sm:col-span-2">
                         <label for="heure_arrivee" class="block text-sm font-medium text-gray-700">Heure d'arrivée</label>
                         <input type="datetime-local" name="heure_arrivee" id="heure_arrivee" value="{{ old('heure_arrivee', now()->format('Y-m-d\TH:i')) }}" required
-                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('heure_arrivee') border-red-300 @enderror">
+                            class="mt-1 focus:ring-red-900 focus:border-red-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md @error('heure_arrivee') border-red-300 @enderror">
                         @error('heure_arrivee')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -57,10 +57,10 @@
 
                 <!-- Boutons -->
                 <div class="mt-6 flex justify-end space-x-3">
-                    <a href="{{ route('visiteurs.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <a href="{{ route('visiteurs.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900">
                         Annuler
                     </a>
-                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900">
                         Enregistrer
                     </button>
                 </div>
@@ -69,3 +69,5 @@
     </div>
 </div>
 @endsection 
+
+
