@@ -8,7 +8,7 @@
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="mb-4 lg:mb-0">
                     <div class="flex items-center mb-2">
-                        <div class="w-10 h-10 bg-gradient-to-r from-red-900 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-lg">
+                        <div class="w-10 h-10 bg-[#991B1B] rounded-xl flex items-center justify-center mr-3 shadow-lg">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
@@ -52,7 +52,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <button type="submit" class="bg-gradient-to-r from-red-900 to-indigo-600 hover:from-red-800 hover:to-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <button type="submit" class="bg-[#991B1B] hover:bg-[#7F1616] text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl">
                             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"/>
                             </svg>
@@ -88,7 +88,7 @@
 
         <!-- Employee Profile Card -->
         <div class="bg-white rounded-2xl shadow-xl border border-gray-100 mb-8 overflow-hidden">
-            <div class="bg-gradient-to-r from-red-900 to-indigo-600 p-6">
+            <div class="bg-[#991B1B] p-6">
                 <div class="flex items-center">
                     @if($employee->photo)
                         <div class="flex-shrink-0 h-20 w-20 mr-6">
@@ -104,8 +104,8 @@
                     @endif
                     <div class="text-white">
                         <h2 class="text-2xl font-bold">{{ $employee->prenom }} {{ $employee->nom }}</h2>
-                        <p class="text-red-900 text-lg">{{ $employee->fonction }}</p>
-                        <p class="text-red-900">{{ $employee->email }}</p>
+                        <p class="text-white text-lg opacity-90">{{ $employee->fonction }}</p>
+                        <p class="text-white opacity-75">{{ $employee->email }}</p>
                     </div>
                 </div>
             </div>
@@ -230,7 +230,7 @@
                         </p>
                         <p class="text-sm text-gray-500">score global</p>
                     </div>
-                    <div class="w-12 h-12 {{ $scorePerformance >= 80 ? 'bg-[#FEE2E2] flex items-center justify-center">
+                    <div class="w-12 h-12 {{ $scorePerformance >= 80 ? 'bg-[#FEE2E2]' : ($scorePerformance >= 60 ? 'bg-[#FEE2E2]' : 'bg-red-100') }} rounded-xl flex items-center justify-center">
                         <svg class="w-6 h-6 {{ $scorePerformance >= 80 ? 'text-red-900' : ($scorePerformance >= 60 ? 'text-red-900' : 'text-red-600') }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
@@ -387,7 +387,7 @@
                                                 Modifier
                                             </a>
                                         @else
-                                            <a href="{{ route('archives.pointages.create') }}?date={{ $jour->format('Y-m-d') }}&employee_id={{ $employee->id }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-lg text-red-900 bg-red-900 hover:bg-red-800 transition-colors duration-200">
+                                            <a href="{{ route('archives.pointages.create') }}?date={{ $jour->format('Y-m-d') }}&employee_id={{ $employee->id }}" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-lg bg-[#FEE2E2] hover:bg-[#FDD4D4] transition-colors duration-200" style="color: #991B1B;">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                                                 </svg>
