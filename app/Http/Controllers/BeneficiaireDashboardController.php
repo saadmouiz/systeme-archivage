@@ -36,7 +36,15 @@ class BeneficiaireDashboardController extends Controller
                 'inscrit' => 0,
                     'refuser' => 0,
                     'hommes' => 0,
-                    'femmes' => 0
+                    'femmes' => 0,
+                    'association' => 0,
+                    'eps' => 0
+                ],
+                'statsGlobales' => [
+                    'hommes' => 0,
+                    'femmes' => 0,
+                    'inscrit' => 0,
+                    'refuser' => 0,
                 ],
                 'evolutionMensuelle' => collect(),
                 'statsModules' => [],
@@ -45,6 +53,7 @@ class BeneficiaireDashboardController extends Controller
                 'topEcoles' => collect(),
                 'croissanceMensuelle' => 0,
                 'croissanceAnnuelle' => 0,
+                'ceMois' => 0,
                 'documentsParType' => collect(),
             ]);
         }
@@ -98,7 +107,7 @@ class BeneficiaireDashboardController extends Controller
                 ];
             });
 
-        // Calcul des totaux
+        // Calcul des totaux pour les documents éducatifs (pour le tableau)
         $totauxStats = [
             'candidat' => $statsParEcole->sum('candidat'),
             'inscrit' => $statsParEcole->sum('inscrit'),
@@ -107,6 +116,14 @@ class BeneficiaireDashboardController extends Controller
             'femmes' => $statsParEcole->sum('femmes'),
             'association' => $statsParEcole->sum('association'),
             'eps' => $statsParEcole->sum('eps')
+        ];
+
+        // Statistiques globales pour TOUS les bénéficiaires (pour les graphiques)
+        $statsGlobales = [
+            'hommes' => Beneficiaire::where('genre', 'Homme')->count(),
+            'femmes' => Beneficiaire::where('genre', 'Femme')->count(),
+            'inscrit' => Beneficiaire::where('status', 'Accepter')->count(),
+            'refuser' => Beneficiaire::where('status', 'Refuser')->count(),
         ];
 
         // Évolution mensuelle des bénéficiaires
@@ -183,6 +200,11 @@ class BeneficiaireDashboardController extends Controller
         $croissanceMensuelle = $this->calculerCroissanceMensuelle();
         $croissanceAnnuelle = $this->calculerCroissanceAnnuelle();
 
+        // Bénéficiaires créés ce mois
+        $ceMois = Beneficiaire::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+
         // Documents par type de fichier
         $documentsParType = Beneficiaire::select('type', DB::raw('count(*) as total'))
             ->groupBy('type')
@@ -195,6 +217,7 @@ class BeneficiaireDashboardController extends Controller
             'beneficiairesParEcole',
             'statsParEcole',
             'totauxStats',
+            'statsGlobales',
             'evolutionMensuelle',
             'statsModules',
             'beneficiairesRecents',
@@ -202,6 +225,7 @@ class BeneficiaireDashboardController extends Controller
             'topEcoles',
             'croissanceMensuelle',
             'croissanceAnnuelle',
+            'ceMois',
             'documentsParType'
         ));
     }

@@ -26,8 +26,8 @@ class AdminSeeder extends Seeder
                'role' => 'superadmin',
            ],
            [
-               'name' => 'Hind Echarqui',
-               'email' => 'hind.echarqui@aiais.org',
+               'name' => 'Salma Taia',
+               'email' => 'salma.taia@aiais.org',
                'password' => Hash::make('password123'),
                'is_active' => 1,
                'role' => 'admin1',
@@ -40,15 +40,8 @@ class AdminSeeder extends Seeder
                'role' => 'admin2',
            ],
             [
-               'name' => 'nezha kamal',
-               'email' => 'nezha.kamal@aiais.org',
-               'password' => Hash::make('password123'),
-               'is_active' => 1,
-               'role' => 'admin2',
-           ],
-            [
-               'name' => 'asmaa el moutaraji',
-               'email' => 'asmaa.moutaraji@aiais.org',
+               'name' => 'Abir Aamimi',
+               'email' => 'abir.Aamimi@aiais.org',
                'password' => Hash::make('password123'),
                'is_active' => 1,
                'role' => 'admin2',
@@ -60,6 +53,13 @@ class AdminSeeder extends Seeder
                'is_active' => 1,
                'role' => 'admin3',
            ],
+           [
+            'name' => 'Oumaima Benmansour',
+            'email' => 'oumaima.benmansour@aiais.org',
+            'password' => Hash::make('password123'),
+            'is_active' => 1,
+            'role' => 'admin3',
+        ],
        ];
 
        // Création des administrateurs et assignation des rôles

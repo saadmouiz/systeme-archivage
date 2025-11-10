@@ -16,7 +16,7 @@ class Admin extends Authenticatable
             'admin1' => ['financiers', 'employes', 'administratif', 'rh'],
             'admin2' => ['beneficiaires',  'evenement', 'communication'],
             'admin3' => ['pointages' , 'beneficiaires'],
-            'superadmin' => ['financiers', 'employes', 'administratif', 'rh', 'beneficiaires', 'partenaires', 'evenement', 'communication','pointages'],
+            'superadmin' => ['financiers', 'employes', 'administratif', 'rh', 'beneficiaires', 'partenaires', 'evenement', 'communication','pointages', 'courriers'],
         ];
 
         $userRole = $this->roles->first()->name ?? null;

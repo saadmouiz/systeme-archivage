@@ -75,7 +75,7 @@
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Croissance Mensuelle</dt>
                                 <dd class="text-2xl font-bold {{ $croissanceMensuelle >= 0 ? 'text-red-900' : 'text-red-600' }}">
-                                    {{ $croissanceMensuelle >= 0 ? '+' : '' }}{{ $croissanceMensuelle }}%
+                                    {{ $croissanceMensuelle >= 0 ? '+' : '' }}{{ number_format($croissanceMensuelle, 2) }}%
                                 </dd>
                             </dl>
                         </div>
@@ -98,7 +98,7 @@
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Croissance Annuelle</dt>
                                 <dd class="text-2xl font-bold {{ $croissanceAnnuelle >= 0 ? 'text-red-900' : 'text-red-600' }}">
-                                    {{ $croissanceAnnuelle >= 0 ? '+' : '' }}{{ $croissanceAnnuelle }}%
+                                    {{ $croissanceAnnuelle >= 0 ? '+' : '' }}{{ number_format($croissanceAnnuelle, 2) }}%
                                 </dd>
                             </dl>
                         </div>
@@ -121,7 +121,7 @@
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Ce Mois</dt>
                                 <dd class="text-2xl font-bold text-gray-900">
-                                    {{ $repartitionAnnuelle->get(Carbon\Carbon::now()->month, 0) }}
+                                    {{ $ceMois ?? 0 }}
                                 </dd>
                             </dl>
                         </div>
@@ -364,6 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeData = @json($beneficiairesParType);
     const repartitionData = @json($repartitionAnnuelle);
     const totauxStats = @json($totauxStats);
+    const statsGlobales = @json($statsGlobales ?? ['hommes' => 0, 'femmes' => 0, 'inscrit' => 0, 'refuser' => 0]);
     
     // Créer des gradients pour un effet moderne
     const createGradient = (ctx, color) => {
@@ -383,8 +384,8 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Répartition par Genre',
                 data: [
-                    totauxStats.hommes || 0,
-                    totauxStats.femmes || 0
+                    statsGlobales.hommes || 0,
+                    statsGlobales.femmes || 0
                 ],
                 backgroundColor: [
                     'rgba(99, 102, 241, 0.9)',   // Bleu pour Hommes
@@ -506,8 +507,8 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Répartition par Status',
                 data: [
-                    totauxStats.inscrit || 0,
-                    totauxStats.refuser || 0
+                    statsGlobales.inscrit || 0,
+                    statsGlobales.refuser || 0
                 ],
                 backgroundColor: [
                     createGradient(statusCtx, 'rgba(16, 185, 129, 0.9)'),   // Vert pour Inscrit

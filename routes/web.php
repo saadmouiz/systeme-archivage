@@ -16,6 +16,7 @@ use App\Http\Controllers\CommunicationController;
 use App\Http\Controllers\LegalDocumentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\VisiteurController;
+use App\Http\Controllers\CourrierController;
 use Carbon\Carbon;
 
 // Routes d'authentification
@@ -119,6 +120,29 @@ Route::middleware(['auth'])->group(function () {
         
         Route::middleware(['can:access-evenements'])->group(function () {
             Route::resource('evenements', EvenementController::class);
+        });
+
+        // Courriers - Accès pour Superadmin
+        Route::middleware(['can:access-courriers'])->prefix('courriers')->name('courriers.')->group(function () {
+            // Courriers Arrivants
+            Route::get('/arrivants', [CourrierController::class, 'indexArrivants'])->name('arrivants.index');
+            Route::get('/arrivants/create', [CourrierController::class, 'createArrivant'])->name('arrivants.create');
+            Route::post('/arrivants', [CourrierController::class, 'storeArrivant'])->name('arrivants.store');
+            Route::get('/arrivants/{courrier}', [CourrierController::class, 'showArrivant'])->name('arrivants.show');
+            Route::get('/arrivants/{courrier}/edit', [CourrierController::class, 'editArrivant'])->name('arrivants.edit');
+            Route::put('/arrivants/{courrier}', [CourrierController::class, 'updateArrivant'])->name('arrivants.update');
+            Route::delete('/arrivants/{courrier}', [CourrierController::class, 'destroyArrivant'])->name('arrivants.destroy');
+            Route::get('/arrivants/{courrier}/download', [CourrierController::class, 'downloadArrivant'])->name('arrivants.download');
+
+            // Courriers Sortants
+            Route::get('/sortants', [CourrierController::class, 'indexSortants'])->name('sortants.index');
+            Route::get('/sortants/create', [CourrierController::class, 'createSortant'])->name('sortants.create');
+            Route::post('/sortants', [CourrierController::class, 'storeSortant'])->name('sortants.store');
+            Route::get('/sortants/{courrier}', [CourrierController::class, 'showSortant'])->name('sortants.show');
+            Route::get('/sortants/{courrier}/edit', [CourrierController::class, 'editSortant'])->name('sortants.edit');
+            Route::put('/sortants/{courrier}', [CourrierController::class, 'updateSortant'])->name('sortants.update');
+            Route::delete('/sortants/{courrier}', [CourrierController::class, 'destroySortant'])->name('sortants.destroy');
+            Route::get('/sortants/{courrier}/download', [CourrierController::class, 'downloadSortant'])->name('sortants.download');
         });
     });
 });
