@@ -119,7 +119,7 @@
                         </div>
                         <div>
                             <p class="text-sm font-medium text-gray-500">Date d'embauche</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ $employee->date_embauche->format('d/m/Y') }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $employee->date_embauche ? $employee->date_embauche->format('d/m/Y') : 'Non spécifiée' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center">
