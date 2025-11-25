@@ -60,8 +60,8 @@ class BeneficiaireController extends Controller
 
         $beneficiaires = $query->orderBy('id', 'asc')->get()->groupBy('type');
 
-        // Récupérer les écoles pour le filtre
-        $ecoles = ArchivePartenaire::where('type', 'école')
+        // Récupérer les écoles et centres pour le filtre
+        $ecoles = ArchivePartenaire::whereIn('type', ['école', 'Centre', 'centre'])
             ->orderBy('nom')
             ->get();
 
@@ -83,8 +83,8 @@ class BeneficiaireController extends Controller
 
     public function create()
 {
-    // Au lieu de pluck qui retourne un tableau associatif
-    $ecoles = ArchivePartenaire::where('type', 'école')
+    // Récupérer les écoles ET les centres pour le dropdown
+    $ecoles = ArchivePartenaire::whereIn('type', ['école', 'Centre', 'centre'])
         ->orderBy('nom')
         ->get(); // Récupère une collection d'objets
 
@@ -220,8 +220,8 @@ class BeneficiaireController extends Controller
 
     public function edit(Beneficiaire $beneficiaire)
     {
-        // Récupérer les écoles pour le formulaire
-        $ecoles = ArchivePartenaire::where('type', 'école')
+        // Récupérer les écoles et centres pour le formulaire
+        $ecoles = ArchivePartenaire::whereIn('type', ['école', 'Centre', 'centre'])
             ->orderBy('nom')
             ->pluck('nom', 'id');
 

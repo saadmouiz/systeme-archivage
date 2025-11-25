@@ -12,7 +12,8 @@ class PartenaireController extends Controller
     protected $types = [
         'Association partenaire' => 'Association partenaire',
         'Entreprise et Sponsor' => 'Entreprise et Sponsor',
-        'école' => 'école'
+        'école' => 'école',
+        'Centre' => 'Centre'
     ];
                            
     protected $statuts = [

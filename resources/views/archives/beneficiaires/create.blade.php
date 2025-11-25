@@ -227,12 +227,12 @@
                         </div>
                     </div>
 
-                    <!-- École -->
+                    <!-- École/Centre -->
                     <div class="mt-6">
-                        <label for="ecole_id" class="block text-sm font-medium text-gray-700 mb-1">École <span class="text-red-500">*</span></label>
+                        <label for="ecole_id" class="block text-sm font-medium text-gray-700 mb-1">École/Centre <span class="text-red-500">*</span></label>
                         <select name="ecole_id" id="ecole_id" 
                                 class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                            <option value="">Sélectionnez une école</option>
+                            <option value="">Sélectionnez une école ou un centre</option>
                             @foreach($ecoles as $ecole)
                                 <option value="{{ $ecole->id }}" {{ old('ecole_id') == $ecole->id ? 'selected' : '' }}>
                                     {{ $ecole->nom }}
