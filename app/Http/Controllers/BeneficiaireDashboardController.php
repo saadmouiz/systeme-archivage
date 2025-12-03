@@ -79,6 +79,8 @@ class BeneficiaireDashboardController extends Controller
             });
 
         // Statistiques détaillées par école avec genre et status
+        // On cible tous les bénéficiaires dont le type correspond à un document éducatif,
+        // en restant tolérant sur les variations d'écriture (majuscules, pluriel, etc.).
         $statsParEcole = Beneficiaire::with('ecole')
             ->select(
                 'ecole_id',
@@ -90,7 +92,7 @@ class BeneficiaireDashboardController extends Controller
                 DB::raw('SUM(CASE WHEN ass_eps = "Association" THEN 1 ELSE 0 END) as association'),
                 DB::raw('SUM(CASE WHEN ass_eps = "Eps" THEN 1 ELSE 0 END) as eps')
             )
-            ->where('type', 'Document éducatif')
+            ->whereRaw('LOWER(type) LIKE ?', ['%document%educatif%'])
             ->whereNotNull('ecole_id')
             ->groupBy('ecole_id')
             ->get()
@@ -110,7 +112,7 @@ class BeneficiaireDashboardController extends Controller
         // Calcul des totaux pour les documents éducatifs (pour le tableau & le graphique)
         // On ne se base plus uniquement sur les écoles afin de ne pas perdre les lignes
         // qui n'ont pas d'`ecole_id` renseigné.
-        $totauxQuery = Beneficiaire::where('type', 'Document éducatif')
+        $totauxQuery = Beneficiaire::whereRaw('LOWER(type) LIKE ?', ['%document%educatif%'])
             ->select(
                 DB::raw('count(*) as candidat'),
                 DB::raw('SUM(CASE WHEN status IN ("Accepter", "Inscrit") THEN 1 ELSE 0 END) as inscrit'),
@@ -326,7 +328,7 @@ class BeneficiaireDashboardController extends Controller
                 DB::raw('SUM(CASE WHEN ass_eps = "Association" THEN 1 ELSE 0 END) as association'),
                 DB::raw('SUM(CASE WHEN ass_eps = "Eps" THEN 1 ELSE 0 END) as eps')
             )
-            ->where('type', 'Document éducatif')
+            ->whereRaw('LOWER(type) LIKE ?', ['%document%educatif%'])
             ->whereNotNull('ecole_id')
             ->groupBy('ecole_id')
             ->get()
@@ -607,7 +609,7 @@ class BeneficiaireDashboardController extends Controller
                 DB::raw('SUM(CASE WHEN ass_eps = "Association" THEN 1 ELSE 0 END) as association'),
                 DB::raw('SUM(CASE WHEN ass_eps = "Eps" THEN 1 ELSE 0 END) as eps')
             )
-            ->where('type', 'Document éducatif')
+            ->whereRaw('LOWER(type) LIKE ?', ['%document%educatif%'])
             ->whereNotNull('ecole_id')
             ->groupBy('ecole_id')
             ->get()
