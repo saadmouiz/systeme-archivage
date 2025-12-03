@@ -275,6 +275,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const totauxStats = @json($totauxStats);
     const statsGlobales = @json($statsGlobales ?? []);
     
+    // Debug: Afficher les données dans la console
+    console.log('Stats Globales:', statsGlobales);
+    console.log('Totaux Stats:', totauxStats);
+    
     // Créer des gradients pour un effet moderne
     const createGradient = (ctx, color) => {
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
@@ -407,18 +411,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Graphique par Status (droite) - Design moderne
-    const statusCtx = document.getElementById('statusChart').getContext('2d');
-    
-    new Chart(statusCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Inscrit', 'Refuser'],
-            datasets: [{
-                label: 'Répartition par Status',
-                data: [
-                    statsGlobales.inscrit || 0,
-                    statsGlobales.refuser || 0
-                ],
+    const statusCanvas = document.getElementById('statusChart');
+    if (!statusCanvas) {
+        console.error('Canvas statusChart non trouvé');
+    } else {
+        const statusCtx = statusCanvas.getContext('2d');
+        
+        // S'assurer que les valeurs sont des nombres
+        const inscritValue = parseInt(statsGlobales?.inscrit || 0) || 0;
+        const refuserValue = parseInt(statsGlobales?.refuser || 0) || 0;
+        
+        new Chart(statusCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Inscrit', 'Refuser'],
+                datasets: [{
+                    label: 'Répartition par Status',
+                    data: [inscritValue, refuserValue],
                 backgroundColor: [
                     createGradient(statusCtx, 'rgba(16, 185, 129, 0.9)'),   // Vert pour Inscrit
                     createGradient(statusCtx, 'rgba(239, 68, 68, 0.9)')     // Rouge pour Refuser
@@ -497,10 +506,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    }
 
-    // Graphique en donut avec les totaux du tableau (droite) - Design moderne
-    const tableauCtx = document.getElementById('tableauChart').getContext('2d');
-    
     // Créer des gradients radiaux pour le donut
     const createRadialGradient = (ctx, color1, color2) => {
         const gradient = ctx.createRadialGradient(150, 150, 50, 150, 150, 150);
@@ -509,20 +516,30 @@ document.addEventListener('DOMContentLoaded', function() {
         return gradient;
     };
 
-    const documentsChart = new Chart(tableauCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Candidat', 'Inscrit', 'Refuser', 'Hommes', 'Femmes', 'Association', 'Eps'],
-            datasets: [{
-                data: [
-                    totauxStats.candidat || 0,
-                    totauxStats.inscrit || 0,
-                    totauxStats.refuser || 0,
-                    totauxStats.hommes || 0,
-                    totauxStats.femmes || 0,
-                    totauxStats.association || 0,
-                    totauxStats.eps || 0
-                ],
+    // Graphique en donut avec les totaux du tableau (droite) - Design moderne
+    const tableauCanvas = document.getElementById('tableauChart');
+    if (!tableauCanvas) {
+        console.error('Canvas tableauChart non trouvé');
+    } else {
+        const tableauCtx = tableauCanvas.getContext('2d');
+        
+        // S'assurer que toutes les valeurs sont des nombres
+        const chartData = [
+            parseInt(totauxStats?.candidat || 0) || 0,
+            parseInt(totauxStats?.inscrit || 0) || 0,
+            parseInt(totauxStats?.refuser || 0) || 0,
+            parseInt(totauxStats?.hommes || 0) || 0,
+            parseInt(totauxStats?.femmes || 0) || 0,
+            parseInt(totauxStats?.association || 0) || 0,
+            parseInt(totauxStats?.eps || 0) || 0
+        ];
+        
+        const documentsChart = new Chart(tableauCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Candidat', 'Inscrit', 'Refuser', 'Hommes', 'Femmes', 'Association', 'Eps'],
+                datasets: [{
+                    data: chartData,
                 backgroundColor: [
                     createRadialGradient(tableauCtx, 'rgba(99, 102, 241, 0.9)', 'rgba(99, 102, 241, 0.4)'),   // Indigo gradient pour Candidat
                     createRadialGradient(tableauCtx, 'rgba(16, 185, 129, 0.9)', 'rgba(16, 185, 129, 0.4)'),   // Emerald gradient pour Inscrit
@@ -653,6 +670,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    }
 
     // Redessiner le texte lors du redimensionnement
     window.addEventListener('resize', function() {
