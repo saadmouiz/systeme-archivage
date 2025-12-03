@@ -107,23 +107,38 @@ class BeneficiaireDashboardController extends Controller
                 ];
             });
 
-        // Calcul des totaux pour les documents éducatifs (pour le tableau)
+        // Calcul des totaux pour les documents éducatifs (pour le tableau & le graphique)
+        // On ne se base plus uniquement sur les écoles afin de ne pas perdre les lignes
+        // qui n'ont pas d'`ecole_id` renseigné.
+        $totauxQuery = Beneficiaire::where('type', 'Document éducatif')
+            ->select(
+                DB::raw('count(*) as candidat'),
+                DB::raw('SUM(CASE WHEN status IN ("Accepter", "Inscrit") THEN 1 ELSE 0 END) as inscrit'),
+                DB::raw('SUM(CASE WHEN status IN ("Refuser", "Refusé") THEN 1 ELSE 0 END) as refuser'),
+                DB::raw('SUM(CASE WHEN genre = "Homme" THEN 1 ELSE 0 END) as hommes'),
+                DB::raw('SUM(CASE WHEN genre = "Femme" THEN 1 ELSE 0 END) as femmes'),
+                DB::raw('SUM(CASE WHEN ass_eps = "Association" THEN 1 ELSE 0 END) as association'),
+                DB::raw('SUM(CASE WHEN ass_eps = "Eps" THEN 1 ELSE 0 END) as eps')
+            )
+            ->first();
+
         $totauxStats = [
-            'candidat' => $statsParEcole->sum('candidat'),
-            'inscrit' => $statsParEcole->sum('inscrit'),
-            'refuser' => $statsParEcole->sum('refuser'),
-            'hommes' => $statsParEcole->sum('hommes'),
-            'femmes' => $statsParEcole->sum('femmes'),
-            'association' => $statsParEcole->sum('association'),
-            'eps' => $statsParEcole->sum('eps')
+            'candidat' => $totauxQuery->candidat ?? 0,
+            'inscrit' => $totauxQuery->inscrit ?? 0,
+            'refuser' => $totauxQuery->refuser ?? 0,
+            'hommes' => $totauxQuery->hommes ?? 0,
+            'femmes' => $totauxQuery->femmes ?? 0,
+            'association' => $totauxQuery->association ?? 0,
+            'eps' => $totauxQuery->eps ?? 0,
         ];
 
         // Statistiques globales pour TOUS les bénéficiaires (pour les graphiques)
+        // On rend la détection du status plus tolérante (Accepter / Inscrit, Refuser / Refusé)
         $statsGlobales = [
             'hommes' => Beneficiaire::where('genre', 'Homme')->count(),
             'femmes' => Beneficiaire::where('genre', 'Femme')->count(),
-            'inscrit' => Beneficiaire::where('status', 'Accepter')->count(),
-            'refuser' => Beneficiaire::where('status', 'Refuser')->count(),
+            'inscrit' => Beneficiaire::whereIn('status', ['Accepter', 'Inscrit'])->count(),
+            'refuser' => Beneficiaire::whereIn('status', ['Refuser', 'Refusé'])->count(),
         ];
 
         // Évolution mensuelle des bénéficiaires
