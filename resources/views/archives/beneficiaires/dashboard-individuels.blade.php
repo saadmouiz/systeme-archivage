@@ -41,7 +41,7 @@
         </div>
 
         <!-- Graphiques et analyses -->
-        <!-- Première ligne : Niveau et Spécialité -->
+        <!-- Première ligne : Niveau et Société -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <!-- Statistiques par Niveau -->
             <div class="group bg-white hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-2xl rounded-3xl p-8 border border-gray-100/50 backdrop-blur-sm relative overflow-hidden">
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 
-            <!-- Statistiques par Spécialité -->
+            <!-- Statistiques par Société -->
             <div class="group bg-white hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-2xl rounded-3xl p-8 border border-gray-100/50 backdrop-blur-sm relative overflow-hidden">
                 <!-- Décoration de fond -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-emerald-100/30 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
@@ -93,9 +93,9 @@
                         <div class="flex-1">
                             <div class="flex items-center mb-3">
                                 <div class="w-3 h-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full mr-3"></div>
-                                <h3 class="text-xl font-bold text-gray-900">Répartition par Spécialité</h3>
+                                <h3 class="text-xl font-bold text-gray-900">Répartition par Société</h3>
                             </div>
-                            <p class="text-sm text-gray-500 leading-relaxed">Vue d'ensemble des spécialités académiques</p>
+                            <p class="text-sm text-gray-500 leading-relaxed">Vue d'ensemble des sociétés (employeurs)</p>
                             </div>
                         <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 via-teal-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                             <svg class="w-7 h-7 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,18 +106,18 @@
             </div>
 
                     <div class="h-80 relative">
-                        <div id="specialiteChartContainer" class="h-full">
-                            <canvas id="specialiteChart" class="w-full h-full"></canvas>
+                        <div id="societeChartContainer" class="h-full">
+                            <canvas id="societeChart" class="w-full h-full"></canvas>
                         </div>
-                        <div id="specialiteEmptyState" class="hidden absolute inset-0 flex items-center justify-center">
+                        <div id="societeEmptyState" class="hidden absolute inset-0 flex items-center justify-center">
                             <div class="text-center py-12">
                                 <div class="w-20 h-20 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                                     <svg class="w-10 h-10 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
                             </svg>
                         </div>
-                                <h4 class="text-lg font-semibold text-gray-700 mb-2">Aucune spécialité renseignée</h4>
-                                <p class="text-gray-500 text-sm">Les données de spécialité apparaîtront ici une fois<br>que des dossiers avec spécialité seront créés.</p>
+                                <h4 class="text-lg font-semibold text-gray-700 mb-2">Aucune société renseignée</h4>
+                                <p class="text-gray-500 text-sm">Les données de société apparaîtront ici une fois<br>que des dossiers avec société seront créés.</p>
                             </div>
                         </div>
                     </div>
@@ -125,6 +125,34 @@
                     </div>
                 </div>
                 
+        <!-- Deuxième ligne : Répartition par Genre (dossiers individuels) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="group bg-white hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-2xl rounded-3xl p-8 border border-gray-100/50 backdrop-blur-sm relative overflow-hidden">
+                <!-- Décoration de fond -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-pink-100/30 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-start justify-between mb-8">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-3">
+                                <div class="w-3 h-3 bg-gradient-to-r from-blue-500 to-pink-500 rounded-full mr-3"></div>
+                                <h3 class="text-xl font-bold text-gray-900">Répartition par Genre</h3>
+                            </div>
+                            <p class="text-sm text-gray-500 leading-relaxed">Vue d'ensemble des genres des dossiers individuels (Homme / Femme)</p>
+                        </div>
+                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 via-indigo-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-7 h-7 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="h-80">
+                        <canvas id="genreChartIndividuel" class="w-full h-full"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Tableau des Statistiques Détaillées -->
         @if($dossiersRecents->count() > 0)
@@ -353,7 +381,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Données pour les graphiques
     const statsParNiveau = @json($statsParNiveau);
-    const statsParSpecialite = @json($statsParSpecialite);
+    const statsParSociete = @json($statsParSociete ?? []);
+    const statsParGenre = @json($statsParGenre ?? []);
 
     // Fonction pour gérer les états vides
     function handleEmptyState(containerId, emptyStateId, hasData) {
@@ -514,6 +543,81 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+    }
+
+    // Graphique par société
+    const societeLabels = Object.keys(statsParSociete);
+    const societeData = Object.values(statsParSociete);
+    const hasSocieteData = societeLabels.length > 0 && societeData.some(value => value > 0);
+
+    handleEmptyState('societeChartContainer', 'societeEmptyState', hasSocieteData);
+
+    if (hasSocieteData) {
+        const societeCtx = document.getElementById('societeChart').getContext('2d');
+        
+        new Chart(societeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: societeLabels,
+                datasets: [{
+                    data: societeData,
+                    backgroundColor: modernColors.primary,
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 16
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+    }
+
+    // Graphique par genre (Homme / Femme)
+    const genreLabels = Object.keys(statsParGenre);
+    const genreData = Object.values(statsParGenre);
+    const hasGenreData = genreLabels.length > 0 && genreData.some(value => value > 0);
+
+    if (hasGenreData) {
+        const genreCtx = document.getElementById('genreChartIndividuel')?.getContext('2d');
+        if (genreCtx) {
+            new Chart(genreCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: genreLabels,
+                    datasets: [{
+                        data: genreData,
+                        backgroundColor: ['#3b82f6', '#ec4899'],
+                        borderWidth: 2,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 16
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
     }
 
     // Graphique en donut par spécialité - Design moderne avec gestion d'état vide
