@@ -380,16 +380,18 @@ class BeneficiaireDashboardController extends Controller
         if (!Schema::hasTable('beneficiaires')) {
             return view('archives.beneficiaires.dashboard-individuels', [
                 'totalDossiersIndividuels' => 0,
-                'statsParNiveau' => collect(),
-                'statsParSpecialite' => collect(),
-                'croissanceMensuelle' => 0,
-                'croissanceAnnuelle' => 0,
-                'evolutionMensuelle' => collect(),
-                'repartitionNiveaux' => collect(),
-                'dossiersRecents' => collect(),
-                'topSpecialites' => collect(),
-                'repartitionAnnuelle' => collect(),
-                'niveauxAvecStats' => collect(),
+                'statsParNiveau'          => collect(),
+                'statsParSpecialite'      => collect(),
+                'statsParSociete'         => collect(),
+                'statsParGenre'           => collect(),
+                'croissanceMensuelle'     => 0,
+                'croissanceAnnuelle'      => 0,
+                'evolutionMensuelle'      => collect(),
+                'repartitionNiveaux'      => collect(),
+                'dossiersRecents'         => collect(),
+                'topSpecialites'          => collect(),
+                'repartitionAnnuelle'     => collect(),
+                'niveauxAvecStats'        => collect(),
             ]);
         }
 
@@ -411,6 +413,22 @@ class BeneficiaireDashboardController extends Controller
             ->groupBy('specialite')
             ->get()
             ->pluck('total', 'specialite');
+
+        // Statistiques par société (employeur) pour les dossiers individuels
+        $statsParSociete = Beneficiaire::where('type', 'Dossier individuel')
+            ->select('societe', DB::raw('count(*) as total'))
+            ->whereNotNull('societe')
+            ->groupBy('societe')
+            ->get()
+            ->pluck('total', 'societe');
+
+        // Statistiques par genre pour les dossiers individuels
+        $statsParGenre = Beneficiaire::where('type', 'Dossier individuel')
+            ->select('genre', DB::raw('count(*) as total'))
+            ->whereNotNull('genre')
+            ->groupBy('genre')
+            ->get()
+            ->pluck('total', 'genre');
 
 
         // Évolution mensuelle des dossiers individuels
@@ -511,6 +529,8 @@ class BeneficiaireDashboardController extends Controller
             'totalDossiersIndividuels',
             'statsParNiveau',
             'statsParSpecialite',
+            'statsParSociete',
+            'statsParGenre',
             'croissanceMensuelle',
             'croissanceAnnuelle',
             'evolutionMensuelle',
