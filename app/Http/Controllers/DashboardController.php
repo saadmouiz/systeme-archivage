@@ -38,16 +38,22 @@ class DashboardController extends Controller
 
         // Statistiques Bénéficiaires
         $beneficiairesCount = \App\Models\Beneficiaire::count();
+
         $beneficiairesByType = \App\Models\Beneficiaire::select('type')
             ->selectRaw('count(*) as total')
             ->groupBy('type')
             ->get();
+
+        // On exclut explicitement les valeurs null pour éviter l'affichage "null" dans les graphiques
         $beneficiairesByGenre = \App\Models\Beneficiaire::select('genre')
             ->selectRaw('count(*) as total')
+            ->whereNotNull('genre')
             ->groupBy('genre')
             ->get();
+
         $beneficiairesByStatus = \App\Models\Beneficiaire::select('status')
             ->selectRaw('count(*) as total')
+            ->whereNotNull('status')
             ->groupBy('status')
             ->get();
 
@@ -122,20 +128,6 @@ class DashboardController extends Controller
             ->get();
         $totalParticipants = \App\Models\Evenement::sum('nombre_participants');
 
-        // Activités récentes (tous types confondus)
-        $recentActivities = collect()
-            ->merge(\App\Models\ArchivePartenaire::latest()->take(3)->get()->map(function($item) {
-                return ['type' => 'Partenaire', 'titre' => $item->nom, 'date' => $item->created_at];
-            }))
-            ->merge(\App\Models\Beneficiaire::latest()->take(3)->get()->map(function($item) {
-                return ['type' => 'Bénéficiaire', 'titre' => $item->nom . ' ' . $item->prenom, 'date' => $item->created_at];
-            }))
-            ->merge(\App\Models\Evenement::latest()->take(3)->get()->map(function($item) {
-                return ['type' => 'Événement', 'titre' => $item->titre, 'date' => $item->created_at];
-            }))
-            ->sortByDesc('date')
-            ->take(10);
-
         return view('statistics', compact(
             'partnersCount', 'recentPartners', 'partnersByType', 'partnersByMonth',
             'beneficiairesCount', 'beneficiairesByType', 'beneficiairesByGenre', 'beneficiairesByStatus',
@@ -146,8 +138,7 @@ class DashboardController extends Controller
             'financiersCount', 'financiersByType', 'totalMontant', 'financiersByStatut',
             'administratifsCount', 'administratifsByType',
             'communicationsCount', 'communicationsByType',
-            'evenementsCount', 'evenementsByType', 'evenementsByStatut', 'totalParticipants',
-            'recentActivities'
+            'evenementsCount', 'evenementsByType', 'evenementsByStatut', 'totalParticipants'
         ));
     }
 }

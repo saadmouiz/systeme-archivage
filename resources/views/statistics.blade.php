@@ -11,9 +11,9 @@
             <p class="mt-2 text-gray-600">Analyse détaillée de toutes les données du système</p>
         </div>
 
-        <!-- Vue d'ensemble globale -->
+        <!-- Vue d'ensemble globale (cartes cliquables) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-[#FEE2E2] rounded-xl shadow-lg p-6 border border-red-300">
+            <a href="{{ route('archives.partenaires.index') }}" class="bg-[#FEE2E2] rounded-xl shadow-lg p-6 border border-red-300 hover:shadow-xl hover:-translate-y-1 transition transform duration-150 cursor-pointer">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-red-900 text-sm font-medium">Partenaires</p>
@@ -25,9 +25,9 @@
                         </svg>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <div class="bg-[#FEE2E2] rounded-xl shadow-lg p-6 border border-red-300">
+            <a href="{{ route('archives.beneficiaires.index') }}" class="bg-[#FEE2E2] rounded-xl shadow-lg p-6 border border-red-300 hover:shadow-xl hover:-translate-y-1 transition transform duration-150 cursor-pointer">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-red-900 text-sm font-medium">Bénéficiaires</p>
@@ -39,9 +39,9 @@
                         </svg>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <div class="bg-[#FEE2E2] rounded-xl shadow-lg p-6 border border-red-300">
+            <a href="{{ route('archives.employees.index') }}" class="bg-[#FEE2E2] rounded-xl shadow-lg p-6 border border-red-300 hover:shadow-xl hover:-translate-y-1 transition transform duration-150 cursor-pointer">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-red-900 text-sm font-medium">Employés</p>
@@ -54,9 +54,9 @@
                         </svg>
                     </div>
                 </div>
-            </div>
+            </a>
 
-            <div class="bg-[#FEE2E2] rounded-xl shadow-lg p-6 border border-red-300">
+            <a href="{{ route('archives.evenements.index') }}" class="bg-[#FEE2E2] rounded-xl shadow-lg p-6 border border-red-300 hover:shadow-xl hover:-translate-y-1 transition transform duration-150 cursor-pointer">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-red-900 text-sm font-medium">Événements</p>
@@ -69,7 +69,7 @@
                         </svg>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Statistiques RH -->
@@ -305,46 +305,6 @@
                 @endforeach
             </div>
         </div>
-
-        <!-- Activités Récentes -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <svg class="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Activités Récentes
-            </h2>
-
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Titre</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($recentActivities as $activity)
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                                    @if($activity['type'] === 'Partenaire') bg-red-100 text-red-900
-                                    @elseif($activity['type'] === 'Bénéficiaire') bg-red-100 text-red-900
-                                    @else bg-red-100 text-red-900 @endif">
-                                    {{ $activity['type'] }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $activity['titre'] }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $activity['date']->format('d/m/Y H:i') }}
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -405,9 +365,13 @@
     new Chart(document.getElementById('beneficiairesGenreChart'), {
         type: 'doughnut',
         data: {
-            labels: {!! json_encode($beneficiairesByGenre->pluck('genre')) !!},
+            // Ordre forcé : Homme (bleu), Femme (rose)
+            labels: ['Homme', 'Femme'],
             datasets: [{
-                data: {!! json_encode($beneficiairesByGenre->pluck('total')) !!},
+                data: [
+                    {{ optional($beneficiairesByGenre->firstWhere('genre', 'Homme'))->total ?? 0 }},
+                    {{ optional($beneficiairesByGenre->firstWhere('genre', 'Femme'))->total ?? 0 }},
+                ],
                 backgroundColor: [colors.blue, colors.pink]
             }]
         },
@@ -419,14 +383,17 @@
         }
     });
 
-    // Graphique Bénéficiaires par Statut
+    // Graphique Bénéficiaires par Statut (sans "null")
     new Chart(document.getElementById('beneficiairesStatusChart'), {
         type: 'doughnut',
         data: {
-            labels: {!! json_encode($beneficiairesByStatus->pluck('status')) !!},
+            labels: ['Accepter', 'Refuser'],
             datasets: [{
-                data: {!! json_encode($beneficiairesByStatus->pluck('total')) !!},
-                backgroundColor: colors.primary
+                data: [
+                    {{ optional($beneficiairesByStatus->firstWhere('status', 'Accepter'))->total ?? 0 }},
+                    {{ optional($beneficiairesByStatus->firstWhere('status', 'Refuser'))->total ?? 0 }},
+                ],
+                backgroundColor: [colors.green, colors.orange]
             }]
         },
         options: {

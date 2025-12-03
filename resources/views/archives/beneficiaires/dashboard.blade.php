@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeData = @json($beneficiairesParType);
     const repartitionData = @json($repartitionAnnuelle);
     const totauxStats = @json($totauxStats);
-    const statsGlobales = @json($statsGlobales ?? ['hommes' => 0, 'femmes' => 0, 'inscrit' => 0, 'refuser' => 0]);
+    const statsGlobales = @json($statsGlobales ?? []);
     
     // Créer des gradients pour un effet moderne
     const createGradient = (ctx, color) => {

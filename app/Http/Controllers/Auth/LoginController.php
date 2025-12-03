@@ -26,6 +26,15 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
+        // Vérifier si l'admin existe et est actif
+        $admin = \App\Models\Admin::where('email', $credentials['email'])->first();
+        
+        if ($admin && !$admin->is_active) {
+            throw ValidationException::withMessages([
+                'email' => ['Votre compte a été désactivé. Veuillez contacter l\'administrateur.'],
+            ]);
+        }
+
         if (Auth::attempt($credentials, $request->boolean('remember-me'))) {
             $request->session()->regenerate();
             return redirect()->intended(route('dashboard'));

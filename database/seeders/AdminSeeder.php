@@ -33,6 +33,13 @@ class AdminSeeder extends Seeder
                'role' => 'admin1',
            ],
            [
+            'name' => 'Fadwa En-nidam ',
+            'email' => 'fadwa.en-nidam@aiais.org',
+            'password' => Hash::make('password123'),
+            'is_active' => 1,
+            'role' => 'admin1',
+            ],
+           [
                'name' => 'Chaimae Laqtib',
                'email' => 'chaimae.laqtib@aiais.org',
                'password' => Hash::make('password123'),
@@ -40,8 +47,8 @@ class AdminSeeder extends Seeder
                'role' => 'admin2',
            ],
             [
-               'name' => 'Abir Aamimi',
-               'email' => 'abir.Aamimi@aiais.org',
+               'name' => 'Abir Amimi',
+               'email' => 'abir.Amimi@aiais.org',
                'password' => Hash::make('password123'),
                'is_active' => 1,
                'role' => 'admin2',

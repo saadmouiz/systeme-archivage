@@ -8,7 +8,7 @@ class Admin extends Authenticatable
 {
     use HasRoles;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'is_active'];
 
     public function hasAccess($section)
     {
