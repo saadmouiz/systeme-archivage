@@ -336,6 +336,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const societeDiv = document.getElementById('societe_div');
     
     function toggleConditionalFields() {
+        const niveauSelect = document.getElementById('niveau');
+        const niveauBacOption = niveauSelect.querySelector('option[value="Niveau Bac"]');
+        const bacOption = niveauSelect.querySelector('option[value="Bac"]');
+        
         if (typeSelect.value === 'Document éducatif') {
             ecoleDiv.classList.remove('hidden');
             niveauDiv.classList.add('hidden');
@@ -351,6 +355,18 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('niveau').removeAttribute('required');
             document.getElementById('specialite').removeAttribute('required');
             document.getElementById('societe').removeAttribute('required');
+            
+            // Supprimer les options "Niveau Bac" et "Bac" si elles existent
+            // Réinitialiser la sélection si l'une de ces options était sélectionnée
+            if (niveauSelect.value === 'Niveau Bac' || niveauSelect.value === 'Bac') {
+                niveauSelect.value = '';
+            }
+            if (niveauBacOption) {
+                niveauBacOption.remove();
+            }
+            if (bacOption) {
+                bacOption.remove();
+            }
         } else if (typeSelect.value === 'Dossier individuel') {
             ecoleDiv.classList.add('hidden');
             niveauDiv.classList.remove('hidden');
@@ -366,6 +382,32 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('ass_eps').removeAttribute('required');
             // Le genre pour dossier individuel est optionnel
             document.getElementById('genre').removeAttribute('required');
+            
+            // Ajouter les options "Niveau Bac" et "Bac" si elles n'existent pas déjà
+            if (!niveauBacOption) {
+                const optionNiveauBac = document.createElement('option');
+                optionNiveauBac.value = 'Niveau Bac';
+                optionNiveauBac.textContent = 'Niveau Bac';
+                // Insérer après "2ème année bac"
+                const deuxiemeAnneeBac = niveauSelect.querySelector('option[value="2ème année bac"]');
+                if (deuxiemeAnneeBac && deuxiemeAnneeBac.nextSibling) {
+                    niveauSelect.insertBefore(optionNiveauBac, deuxiemeAnneeBac.nextSibling);
+                } else {
+                    niveauSelect.appendChild(optionNiveauBac);
+                }
+            }
+            if (!bacOption) {
+                const optionBac = document.createElement('option');
+                optionBac.value = 'Bac';
+                optionBac.textContent = 'Bac';
+                // Insérer après "Niveau Bac"
+                const niveauBac = niveauSelect.querySelector('option[value="Niveau Bac"]');
+                if (niveauBac && niveauBac.nextSibling) {
+                    niveauSelect.insertBefore(optionBac, niveauBac.nextSibling);
+                } else {
+                    niveauSelect.appendChild(optionBac);
+                }
+            }
         } else {
             ecoleDiv.classList.add('hidden');
             niveauDiv.classList.add('hidden');
@@ -379,6 +421,18 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('specialite').removeAttribute('required');
             document.getElementById('genre').removeAttribute('required');
             // Tous les champs genre sont optionnels pour les autres types
+            
+            // Supprimer les options "Niveau Bac" et "Bac" si elles existent
+            // Réinitialiser la sélection si l'une de ces options était sélectionnée
+            if (niveauSelect.value === 'Niveau Bac' || niveauSelect.value === 'Bac') {
+                niveauSelect.value = '';
+            }
+            if (niveauBacOption) {
+                niveauBacOption.remove();
+            }
+            if (bacOption) {
+                bacOption.remove();
+            }
         }
     }
     

@@ -25,6 +25,8 @@ class BeneficiaireController extends Controller
         'Tronc Commun' => 'Tronc Commun',
         '1ère année bac' => '1ère année bac',
         '2ème année bac' => '2ème année bac',
+        'Niveau Bac' => 'Niveau Bac',
+        'Bac' => 'Bac',
         'Bac+2' => 'Bac+2',
         'Bac+3' => 'Bac+3'
     ];
@@ -139,7 +141,7 @@ class BeneficiaireController extends Controller
             'niveau' => [
                 'nullable',
                 Rule::requiredIf(fn() => $request->type === 'Dossier individuel'),
-                'in:1ère année collège,2ème année collège,3ème année collège,Tronc Commun,1ère année bac,2ème année bac,Bac+2,Bac+3'
+                'in:1ère année collège,2ème année collège,3ème année collège,Tronc Commun,1ère année bac,2ème année bac,Niveau Bac,Bac,Bac+2,Bac+3'
             ],
             'specialite' => [
                 'nullable',
@@ -261,7 +263,7 @@ class BeneficiaireController extends Controller
             'niveau' => [
                 'nullable',
                 'required_if:type,Dossier individuel',
-                'in:1ère année collège,2ème année collège,3ème année collège,Tronc Commun,1ère année bac,2ème année bac,Bac+2,Bac+3'
+                'in:1ère année collège,2ème année collège,3ème année collège,Tronc Commun,1ère année bac,2ème année bac,Niveau Bac,Bac,Bac+2,Bac+3'
             ],
             'specialite' => [
                 'nullable',
