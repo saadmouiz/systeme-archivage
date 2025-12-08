@@ -410,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.save();
     }
 
-    // Graphique par Status (droite) - Design moderne
+    // Graphique par Status (droite) - Design moderne (Doughnut)
     const statusCanvas = document.getElementById('statusChart');
     if (!statusCanvas) {
         console.error('Canvas statusChart non trouvé');
@@ -421,91 +421,128 @@ document.addEventListener('DOMContentLoaded', function() {
         const inscritValue = parseInt(statsGlobales?.inscrit || 0) || 0;
         const refuserValue = parseInt(statsGlobales?.refuser || 0) || 0;
         
-        new Chart(statusCtx, {
-            type: 'bar',
+        console.log('Status Chart - Inscrit:', inscritValue, 'Refuser:', refuserValue);
+        
+        const statusChart = new Chart(statusCtx, {
+            type: 'doughnut',
             data: {
                 labels: ['Inscrit', 'Refuser'],
                 datasets: [{
                     label: 'Répartition par Status',
                     data: [inscritValue, refuserValue],
-                backgroundColor: [
-                    createGradient(statusCtx, 'rgba(16, 185, 129, 0.9)'),   // Vert pour Inscrit
-                    createGradient(statusCtx, 'rgba(239, 68, 68, 0.9)')     // Rouge pour Refuser
-                ],
-                borderColor: [
-                    'rgb(16, 185, 129)',
-                    'rgb(239, 68, 68)'
-                ],
-                borderWidth: 3,
-                borderRadius: 8,
-                borderSkipped: false,
-                hoverBackgroundColor: [
-                    'rgba(16, 185, 129, 1)',
-                    'rgba(239, 68, 68, 1)'
-                ],
-                hoverBorderWidth: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                intersect: false,
-                mode: 'index'
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.9)',   // Vert pour Inscrit
+                        'rgba(239, 68, 68, 0.9)'     // Rouge pour Refuser
+                    ],
+                    borderColor: [
+                        'rgba(255, 255, 255, 1)',
+                        'rgba(255, 255, 255, 1)'
+                    ],
+                    borderWidth: 4,
+                    hoverBorderWidth: 6,
+                    cutout: '65%',
+                    hoverOffset: 15,
+                    spacing: 2
+                }]
             },
-            animation: {
-                duration: 1500,
-                easing: 'easeInOutCubic',
-                delay: (context) => context.dataIndex * 200
-            },
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        font: {
-                            size: 12,
-                            weight: 'bold'
-                        },
-                        color: '#6b7280'
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1500,
+                    easing: 'easeInOutCubic',
+                    onComplete: function() {
+                        drawCenterTextStatus(statusChart);
                     }
                 },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(107, 114, 128, 0.1)',
-                        drawBorder: false
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            },
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                return data.labels.map((label, i) => {
+                                    const value = data.datasets[0].data[i];
+                                    const emoji = label === 'Inscrit' ? '✅' : '❌';
+                                    return {
+                                        text: `${emoji} ${label}: ${value}`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        hidden: false,
+                                        index: i
+                                    };
+                                });
+                            }
+                        }
                     },
-                    ticks: {
-                        stepSize: 1,
-                        font: {
-                            size: 11,
-                            weight: '500'
-                        },
-                        color: '#6b7280'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        title: function(context) {
-                            const label = context[0].label;
-                            const emoji = label === 'Inscrit' ? '✅' : '❌';
-                            return `${emoji} ${label}`;
-                        },
-                        label: function(context) {
-                            return `Nombre: ${context.parsed.y}`;
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                const label = context[0].label;
+                                const emoji = label === 'Inscrit' ? '✅' : '❌';
+                                return `${emoji} ${label}`;
+                            },
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                return [
+                                    `Nombre: ${context.parsed}`,
+                                    `Pourcentage: ${percentage}%`
+                                ];
+                            }
                         }
                     }
                 }
             }
+        });
+
+        // Fonction pour dessiner le texte au centre du graphique Status
+        function drawCenterTextStatus(chart) {
+            const width = chart.width;
+            const height = chart.height;
+            const ctx = chart.ctx;
+            
+            ctx.restore();
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            
+            const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+            if (total > 0) {
+                const inscrit = chart.data.datasets[0].data[0] || 0;
+                const refuser = chart.data.datasets[0].data[1] || 0;
+                const inscritPercent = ((inscrit / total) * 100).toFixed(1);
+                const refuserPercent = ((refuser / total) * 100).toFixed(1);
+                
+                // Titre principal
+                ctx.fillStyle = '#1f2937';
+                ctx.font = 'bold 18px Inter, sans-serif';
+                ctx.fillText('Status', width / 2, height / 2 - 25);
+                
+                // Pourcentage Inscrit
+                ctx.fillStyle = '#10b981';
+                ctx.font = 'bold 14px Inter, sans-serif';
+                ctx.fillText(`✅ ${inscritPercent}%`, width / 2, height / 2 - 5);
+                
+                // Pourcentage Refuser
+                ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 14px Inter, sans-serif';
+                ctx.fillText(`❌ ${refuserPercent}%`, width / 2, height / 2 + 15);
+            } else {
+                // Afficher un message si aucune donnée
+                ctx.fillStyle = '#9ca3af';
+                ctx.font = 'bold 16px Inter, sans-serif';
+                ctx.fillText('Aucune donnée', width / 2, height / 2);
+            }
+            ctx.save();
         }
-    });
     }
 
     // Créer des gradients radiaux pour le donut
@@ -516,7 +553,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return gradient;
     };
 
-    // Graphique en donut avec les totaux du tableau (droite) - Design moderne
+    // Graphique en donut avec les totaux du tableau - Design moderne
     const tableauCanvas = document.getElementById('tableauChart');
     if (!tableauCanvas) {
         console.error('Canvas tableauChart non trouvé');
@@ -534,142 +571,181 @@ document.addEventListener('DOMContentLoaded', function() {
             parseInt(totauxStats?.eps || 0) || 0
         ];
         
+        console.log('Documents Chart - Data:', chartData);
+        
+        // Filtrer les labels et données pour ne garder que les valeurs non nulles
+        const labels = ['Candidat', 'Inscrit', 'Refuser', 'Hommes', 'Femmes', 'Association', 'Eps'];
+        const filteredLabels = [];
+        const filteredData = [];
+        const filteredColors = [];
+        const filteredBorderColors = [];
+        
+        const colors = [
+            ['rgba(99, 102, 241, 0.9)', 'rgba(99, 102, 241, 0.4)'],   // Indigo gradient pour Candidat
+            ['rgba(16, 185, 129, 0.9)', 'rgba(16, 185, 129, 0.4)'],   // Emerald gradient pour Inscrit
+            ['rgba(239, 68, 68, 0.9)', 'rgba(239, 68, 68, 0.4)'],    // Red gradient pour Refuser
+            ['rgba(99, 102, 241, 0.6)', 'rgba(99, 102, 241, 0.2)'],   // Indigo clair pour Hommes
+            ['rgba(236, 72, 153, 0.9)', 'rgba(236, 72, 153, 0.4)'],   // Pink gradient pour Femmes
+            ['rgba(79, 70, 229, 0.9)', 'rgba(79, 70, 229, 0.4)'],    // Indigo pour Association
+            ['rgba(147, 51, 234, 0.9)', 'rgba(147, 51, 234, 0.4)']    // Purple pour Eps
+        ];
+        
+        chartData.forEach((value, index) => {
+            if (value > 0) {
+                filteredLabels.push(labels[index]);
+                filteredData.push(value);
+                filteredColors.push(createRadialGradient(tableauCtx, colors[index][0], colors[index][1]));
+                filteredBorderColors.push('rgba(255, 255, 255, 1)');
+            }
+        });
+        
+        // Si aucune donnée, afficher un message
+        if (filteredData.length === 0) {
+            filteredLabels.push('Aucune donnée');
+            filteredData.push(1);
+            filteredColors.push('rgba(156, 163, 175, 0.3)');
+            filteredBorderColors.push('rgba(156, 163, 175, 0.5)');
+        }
+        
         const documentsChart = new Chart(tableauCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Candidat', 'Inscrit', 'Refuser', 'Hommes', 'Femmes', 'Association', 'Eps'],
+                labels: filteredLabels,
                 datasets: [{
-                    data: chartData,
-                backgroundColor: [
-                    createRadialGradient(tableauCtx, 'rgba(99, 102, 241, 0.9)', 'rgba(99, 102, 241, 0.4)'),   // Indigo gradient pour Candidat
-                    createRadialGradient(tableauCtx, 'rgba(16, 185, 129, 0.9)', 'rgba(16, 185, 129, 0.4)'),   // Emerald gradient pour Inscrit
-                    createRadialGradient(tableauCtx, 'rgba(239, 68, 68, 0.9)', 'rgba(239, 68, 68, 0.4)'),    // Red gradient pour Refuser
-                    createRadialGradient(tableauCtx, 'rgba(99, 102, 241, 0.6)', 'rgba(99, 102, 241, 0.2)'),   // Indigo clair pour Hommes
-                    createRadialGradient(tableauCtx, 'rgba(236, 72, 153, 0.9)', 'rgba(236, 72, 153, 0.4)'),   // Pink gradient pour Femmes
-                    createRadialGradient(tableauCtx, 'rgba(79, 70, 229, 0.9)', 'rgba(79, 70, 229, 0.4)'),    // Indigo pour Association
-                    createRadialGradient(tableauCtx, 'rgba(147, 51, 234, 0.9)', 'rgba(147, 51, 234, 0.4)')    // Purple pour Eps
-                ],
-                borderColor: [
-                    'rgba(255, 255, 255, 1)',
-                    'rgba(255, 255, 255, 1)',
-                    'rgba(255, 255, 255, 1)',
-                    'rgba(255, 255, 255, 1)',
-                    'rgba(255, 255, 255, 1)',
-                    'rgba(255, 255, 255, 1)',
-                    'rgba(255, 255, 255, 1)'
-                ],
-                borderWidth: 4,
-                hoverBorderWidth: 6,
-                cutout: '65%',
-                hoverOffset: 15,
-                spacing: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: {
-                animateRotate: true,
-                animateScale: true,
-                duration: 2000,
-                easing: 'easeInOutQuart'
+                    data: filteredData,
+                    backgroundColor: filteredColors,
+                    borderColor: filteredBorderColors,
+                    borderWidth: 4,
+                    hoverBorderWidth: 6,
+                    cutout: '65%',
+                    hoverOffset: 15,
+                    spacing: 2
+                }]
             },
-            interaction: {
-                intersect: false
-            },
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    align: 'center',
-                    labels: {
-                        usePointStyle: true,
-                        pointStyle: 'circle',
-                        padding: 25,
-                        font: {
-                            size: 12,
-                            weight: '600',
-                            family: "'Inter', sans-serif"
-                        },
-                        color: '#374151',
-                        generateLabels: function(chart) {
-                            const data = chart.data;
-                            if (data.labels.length && data.datasets.length) {
-                                return data.labels.map((label, i) => {
-                                    const value = data.datasets[0].data[i];
-                                    return {
-                                        text: `${label}: ${value}`,
-                                        fillStyle: data.datasets[0].backgroundColor[i],
-                                        strokeStyle: data.datasets[0].borderColor[i],
-                                        lineWidth: 2,
-                                        pointStyle: 'circle',
-                                        hidden: false,
-                                        index: i
-                                    };
-                                });
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 2000,
+                    easing: 'easeInOutQuart'
+                },
+                interaction: {
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 25,
+                            font: {
+                                size: 12,
+                                weight: '600',
+                                family: "'Inter', sans-serif"
+                            },
+                            color: '#374151',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map((label, i) => {
+                                        const value = data.datasets[0].data[i];
+                                        if (label === 'Aucune donnée') {
+                                            return {
+                                                text: 'Aucune donnée disponible',
+                                                fillStyle: data.datasets[0].backgroundColor[i],
+                                                strokeStyle: data.datasets[0].borderColor[i],
+                                                lineWidth: 2,
+                                                pointStyle: 'circle',
+                                                hidden: false,
+                                                index: i
+                                            };
+                                        }
+                                        return {
+                                            text: `${label}: ${value}`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            strokeStyle: data.datasets[0].borderColor[i],
+                                            lineWidth: 2,
+                                            pointStyle: 'circle',
+                                            hidden: false,
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
                             }
-                            return [];
                         }
-                    }
-                },
-                // Plugin personnalisé pour afficher les pourcentages au centre
-                beforeDraw: function(chart) {
-                    const width = chart.width;
-                    const height = chart.height;
-                    const ctx = chart.ctx;
-                    
-                    ctx.restore();
-                    const fontSize = (height / 120).toFixed(2);
-                    ctx.textBaseline = 'middle';
-                    ctx.textAlign = 'center';
-                    
-                    const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                    if (total > 0) {
-                        // Titre principal
-                        ctx.fillStyle = '#1f2937';
-                        ctx.font = `bold ${fontSize * 1.3}em Inter, sans-serif`;
-                        ctx.fillText('Documents', width / 2, height / 2 - 15);
-                        ctx.fillText('Éducatifs', width / 2, height / 2);
+                    },
+                    // Plugin personnalisé pour afficher les pourcentages au centre
+                    beforeDraw: function(chart) {
+                        const width = chart.width;
+                        const height = chart.height;
+                        const ctx = chart.ctx;
                         
-                        // Total
-                        ctx.fillStyle = '#6b7280';
-                        ctx.font = `bold ${fontSize * 1.1}em Inter, sans-serif`;
-                        ctx.fillText(`Total: ${total}`, width / 2, height / 2 + 20);
-                    }
-                    ctx.save();
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                    titleColor: '#f9fafb',
-                    bodyColor: '#f9fafb',
-                    borderColor: 'rgba(255, 255, 255, 0.2)',
-                    borderWidth: 1,
-                    cornerRadius: 12,
-                    displayColors: true,
-                    titleFont: {
-                        size: 14,
-                        weight: 'bold'
+                        ctx.restore();
+                        const fontSize = (height / 120).toFixed(2);
+                        ctx.textBaseline = 'middle';
+                        ctx.textAlign = 'center';
+                        
+                        const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                        const hasData = chart.data.labels[0] !== 'Aucune donnée';
+                        
+                        if (hasData && total > 0) {
+                            // Titre principal
+                            ctx.fillStyle = '#1f2937';
+                            ctx.font = `bold ${fontSize * 1.3}em Inter, sans-serif`;
+                            ctx.fillText('Documents', width / 2, height / 2 - 15);
+                            ctx.fillText('Éducatifs', width / 2, height / 2);
+                            
+                            // Total
+                            ctx.fillStyle = '#6b7280';
+                            ctx.font = `bold ${fontSize * 1.1}em Inter, sans-serif`;
+                            ctx.fillText(`Total: ${total}`, width / 2, height / 2 + 20);
+                        } else {
+                            // Afficher un message si aucune donnée
+                            ctx.fillStyle = '#9ca3af';
+                            ctx.font = `bold ${fontSize * 1.2}em Inter, sans-serif`;
+                            ctx.fillText('Aucune donnée', width / 2, height / 2 - 10);
+                            ctx.fillText('disponible', width / 2, height / 2 + 10);
+                        }
+                        ctx.save();
                     },
-                    bodyFont: {
-                        size: 13,
-                        weight: '500'
-                    },
-                    callbacks: {
-                        title: function(context) {
-                            return context[0].label;
+                    tooltip: {
+                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                        titleColor: '#f9fafb',
+                        bodyColor: '#f9fafb',
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 1,
+                        cornerRadius: 12,
+                        displayColors: true,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
                         },
-                        label: function(context) {
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
-                            return [
-                                `Valeur: ${context.parsed}`,
-                                `Pourcentage: ${percentage}%`
-                            ];
+                        bodyFont: {
+                            size: 13,
+                            weight: '500'
+                        },
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            },
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                return [
+                                    `Valeur: ${context.parsed}`,
+                                    `Pourcentage: ${percentage}%`
+                                ];
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
     }
 
     // Redessiner le texte lors du redimensionnement
@@ -677,6 +753,9 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             if (typeof genreChart !== 'undefined') {
                 drawCenterTextGenre(genreChart);
+            }
+            if (typeof statusChart !== 'undefined') {
+                drawCenterTextStatus(statusChart);
             }
         }, 100);
     });
