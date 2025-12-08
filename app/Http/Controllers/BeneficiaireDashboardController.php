@@ -58,15 +58,17 @@ class BeneficiaireDashboardController extends Controller
             ]);
         }
 
-        // Statistiques générales des bénéficiaires
-        $totalBeneficiaires = Beneficiaire::count();
-        $beneficiairesParType = Beneficiaire::select('type', DB::raw('count(*) as total'))
+        // Statistiques générales des documents éducatifs uniquement
+        $totalBeneficiaires = Beneficiaire::where('type', 'Document éducatif')->count();
+        $beneficiairesParType = Beneficiaire::where('type', 'Document éducatif')
+            ->select('type', DB::raw('count(*) as total'))
             ->groupBy('type')
             ->get()
             ->pluck('total', 'type');
 
-        // Statistiques par école
+        // Statistiques par école (documents éducatifs uniquement)
         $beneficiairesParEcole = Beneficiaire::with('ecole')
+            ->where('type', 'Document éducatif')
             ->select('ecole_id', DB::raw('count(*) as total'))
             ->whereNotNull('ecole_id')
             ->groupBy('ecole_id')
@@ -78,10 +80,9 @@ class BeneficiaireDashboardController extends Controller
                 ];
             });
 
-        // Statistiques détaillées par école avec genre et status
-        // On cible tous les bénéficiaires dont le type correspond à un document éducatif,
-        // en restant tolérant sur les variations d'écriture (majuscules, pluriel, etc.).
+        // Statistiques détaillées par école avec genre et status (documents éducatifs uniquement)
         $statsParEcole = Beneficiaire::with('ecole')
+            ->where('type', 'Document éducatif')
             ->select(
                 'ecole_id',
                 DB::raw('count(*) as total_beneficiaires'),
@@ -92,7 +93,6 @@ class BeneficiaireDashboardController extends Controller
                 DB::raw('SUM(CASE WHEN ass_eps = "Association" THEN 1 ELSE 0 END) as association'),
                 DB::raw('SUM(CASE WHEN ass_eps = "Eps" THEN 1 ELSE 0 END) as eps')
             )
-            ->whereRaw('LOWER(type) LIKE ?', ['%document%educatif%'])
             ->whereNotNull('ecole_id')
             ->groupBy('ecole_id')
             ->get()
@@ -134,17 +134,18 @@ class BeneficiaireDashboardController extends Controller
             'eps' => (int)($totauxQuery->eps ?? 0),
         ];
 
-        // Statistiques globales pour TOUS les bénéficiaires (pour les graphiques)
+        // Statistiques globales pour les documents éducatifs uniquement (pour les graphiques)
         // Utilisation des valeurs exactes de status: "Accepter" et "Refuser"
         $statsGlobales = [
-            'hommes' => (int)Beneficiaire::where('genre', 'Homme')->count(),
-            'femmes' => (int)Beneficiaire::where('genre', 'Femme')->count(),
-            'inscrit' => (int)Beneficiaire::where('status', 'Accepter')->count(),
-            'refuser' => (int)Beneficiaire::where('status', 'Refuser')->count(),
+            'hommes' => (int)Beneficiaire::where('type', 'Document éducatif')->where('genre', 'Homme')->count(),
+            'femmes' => (int)Beneficiaire::where('type', 'Document éducatif')->where('genre', 'Femme')->count(),
+            'inscrit' => (int)Beneficiaire::where('type', 'Document éducatif')->where('status', 'Accepter')->count(),
+            'refuser' => (int)Beneficiaire::where('type', 'Document éducatif')->where('status', 'Refuser')->count(),
         ];
 
-        // Évolution mensuelle des bénéficiaires
-        $evolutionMensuelle = Beneficiaire::select(
+        // Évolution mensuelle des documents éducatifs
+        $evolutionMensuelle = Beneficiaire::where('type', 'Document éducatif')
+            ->select(
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as mois'),
                 DB::raw('count(*) as total')
             )
@@ -180,15 +181,17 @@ class BeneficiaireDashboardController extends Controller
             }
         }
 
-        // Bénéficiaires récents (derniers 30 jours)
+        // Documents éducatifs récents (derniers 30 jours)
         $beneficiairesRecents = Beneficiaire::with('ecole')
+            ->where('type', 'Document éducatif')
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
 
-        // Répartition par mois de l'année en cours
-        $repartitionAnnuelle = Beneficiaire::select(
+        // Répartition par mois de l'année en cours (documents éducatifs uniquement)
+        $repartitionAnnuelle = Beneficiaire::where('type', 'Document éducatif')
+            ->select(
                 DB::raw('MONTH(created_at) as mois'),
                 DB::raw('count(*) as total')
             )
@@ -198,8 +201,9 @@ class BeneficiaireDashboardController extends Controller
             ->get()
             ->pluck('total', 'mois');
 
-        // Top 5 des écoles avec le plus de bénéficiaires
+        // Top 5 des écoles avec le plus de documents éducatifs
         $topEcoles = Beneficiaire::with('ecole')
+            ->where('type', 'Document éducatif')
             ->select('ecole_id', DB::raw('count(*) as total'))
             ->whereNotNull('ecole_id')
             ->groupBy('ecole_id')
@@ -213,17 +217,19 @@ class BeneficiaireDashboardController extends Controller
                 ];
             });
 
-        // Statistiques de croissance
+        // Statistiques de croissance (documents éducatifs uniquement)
         $croissanceMensuelle = $this->calculerCroissanceMensuelle();
         $croissanceAnnuelle = $this->calculerCroissanceAnnuelle();
 
-        // Bénéficiaires créés ce mois
-        $ceMois = Beneficiaire::whereMonth('created_at', Carbon::now()->month)
+        // Documents éducatifs créés ce mois
+        $ceMois = Beneficiaire::where('type', 'Document éducatif')
+            ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->count();
 
-        // Documents par type de fichier
-        $documentsParType = Beneficiaire::select('type', DB::raw('count(*) as total'))
+        // Documents par type de fichier (documents éducatifs uniquement)
+        $documentsParType = Beneficiaire::where('type', 'Document éducatif')
+            ->select('type', DB::raw('count(*) as total'))
             ->groupBy('type')
             ->get()
             ->pluck('total', 'type');
@@ -249,11 +255,13 @@ class BeneficiaireDashboardController extends Controller
 
     private function calculerCroissanceMensuelle()
     {
-        $moisActuel = Beneficiaire::whereMonth('created_at', Carbon::now()->month)
+        $moisActuel = Beneficiaire::where('type', 'Document éducatif')
+            ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->count();
 
-        $moisPrecedent = Beneficiaire::whereMonth('created_at', Carbon::now()->subMonth()->month)
+        $moisPrecedent = Beneficiaire::where('type', 'Document éducatif')
+            ->whereMonth('created_at', Carbon::now()->subMonth()->month)
             ->whereYear('created_at', Carbon::now()->subMonth()->year)
             ->count();
 
@@ -266,8 +274,12 @@ class BeneficiaireDashboardController extends Controller
 
     private function calculerCroissanceAnnuelle()
     {
-        $anneeActuelle = Beneficiaire::whereYear('created_at', Carbon::now()->year)->count();
-        $anneePrecedente = Beneficiaire::whereYear('created_at', Carbon::now()->subYear()->year)->count();
+        $anneeActuelle = Beneficiaire::where('type', 'Document éducatif')
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+        $anneePrecedente = Beneficiaire::where('type', 'Document éducatif')
+            ->whereYear('created_at', Carbon::now()->subYear()->year)
+            ->count();
 
         if ($anneePrecedente == 0) {
             return $anneeActuelle > 0 ? 100 : 0;
@@ -281,7 +293,8 @@ class BeneficiaireDashboardController extends Controller
         $type = $request->get('type', 'monthly');
         
         if ($type === 'monthly') {
-            $data = Beneficiaire::select(
+            $data = Beneficiaire::where('type', 'Document éducatif')
+                ->select(
                     DB::raw('DATE_FORMAT(created_at, "%Y-%m") as period'),
                     DB::raw('count(*) as total')
                 )
@@ -290,7 +303,8 @@ class BeneficiaireDashboardController extends Controller
                 ->orderBy('period')
                 ->get();
         } else {
-            $data = Beneficiaire::select(
+            $data = Beneficiaire::where('type', 'Document éducatif')
+                ->select(
                     DB::raw('DATE_FORMAT(created_at, "%Y") as period'),
                     DB::raw('count(*) as total')
                 )

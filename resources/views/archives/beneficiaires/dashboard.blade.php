@@ -6,8 +6,8 @@
         <!-- En-tête -->
         <div class="mb-8 flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Dashboard Bénéficiaires</h1>
-                <p class="mt-2 text-lg text-gray-600">Statistiques et analyses des documents des bénéficiaires</p>
+                <h1 class="text-3xl font-bold text-gray-900">Dashboard Documents Éducatifs</h1>
+                <p class="mt-2 text-lg text-gray-600">Statistiques et analyses des documents éducatifs uniquement</p>
             </div>
             <div class="flex flex-wrap gap-3 justify-end">
                 <a href="{{ route('archives.beneficiaires.create') }}" 
@@ -47,7 +47,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Répartition par Genre</h3>
-                        <p class="text-sm text-gray-600">Analyse des bénéficiaires par genre (Homme/Femme)</p>
+                        <p class="text-sm text-gray-600">Analyse des documents éducatifs par genre (Homme/Femme)</p>
                     </div>
                     <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
                         <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +65,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Répartition par Status</h3>
-                        <p class="text-sm text-gray-600">Analyse des bénéficiaires par status (Inscrit/Refuser)</p>
+                        <p class="text-sm text-gray-600">Analyse des documents éducatifs par status (Inscrit/Refuser)</p>
                     </div>
                     <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
                         <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,7 +222,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <!-- Top 5 des écoles -->
             <div class="bg-white shadow rounded-lg p-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Top 5 des Écoles</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Top 5 des Écoles (Documents Éducatifs)</h3>
                 <div class="space-y-3">
                     @forelse($topEcoles as $index => $ecole)
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -240,9 +240,9 @@
                 </div>
             </div>
 
-            <!-- Bénéficiaires récents -->
+            <!-- Documents éducatifs récents -->
             <div class="bg-white shadow rounded-lg p-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Bénéficiaires Récents</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Documents Éducatifs Récents</h3>
                 <div class="space-y-3">
                     @forelse($beneficiairesRecents as $beneficiaire)
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
