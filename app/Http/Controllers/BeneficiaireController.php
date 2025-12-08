@@ -168,7 +168,10 @@ class BeneficiaireController extends Controller
                 'in:IP,AGR'
             ],
             'societe' => 'nullable|string|max:255',
-            'niveau_scolarite' => 'nullable|string|max:255',
+            'niveau_scolarite' => [
+                'nullable',
+                'in:Analphabète,Primaire,Collège,Lycée,Baccalauréat,Bac+2,Bac+3,Bac+4,Bac+5,Supérieur'
+            ],
             'services_offerts' => 'nullable|string|max:255',
             'description' => 'nullable|string',                
             'ecole_id' => [
@@ -292,7 +295,10 @@ class BeneficiaireController extends Controller
                 'in:IP,AGR'
             ],
             'societe' => 'nullable|string|max:255',
-            'niveau_scolarite' => 'nullable|string|max:255',
+            'niveau_scolarite' => [
+                'nullable',
+                'in:Analphabète,Primaire,Collège,Lycée,Baccalauréat,Bac+2,Bac+3,Bac+4,Bac+5,Supérieur'
+            ],
             'services_offerts' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'ecole_id' => [

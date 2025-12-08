@@ -264,9 +264,20 @@
                         <!-- Niveau scolarité -->
                         <div>
                             <label for="niveau_scolarite" class="block text-sm font-medium text-gray-700 mb-1">Niveau scolarité</label>
-                            <input type="text" name="niveau_scolarite" id="niveau_scolarite" value="{{ old('niveau_scolarite') }}"
-                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                                placeholder="Niveau de scolarité">
+                            <select name="niveau_scolarite" id="niveau_scolarite" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un niveau</option>
+                                <option value="Analphabète" {{ old('niveau_scolarite') === 'Analphabète' ? 'selected' : '' }}>Analphabète</option>
+                                <option value="Primaire" {{ old('niveau_scolarite') === 'Primaire' ? 'selected' : '' }}>Primaire</option>
+                                <option value="Collège" {{ old('niveau_scolarite') === 'Collège' ? 'selected' : '' }}>Collège</option>
+                                <option value="Lycée" {{ old('niveau_scolarite') === 'Lycée' ? 'selected' : '' }}>Lycée</option>
+                                <option value="Baccalauréat" {{ old('niveau_scolarite') === 'Baccalauréat' ? 'selected' : '' }}>Baccalauréat</option>
+                                <option value="Bac+2" {{ old('niveau_scolarite') === 'Bac+2' ? 'selected' : '' }}>Bac+2</option>
+                                <option value="Bac+3" {{ old('niveau_scolarite') === 'Bac+3' ? 'selected' : '' }}>Bac+3</option>
+                                <option value="Bac+4" {{ old('niveau_scolarite') === 'Bac+4' ? 'selected' : '' }}>Bac+4</option>
+                                <option value="Bac+5" {{ old('niveau_scolarite') === 'Bac+5' ? 'selected' : '' }}>Bac+5</option>
+                                <option value="Supérieur" {{ old('niveau_scolarite') === 'Supérieur' ? 'selected' : '' }}>Supérieur</option>
+                            </select>
                             @error('niveau_scolarite')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
