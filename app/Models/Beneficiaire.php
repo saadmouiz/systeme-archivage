@@ -23,6 +23,8 @@ class Beneficiaire extends Model
         'specialite',
         'type_intervention',
         'societe',
+        'niveau_scolarite',
+        'services_offerts',
         'description',
         'fichier',  // Assurez-vous que ce champ est bien présent
         'ecole_id',

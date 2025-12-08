@@ -15,7 +15,8 @@ class BeneficiaireController extends Controller
 {
     protected $types = [
         'Dossier individuel' => 'Dossier individuel',
-        'Document éducatif' => 'Document éducatif'
+        'Document éducatif' => 'Document éducatif',
+        'Conflits d\'ordre juridique' => 'Conflits d\'ordre juridique'
     ];
 
     protected $niveaux = [
@@ -98,21 +99,34 @@ class BeneficiaireController extends Controller
 }
     public function store(Request $request)
     {
-        // FIX: Vérifier et créer la colonne ville si elle n'existe pas
+        // FIX: Vérifier et créer les colonnes si elles n'existent pas
         try {
             // Log de la base de données utilisée
             $dbName = \DB::connection()->getDatabaseName();
             \Log::info('Base de données utilisée: ' . $dbName);
             
+            // Vérifier et créer la colonne ville
             $columnExists = \DB::select("SHOW COLUMNS FROM beneficiaires WHERE Field = 'ville'");
             if (empty($columnExists)) {
                 \DB::statement("ALTER TABLE beneficiaires ADD COLUMN ville VARCHAR(255) NULL AFTER prenom");
                 \Log::info('Colonne ville ajoutée automatiquement à la table beneficiaires dans ' . $dbName);
-            } else {
-                \Log::info('Colonne ville existe déjà dans ' . $dbName);
+            }
+            
+            // Vérifier et créer la colonne niveau_scolarite
+            $columnExists = \DB::select("SHOW COLUMNS FROM beneficiaires WHERE Field = 'niveau_scolarite'");
+            if (empty($columnExists)) {
+                \DB::statement("ALTER TABLE beneficiaires ADD COLUMN niveau_scolarite VARCHAR(255) NULL");
+                \Log::info('Colonne niveau_scolarite ajoutée automatiquement à la table beneficiaires dans ' . $dbName);
+            }
+            
+            // Vérifier et créer la colonne services_offerts
+            $columnExists = \DB::select("SHOW COLUMNS FROM beneficiaires WHERE Field = 'services_offerts'");
+            if (empty($columnExists)) {
+                \DB::statement("ALTER TABLE beneficiaires ADD COLUMN services_offerts VARCHAR(255) NULL");
+                \Log::info('Colonne services_offerts ajoutée automatiquement à la table beneficiaires dans ' . $dbName);
             }
         } catch (\Exception $e) {
-            \Log::error('Erreur lors de la vérification de la colonne ville: ' . $e->getMessage());
+            \Log::error('Erreur lors de la vérification des colonnes: ' . $e->getMessage());
         }
         
         $validated = $request->validate([
@@ -154,6 +168,8 @@ class BeneficiaireController extends Controller
                 'in:IP,AGR'
             ],
             'societe' => 'nullable|string|max:255',
+            'niveau_scolarite' => 'nullable|string|max:255',
+            'services_offerts' => 'nullable|string|max:255',
             'description' => 'nullable|string',                
             'ecole_id' => [
                 'nullable',
@@ -276,6 +292,8 @@ class BeneficiaireController extends Controller
                 'in:IP,AGR'
             ],
             'societe' => 'nullable|string|max:255',
+            'niveau_scolarite' => 'nullable|string|max:255',
+            'services_offerts' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'ecole_id' => [
                 'nullable',

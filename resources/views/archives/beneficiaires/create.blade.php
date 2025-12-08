@@ -256,6 +256,39 @@
                     </div>
                 </div>
 
+                <!-- Conflits d'ordre juridique (conditionnel) -->
+                <div id="conflits_div" class="bg-gray-50 p-4 rounded-lg border border-gray-200 hidden">
+                    <h3 class="text-md font-medium text-gray-700 mb-4">Informations juridiques</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Niveau scolarité -->
+                        <div>
+                            <label for="niveau_scolarite" class="block text-sm font-medium text-gray-700 mb-1">Niveau scolarité</label>
+                            <input type="text" name="niveau_scolarite" id="niveau_scolarite" value="{{ old('niveau_scolarite') }}"
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                placeholder="Niveau de scolarité">
+                            @error('niveau_scolarite')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Services offerts aux bénéficiaires -->
+                        <div>
+                            <label for="services_offerts" class="block text-sm font-medium text-gray-700 mb-1">Services offerts aux bénéficiaires</label>
+                            <select name="services_offerts" id="services_offerts" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un service</option>
+                                <option value="Prise en charge des situations difficiles" {{ old('services_offerts') === 'Prise en charge des situations difficiles' ? 'selected' : '' }}>
+                                    Prise en charge des situations difficiles
+                                </option>
+                            </select>
+                            @error('services_offerts')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                     <h3 class="text-md font-medium text-gray-700 mb-4">Détails supplémentaires</h3>
                     
@@ -334,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const ecoleDiv = document.getElementById('ecole_div');
     const niveauDiv = document.getElementById('niveau_div');
     const societeDiv = document.getElementById('societe_div');
+    const conflitsDiv = document.getElementById('conflits_div');
     
     function toggleConditionalFields() {
         const niveauSelect = document.getElementById('niveau');
@@ -344,6 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ecoleDiv.classList.remove('hidden');
             niveauDiv.classList.add('hidden');
             societeDiv.classList.add('hidden');
+            conflitsDiv.classList.add('hidden');
             
             // Champs requis pour Document éducatif
             document.getElementById('ecole_id').setAttribute('required', 'required');
@@ -371,6 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ecoleDiv.classList.add('hidden');
             niveauDiv.classList.remove('hidden');
             societeDiv.classList.remove('hidden');
+            conflitsDiv.classList.add('hidden');
             
             // Champs requis pour Dossier individuel
             document.getElementById('niveau').setAttribute('required', 'required');
@@ -408,10 +444,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     niveauSelect.appendChild(optionBac);
                 }
             }
+        } else if (typeSelect.value === 'Conflits d\'ordre juridique') {
+            ecoleDiv.classList.add('hidden');
+            niveauDiv.classList.add('hidden');
+            societeDiv.classList.add('hidden');
+            conflitsDiv.classList.remove('hidden');
+            
+            // Champs non requis pour Conflits d'ordre juridique
+            document.getElementById('ecole_id').removeAttribute('required');
+            document.getElementById('status').removeAttribute('required');
+            document.getElementById('ass_eps').removeAttribute('required');
+            document.getElementById('niveau').removeAttribute('required');
+            document.getElementById('specialite').removeAttribute('required');
+            document.getElementById('genre').removeAttribute('required');
+            document.getElementById('societe').removeAttribute('required');
+            
+            // Supprimer les options "Niveau Bac" et "Bac" si elles existent
+            if (niveauSelect.value === 'Niveau Bac' || niveauSelect.value === 'Bac') {
+                niveauSelect.value = '';
+            }
+            if (niveauBacOption) {
+                niveauBacOption.remove();
+            }
+            if (bacOption) {
+                bacOption.remove();
+            }
         } else {
             ecoleDiv.classList.add('hidden');
             niveauDiv.classList.add('hidden');
             societeDiv.classList.add('hidden');
+            conflitsDiv.classList.add('hidden');
             
             // Aucun champ requis
             document.getElementById('ecole_id').removeAttribute('required');
