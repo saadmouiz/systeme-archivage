@@ -287,10 +287,13 @@
                         <div>
                             <label for="services_offerts" class="block text-sm font-medium text-gray-700 mb-1">Services offerts aux bénéficiaires</label>
                             <select name="services_offerts" id="services_offerts" 
-                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all durée-200">
                                 <option value="">Sélectionnez un service</option>
                                 <option value="Prise en charge des situations difficiles" {{ old('services_offerts') === 'Prise en charge des situations difficiles' ? 'selected' : '' }}>
                                     Prise en charge des situations difficiles
+                                </option>
+                                <option value="Situation sociale" {{ old('services_offerts') === 'Situation sociale' ? 'selected' : '' }}>
+                                    Situation sociale
                                 </option>
                             </select>
                             @error('services_offerts')
