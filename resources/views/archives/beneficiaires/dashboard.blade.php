@@ -40,9 +40,10 @@
         <!-- Cartes de statistiques principales supprimées sur demande -->
 
         <!-- Graphiques et analyses -->
-        <!-- Répartition par Genre -->
-        <div class="mb-8">
-            <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100 max-w-2xl mx-auto">
+        <!-- Première ligne : Genre & Status -->
+        <div class="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Répartition par Genre -->
+            <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Répartition par Genre</h3>
@@ -56,6 +57,44 @@
                 </div>
                 <div class="h-72">
                     <canvas id="genreChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Répartition par Status -->
+            <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Répartition par Status</h3>
+                        <p class="text-sm text-gray-600">Documents éducatifs par status (Inscrit / Refuser)</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="h-72">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Répartition par École -->
+        <div class="mb-8">
+            <div class="bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Répartition par École</h3>
+                        <p class="text-sm text-gray-600">Nombre de bénéficiaires de documents éducatifs par établissement</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-sky-500 to-blue-600 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a1 1 0 01-1 1h-5a1 1 0 01-1-1v-5H9v5a1 1 0 01-1 1H3a1 1 0 01-1-1z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="ecolesChart"></canvas>
                 </div>
             </div>
         </div>
@@ -231,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const repartitionData = @json($repartitionAnnuelle);
     const totauxStats = @json($totauxStats);
     const statsGlobales = @json($statsGlobales ?? []);
+    const repartitionEcoles = @json($beneficiairesParEcole ?? []);
     
     // Debug: Afficher les données dans la console
     console.log('Stats Globales:', statsGlobales);
@@ -244,10 +284,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return gradient;
     };
 
-    // Graphique par Genre (gauche) - Design moderne
-    const genreCtx = document.getElementById('genreChart').getContext('2d');
+    // Graphique par Genre (donut) - Design moderne
+    const genreCanvas = document.getElementById('genreChart');
+    let genreChart = null;
+    if (genreCanvas) {
+    const genreCtx = genreCanvas.getContext('2d');
     
-    const genreChart = new Chart(genreCtx, {
+    genreChart = new Chart(genreCtx, {
         type: 'doughnut',
         data: {
             labels: ['Hommes', 'Femmes'],
@@ -331,6 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    }
 
     // Fonction pour dessiner le texte au centre du graphique Genre
     function drawCenterTextGenre(chart) {
@@ -367,11 +411,162 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.save();
     }
 
+    // Graphique par Status (donut) - Inscrit / Refuser
+    const statusCanvas = document.getElementById('statusChart');
+    if (statusCanvas) {
+        const statusCtx = statusCanvas.getContext('2d');
+
+        const inscrits = parseInt(statsGlobales.inscrit || 0);
+        const refuses = parseInt(statsGlobales.refuser || 0);
+
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Inscrit', 'Refuser'],
+                datasets: [{
+                    label: 'Répartition par Status',
+                    data: [inscrits, refuses],
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.9)',   // Vert pour Inscrit
+                        'rgba(239, 68, 68, 0.9)'     // Rouge pour Refuser
+                    ],
+                    borderColor: [
+                        'rgba(255, 255, 255, 1)',
+                        'rgba(255, 255, 255, 1)'
+                    ],
+                    borderWidth: 4,
+                    hoverBorderWidth: 6,
+                    cutout: '65%',
+                    hoverOffset: 15,
+                    spacing: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1500,
+                    easing: 'easeInOutCubic'
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                const label = context[0].label;
+                                const emoji = label === 'Inscrit' ? '✅' : '❌';
+                                return `${emoji} ${label}`;
+                            },
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
+                                return [
+                                    `Nombre: ${context.parsed}`,
+                                    `Pourcentage: ${percentage}%`
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Graphique Répartition par École (barres horizontales)
+    const ecolesCanvas = document.getElementById('ecolesChart');
+    if (ecolesCanvas) {
+        const ecolesCtx = ecolesCanvas.getContext('2d');
+
+        const labelsEcoles = repartitionEcoles.map(item => item.ecole);
+        const dataEcoles = repartitionEcoles.map(item => item.total);
+
+        new Chart(ecolesCtx, {
+            type: 'bar',
+            data: {
+                labels: labelsEcoles,
+                datasets: [{
+                    label: 'Nombre de bénéficiaires',
+                    data: dataEcoles,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(37, 99, 235, 1)',
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1200,
+                    easing: 'easeOutCubic'
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            color: '#4b5563',
+                            font: {
+                                size: 11,
+                                weight: '500'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(209, 213, 219, 0.5)',
+                            drawBorder: false
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#374151',
+                            font: {
+                                size: 11,
+                                weight: '600'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label || '';
+                            },
+                            label: function(context) {
+                                return `Bénéficiaires: ${context.parsed.x}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     // Redessiner le texte lors du redimensionnement
     window.addEventListener('resize', function() {
         setTimeout(() => {
-            if (typeof genreChart !== 'undefined') {
+            if (genreChart) {
                 drawCenterTextGenre(genreChart);
             }
         }, 100);
