@@ -66,20 +66,6 @@ class BeneficiaireDashboardController extends Controller
             ->get()
             ->pluck('total', 'type');
 
-        // Statistiques par école (documents éducatifs uniquement)
-        $beneficiairesParEcole = Beneficiaire::with('ecole')
-            ->where('type', 'Document éducatif')
-            ->select('ecole_id', DB::raw('count(*) as total'))
-            ->whereNotNull('ecole_id')
-            ->groupBy('ecole_id')
-            ->get()
-            ->map(function($item) {
-                return [
-                    'ecole' => $item->ecole ? $item->ecole->nom : 'Non spécifiée',
-                    'total' => $item->total
-                ];
-            });
-
         // Statistiques détaillées par école avec genre et status (documents éducatifs uniquement)
         $statsParEcole = Beneficiaire::with('ecole')
             ->where('type', 'Document éducatif')
@@ -108,6 +94,14 @@ class BeneficiaireDashboardController extends Controller
                     'eps' => $item->eps
                 ];
             });
+
+        // Données de répartition par école pour le graphique (mêmes chiffres que le tableau)
+        $beneficiairesParEcole = $statsParEcole->map(function ($row) {
+            return [
+                'ecole' => $row['etablissement'],
+                'total' => (int) $row['candidat'],
+            ];
+        })->values();
 
         // Calcul des totaux pour les documents éducatifs (pour le tableau & le graphique)
         // On ne se base plus uniquement sur les écoles afin de ne pas perdre les lignes

@@ -416,8 +416,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (statusCanvas) {
         const statusCtx = statusCanvas.getContext('2d');
 
-        const inscrits = parseInt(statsGlobales.inscrit || 0);
-        const refuses = parseInt(statsGlobales.refuser || 0);
+        // Utiliser les totaux déjà calculés pour le tableau (documents éducatifs uniquement)
+        const inscrits = parseInt(totauxStats.inscrit || 0);
+        const refuses = parseInt(totauxStats.refuser || 0);
 
         new Chart(statusCtx, {
             type: 'doughnut',
