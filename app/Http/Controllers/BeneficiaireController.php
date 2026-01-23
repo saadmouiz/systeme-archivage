@@ -50,6 +50,17 @@ class BeneficiaireController extends Controller
             $query->where('ecole_id', $request->ecole);
         }
 
+        // Filtrage par année (basé sur la référence)
+        if ($request->filled('annee')) {
+            $annee = $request->annee;
+            $query->where(function($q) use ($annee) {
+                // Format: XX/YYYY ou XX-YYYY
+                $q->where('reference', 'like', "%/{$annee}")
+                  ->orWhere('reference', 'like', "%-{$annee}")
+                  ->orWhere('reference', 'like', "%{$annee}%");
+            });
+        }
+
         // Recherche
         if ($request->filled('search')) {
             $search = $request->search;
