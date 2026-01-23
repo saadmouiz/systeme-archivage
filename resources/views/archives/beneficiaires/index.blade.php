@@ -1,4 +1,4 @@
-﻿@extends('layouts.sidebar')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
@@ -21,34 +21,34 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex space-x-4">
+                <div class="flex flex-wrap gap-2.5">
                     <a href="{{ route('archives.beneficiaires.dashboard') }}" 
-                       class="group relative inline-flex items-center px-6 py-3 bg-[#FEE2E2] border border-red-300 text-red-900 font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="inline-flex items-center px-3.5 py-2 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-800 font-medium rounded-lg shadow-sm hover:shadow-md hover:from-red-100 hover:to-pink-100 transition-all duration-200 text-xs">
+                        <svg class="w-3.5 h-3.5 mr-1.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
-                        <span>Dashboard Éducatifs</span>
+                        <span class="whitespace-nowrap">Dashboard Éducatifs</span>
                     </a>
                     <a href="{{ route('archives.dossiers-individuels.dashboard') }}" 
-                       class="group relative inline-flex items-center px-6 py-3 bg-[#FEE2E2] border border-red-300 text-red-900 font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="inline-flex items-center px-3.5 py-2 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-800 font-medium rounded-lg shadow-sm hover:shadow-md hover:from-red-100 hover:to-pink-100 transition-all duration-200 text-xs">
+                        <svg class="w-3.5 h-3.5 mr-1.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                        <span>Dashboard Individuels</span>
+                        <span class="whitespace-nowrap">Dashboard Individuels</span>
                     </a>
                     <a href="{{ route('archives.beneficiaires.refused') }}" 
-                       class="group relative inline-flex items-center px-6 py-3 bg-red-600 border border-red-700 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="inline-flex items-center px-3.5 py-2 bg-gradient-to-r from-red-600 to-red-700 border border-red-800 text-white font-medium rounded-lg shadow-sm hover:shadow-md hover:from-red-700 hover:to-red-800 transition-all duration-200 text-xs">
+                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
-                        <span>Bénéficiaires Refusés</span>
+                        <span class="whitespace-nowrap">Bénéficiaires Refusés</span>
                     </a>
                     <a href="{{ route('archives.beneficiaires.create') }}" 
-                       class="group relative inline-flex items-center px-8 py-4 bg-[#871C1C] border border-red-300 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="inline-flex items-center px-3.5 py-2 bg-gradient-to-r from-red-800 to-red-900 border border-red-900 text-white font-medium rounded-lg shadow-sm hover:shadow-md hover:from-red-900 hover:to-red-950 transition-all duration-200 text-xs">
+                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                        <span>Nouveau Dossier</span>
+                        <span class="whitespace-nowrap">Nouveau Dossier</span>
                     </a>
                 </div>
             </div>
