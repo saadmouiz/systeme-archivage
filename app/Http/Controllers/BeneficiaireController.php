@@ -61,6 +61,12 @@ class BeneficiaireController extends Controller
             });
         }
 
+        // Exclure les bénéficiaires refusés (status = 'Refuser')
+        $query->where(function($q) {
+            $q->where('status', '!=', 'Refuser')
+              ->orWhereNull('status');
+        });
+
         $beneficiaires = $query->orderBy('id', 'asc')->get()->groupBy('type');
 
         // Récupérer les écoles et centres pour le filtre
@@ -343,7 +349,17 @@ class BeneficiaireController extends Controller
             $validated['societe'] = null;
         }
 
+        // Détecter le changement de statut de 'Accepter' à 'Refuser'
+        $ancienStatus = $beneficiaire->status;
+        $nouveauStatus = $validated['status'] ?? null;
+        
         $beneficiaire->update($validated);
+
+        // Si le statut passe de 'Accepter' à 'Refuser', rediriger vers la page des refusés
+        if ($ancienStatus === 'Accepter' && $nouveauStatus === 'Refuser') {
+            return redirect()->route('archives.beneficiaires.refused')
+                ->with('success', 'Le dossier a été marqué comme refusé et déplacé vers la liste des bénéficiaires refusés.');
+        }
 
         return redirect()->route('archives.beneficiaires.index')
             ->with('success', 'Dossier bénéficiaire mis à jour avec succès');
@@ -472,5 +488,52 @@ private function sanitizeFileName($baseFileName, $filePath)
             'domaine' => $domaine,
             'genre' => $beneficiaire->genre ?? '-',
         ];
+    }
+
+    /**
+     * Affiche la liste des bénéficiaires refusés
+     */
+    public function refused(Request $request)
+    {
+        // Forcer la reconnexion à la base de données
+        DB::purge();
+        DB::reconnect();
+        
+        $query = Beneficiaire::with('ecole')
+            ->where('status', 'Refuser');
+
+        // Filtrage par type
+        if ($request->has('type')) {
+            $query->where('type', $request->type);
+        }
+
+        // Filtrage par école
+        if ($request->filled('ecole')) {
+            $query->where('ecole_id', $request->ecole);
+        }
+
+        // Recherche
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                  ->orWhere('prenom', 'like', "%{$search}%")
+                  ->orWhere('cin', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $beneficiaires = $query->orderBy('id', 'desc')->get()->groupBy('type');
+
+        // Récupérer les écoles et centres pour le filtre
+        $ecoles = ArchivePartenaire::whereIn('type', ['école', 'Centre', 'centre'])
+            ->orderBy('nom')
+            ->get();
+
+        return view('archives.beneficiaires.refused', [
+            'beneficiaires' => $beneficiaires,
+            'types' => array_values($this->types),
+            'ecoles' => $ecoles
+        ]);
     }
 }

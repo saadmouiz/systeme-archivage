@@ -89,6 +89,7 @@
                                         <option value="retard" {{ $pointage && $pointage->statut === 'retard' ? 'selected' : '' }}>Retard</option>
                                         <option value="conge" {{ $pointage && $pointage->statut === 'conge' ? 'selected' : '' }}>Congé</option>
                                         <option value="maladie" {{ $pointage && $pointage->statut === 'maladie' ? 'selected' : '' }}>Maladie</option>
+                                        <option value="jour_ferie" {{ $pointage && $pointage->statut === 'jour_ferie' ? 'selected' : '' }}>Jour férié</option>
                                     </select>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -117,7 +118,7 @@
 
 <script>
     function toggleTimeFields(selectElement, employeeId) {
-        const isPresent = selectElement.value === 'present';
+        const isPresent = selectElement.value === 'present' || selectElement.value === 'retard';
         const timeFields = document.querySelectorAll('.time-field-' + employeeId);
         
         timeFields.forEach(field => {

@@ -1,54 +1,33 @@
-﻿@extends('layouts.sidebar')
+@extends('layouts.sidebar')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-red-50">
     <div class="container mx-auto px-4 py-12">
         <!-- Header Section -->
         <div class="mb-12">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="mb-6 lg:mb-0">
                     <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-[#FEE2E2] border border-red-300 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                            <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        <div class="w-12 h-12 bg-red-600 border border-red-700 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </div>
                         <div>
                             <h1 class="text-4xl font-bold text-gray-900 whitespace-nowrap">
-                                Dossiers des Bénéficiaires
+                                Bénéficiaires Refusés
                             </h1>
-                            <p class="text-gray-600 mt-2">Gestion centralisée des dossiers des bénéficiaires</p>
+                            <p class="text-gray-600 mt-2">Liste des dossiers de bénéficiaires ayant été refusés</p>
                         </div>
                     </div>
                 </div>
                 <div class="flex space-x-4">
-                    <a href="{{ route('archives.beneficiaires.dashboard') }}" 
+                    <a href="{{ route('archives.beneficiaires.index') }}" 
                        class="group relative inline-flex items-center px-6 py-3 bg-[#FEE2E2] border border-red-300 text-red-900 font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
-                        <span>Dashboard Éducatifs</span>
-                    </a>
-                    <a href="{{ route('archives.dossiers-individuels.dashboard') }}" 
-                       class="group relative inline-flex items-center px-6 py-3 bg-[#FEE2E2] border border-red-300 text-red-900 font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        <span>Dashboard Individuels</span>
-                    </a>
-                    <a href="{{ route('archives.beneficiaires.refused') }}" 
-                       class="group relative inline-flex items-center px-6 py-3 bg-red-600 border border-red-700 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                        <span>Bénéficiaires Refusés</span>
-                    </a>
-                    <a href="{{ route('archives.beneficiaires.create') }}" 
-                       class="group relative inline-flex items-center px-8 py-4 bg-[#871C1C] border border-red-300 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-500/25 transition-all duration-300 hover:scale-105">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        <span>Nouveau Dossier</span>
+                        <span>Retour aux Bénéficiaires</span>
                     </a>
                 </div>
             </div>
@@ -59,7 +38,7 @@
             <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
                 <!-- Barre de recherche -->
                 <div class="mb-8">
-                    <form action="{{ route('archives.beneficiaires.index') }}" method="GET" class="relative">
+                    <form action="{{ route('archives.beneficiaires.refused') }}" method="GET" class="relative">
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,10 +48,10 @@
                             <input type="text" 
                                    name="search" 
                                    placeholder="Rechercher par nom, prénom, CIN..." 
-                                   class="w-full pl-12 pr-32 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
+                                   class="w-full pl-12 pr-32 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-red-500/20 focus:border-red-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
                                    value="{{ request('search') }}">
                             <button type="submit" 
-                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-[#FEE2E2] border border-red-300 text-red-900 rounded-xl hover:bg-red-200 shadow-lg hover:shadow-xl transition-all duration-200">
+                                    class="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-red-600 border border-red-700 text-white rounded-xl hover:bg-red-700 shadow-lg hover:shadow-xl transition-all duration-200">
                                 Rechercher
                             </button>
                         </div>
@@ -85,13 +64,13 @@
                     <div>
                         <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Types de dossiers</h3>
                         <div class="flex flex-wrap gap-3">
-                            <a href="{{ route('archives.beneficiaires.index') }}" 
-                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('type') ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                            <a href="{{ route('archives.beneficiaires.refused') }}" 
+                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('type') ? 'bg-red-600 border border-red-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                 Tous
                             </a>
                             @foreach($types as $type)
-                                <a href="{{ route('archives.beneficiaires.index', ['type' => $type]) }}" 
-                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('type') === $type ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                                <a href="{{ route('archives.beneficiaires.refused', ['type' => $type]) }}" 
+                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('type') === $type ? 'bg-red-600 border border-red-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $type }}
                                 </a>
                             @endforeach
@@ -103,13 +82,13 @@
                     <div>
                         <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Écoles</h3>
                         <div class="flex flex-wrap gap-3">
-                            <a href="{{ route('archives.beneficiaires.index', ['type' => request('type')]) }}" 
-                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('ecole') ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                            <a href="{{ route('archives.beneficiaires.refused', ['type' => request('type')]) }}" 
+                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('ecole') ? 'bg-red-600 border border-red-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                 Toutes
                             </a>
                             @foreach($ecoles as $ecole)
-                                <a href="{{ route('archives.beneficiaires.index', ['type' => request('type'), 'ecole' => $ecole->id]) }}" 
-                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('ecole') == $ecole->id ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                                <a href="{{ route('archives.beneficiaires.refused', ['type' => request('type'), 'ecole' => $ecole->id]) }}" 
+                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('ecole') == $ecole->id ? 'bg-red-600 border border-red-700 text-white shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $ecole->nom }}
                                 </a>
                             @endforeach
@@ -146,28 +125,20 @@
                     <div class="mb-8">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <div class="w-16 h-16 bg-[#FEE2E2] border border-red-300 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
-                                    <svg class="w-8 h-8 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                <div class="w-16 h-16 bg-red-600 border border-red-700 rounded-2xl flex items-center justify-center mr-6 shadow-xl">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>
                                 </div>
                                 <div>
                                     <h2 class="text-3xl font-bold text-gray-900 mb-2">{{ $type }}</h2>
                                     <div class="flex items-center space-x-4">
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                                            {{ $typeBeneficiaires->count() }} dossier(s)
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                            <div class="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+                                            {{ $typeBeneficiaires->count() }} dossier(s) refusé(s)
                                         </span>
                                         <span class="text-gray-500 text-sm">Dernière mise à jour: {{ now()->format('d/m/Y') }}</span>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="hidden group-hover:block transition-all duration-300">
-                                <div class="flex items-center space-x-2 text-sm text-gray-500">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                    </svg>
-                                    <span>Gestion des dossiers</span>
                                 </div>
                             </div>
                         </div>
@@ -177,29 +148,39 @@
                     <div class="bg-white/60 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             @foreach($typeBeneficiaires as $beneficiaire)
-                                <div class="card-hover relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-green-200 hover:-translate-y-2 cursor-pointer" 
+                                <div class="card-hover relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-red-200 hover:-translate-y-2 cursor-pointer" 
                                      onclick="window.location.href='{{ route('archives.beneficiaires.show', $beneficiaire) }}'">
                                     <!-- Card Header -->
                                     <div class="flex items-start justify-between mb-6">
                                         <div class="flex-1">
-                                            <h3 class="font-bold text-gray-900 text-lg leading-tight mb-2 hover:text-green-600 transition-colors duration-200">{{ $beneficiaire->nom_complet }}</h3>
+                                            <h3 class="font-bold text-gray-900 text-lg leading-tight mb-2 hover:text-red-600 transition-colors duration-200">{{ $beneficiaire->nom_complet }}</h3>
                                             @if($beneficiaire->reference)
                                                 <p class="text-sm text-orange-600 font-semibold bg-orange-50 px-3 py-1 rounded-lg inline-block hover:bg-orange-100 transition-all duration-200 mb-2">
                                                     Réf: {{ $beneficiaire->reference }}
                                                 </p>
                                             @endif
                                             @if($beneficiaire->cin)
-                                                <p class="text-sm text-gray-500 font-mono bg-gray-50 px-3 py-1 rounded-lg inline-block hover:bg-green-50 hover:text-green-700 transition-all duration-200">
+                                                <p class="text-sm text-gray-500 font-mono bg-gray-50 px-3 py-1 rounded-lg inline-block hover:bg-red-50 hover:text-red-700 transition-all duration-200">
                                                     CIN: {{ $beneficiaire->cin }}
                                                 </p>
                                             @endif
                                         </div>
                                         <!-- Type badge -->
                                         <div class="flex items-center space-x-2">
-                                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-red-100 to-red-200 text-red-800 border border-red-300">
                                                 {{ $beneficiaire->type }}
                                             </span>
                                         </div>
+                                    </div>
+                                    
+                                    <!-- Status Badge -->
+                                    <div class="mb-4">
+                                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800 border border-red-300">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                            Statut: Refusé
+                                        </span>
                                     </div>
                                     
                                     <!-- Card Content -->
@@ -217,9 +198,9 @@
                                         @endif
                                         
                                         @if($beneficiaire->ecole)
-                                        <div class="flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-green-50 hover:to-green-100 transition-all duration-200">
-                                            <div class="flex items-center text-gray-600 hover:text-green-700 transition-colors duration-200">
-                                                <svg class="w-5 h-5 mr-3 text-gray-400 hover:text-green-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-red-50 hover:to-red-100 transition-all duration-200">
+                                            <div class="flex items-center text-gray-600 hover:text-red-700 transition-colors duration-200">
+                                                <svg class="w-5 h-5 mr-3 text-gray-400 hover:text-red-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                                 </svg>
                                                 <span class="font-medium">{{ $beneficiaire->ecole->nom }}</span>
@@ -250,8 +231,8 @@
                                         @endif
                                         
                                         @if($beneficiaire->description)
-                                        <div class="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-green-50 hover:to-green-100 transition-all duration-200">
-                                            <p class="text-sm text-gray-600 hover:text-green-700 transition-colors duration-200">
+                                        <div class="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-red-50 hover:to-red-100 transition-all duration-200">
+                                            <p class="text-sm text-gray-600 hover:text-red-700 transition-colors duration-200">
                                                 {{ Str::limit($beneficiaire->description, 100) }}
                                             </p>
                                         </div>
@@ -262,7 +243,7 @@
                                     <div class="flex justify-between items-center pt-6 border-t border-gray-100">
                                         <div class="flex space-x-2">
                                             <a href="{{ route('archives.beneficiaires.show', $beneficiaire) }}" 
-                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-green-600 hover:text-white hover:bg-green-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
+                                               class="group/btn inline-flex items-center justify-center w-10 h-10 text-red-600 hover:text-white hover:bg-red-600 rounded-xl transition-all duration-300 hover:scale-110 shadow-sm hover:shadow-lg"
                                                title="Voir le dossier"
                                                onclick="event.stopPropagation()">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -317,24 +298,21 @@
                 <div class="text-center py-20">
                     <div class="mx-auto w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-8 shadow-xl">
                         <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Aucun dossier trouvé</h3>
-                    <p class="text-gray-600 text-lg mb-8">Commencez par ajouter votre premier dossier de bénéficiaire pour organiser vos archives.</p>
-                    <a href="{{ route('archives.beneficiaires.create') }}" 
-                       class="inline-flex items-center px-8 py-4 bg-[#FEE2E2] border border-red-300 text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Aucun bénéficiaire refusé</h3>
+                    <p class="text-gray-600 text-lg mb-8">Il n'y a actuellement aucun dossier de bénéficiaire refusé.</p>
+                    <a href="{{ route('archives.beneficiaires.index') }}" 
+                       class="inline-flex items-center px-8 py-4 bg-[#FEE2E2] border border-red-300 text-red-900 font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                         </svg>
-                        Créer le premier dossier
+                        Retour aux Bénéficiaires
                     </a>
                 </div>
             @endif
         </div>
     </div>
 </div>
-</div>
 @endsection
-
-

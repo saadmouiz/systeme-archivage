@@ -326,7 +326,7 @@
 
         <!-- Quick Actions -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-[#FEE2E2] rounded-2xl shadow-lg border border-red-300 p-6 hover:shadow-xl transition-all duration-300">
+            <a href="{{ route('archives.pointages.export-pdf', ['mois' => $mois, 'annee' => $annee]) }}" class="bg-[#FEE2E2] rounded-2xl shadow-lg border border-red-300 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer block">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-[#FEE2E2] rounded-xl flex items-center justify-center mr-4">
                         <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -338,7 +338,7 @@
                         <p class="text-sm text-gray-500">Générer un rapport mensuel</p>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <div class="bg-[#FEE2E2] rounded-2xl shadow-lg border border-red-300 p-6 hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center">

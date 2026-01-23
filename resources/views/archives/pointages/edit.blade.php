@@ -47,17 +47,18 @@
                                 <option value="retard" {{ $pointage->statut === 'retard' ? 'selected' : '' }}>Retard</option>
                                 <option value="conge" {{ $pointage->statut === 'conge' ? 'selected' : '' }}>Congé</option>
                                 <option value="maladie" {{ $pointage->statut === 'maladie' ? 'selected' : '' }}>Maladie</option>
+                                <option value="jour_ferie" {{ $pointage->statut === 'jour_ferie' ? 'selected' : '' }}>Jour férié</option>
                             </select>
                         </div>
 
                         <div>
                             <label for="heure_arrivee" class="block text-sm font-medium text-gray-700">Heure d'arrivée</label>
-                            <input type="time" name="heure_arrivee" id="heure_arrivee" value="{{ $pointage->heure_arrivee }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 time-field" {{ $pointage->statut !== 'present' ? 'disabled' : '' }}>
+                            <input type="time" name="heure_arrivee" id="heure_arrivee" value="{{ $pointage->heure_arrivee }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 time-field" {{ ($pointage->statut !== 'present' && $pointage->statut !== 'retard') ? 'disabled' : '' }}>
                         </div>
 
                         <div>
                             <label for="heure_sortie" class="block text-sm font-medium text-gray-700">Heure de sortie</label>
-                            <input type="time" name="heure_sortie" id="heure_sortie" value="{{ $pointage->heure_sortie }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 time-field" {{ $pointage->statut !== 'present' ? 'disabled' : '' }}>
+                            <input type="time" name="heure_sortie" id="heure_sortie" value="{{ $pointage->heure_sortie }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-900 focus:ring focus:ring-red-900 focus:ring-opacity-50 time-field" {{ ($pointage->statut !== 'present' && $pointage->statut !== 'retard') ? 'disabled' : '' }}>
                         </div>
 
                         <div class="md:col-span-2">
@@ -79,7 +80,7 @@
 
 <script>
     function toggleTimeFields(selectElement) {
-        const isPresent = selectElement.value === 'present';
+        const isPresent = selectElement.value === 'present' || selectElement.value === 'retard';
         const timeFields = document.querySelectorAll('.time-field');
         
         timeFields.forEach(field => {

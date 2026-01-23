@@ -89,6 +89,8 @@ Route::middleware(['auth'])->group(function () {
         // Admin 2 : AccÃ¨s aux bÃ©nÃ©ficiaires, partenaires, communications, Ã©vÃ©nements  
         Route::middleware(['can:access-beneficiaires'])->group(function () {
             Route::resource('beneficiaires', BeneficiaireController::class);
+            Route::get('/beneficiaires-refused', [BeneficiaireController::class, 'refused'])
+                ->name('beneficiaires.refused');
             Route::get('/beneficiaires/{beneficiaire}/download', [BeneficiaireController::class, 'download'])
                 ->name('beneficiaires.download');
             Route::get('/beneficiaires-dashboard', [App\Http\Controllers\BeneficiaireDashboardController::class, 'index'])

@@ -46,7 +46,7 @@ class Pointage extends Model
             'date' => 'required|date',
             'heure_arrivee' => 'nullable|date_format:H:i',
             'heure_sortie' => 'nullable|date_format:H:i|after:heure_arrivee',
-            'statut' => 'required|in:present,absent,retard,conge,maladie',
+            'statut' => 'required|in:present,absent,retard,conge,maladie,jour_ferie',
             'commentaire' => 'nullable|string',
         ];
     }

@@ -97,7 +97,7 @@ class PointageController extends Controller
         // Valider les données pour chaque employé
         $request->validate([
             'employees' => 'required|array',
-            'employees.*.statut' => 'required|in:present,absent,retard,conge,maladie',
+            'employees.*.statut' => 'required|in:present,absent,retard,conge,maladie,jour_ferie',
             'employees.*.heure_arrivee' => 'nullable|date_format:H:i',
             'employees.*.heure_sortie' => 'nullable|date_format:H:i',
             'employees.*.commentaire' => 'nullable|string',
@@ -111,8 +111,8 @@ class PointageController extends Controller
             ]);
 
             $pointage->statut = $data['statut'];
-            $pointage->heure_arrivee = $data['statut'] === 'present' ? $data['heure_arrivee'] : null;
-            $pointage->heure_sortie = $data['statut'] === 'present' ? $data['heure_sortie'] : null;
+            $pointage->heure_arrivee = ($data['statut'] === 'present' || $data['statut'] === 'retard') ? $data['heure_arrivee'] : null;
+            $pointage->heure_sortie = ($data['statut'] === 'present' || $data['statut'] === 'retard') ? $data['heure_sortie'] : null;
             $pointage->commentaire = $data['commentaire'] ?? null;
 
             $pointage->save();
@@ -207,15 +207,15 @@ class PointageController extends Controller
         }
 
         $request->validate([
-            'statut' => 'required|in:present,absent,retard,conge,maladie',
+            'statut' => 'required|in:present,absent,retard,conge,maladie,jour_ferie',
             'heure_arrivee' => 'nullable|date_format:H:i',
             'heure_sortie' => 'nullable|date_format:H:i',
             'commentaire' => 'nullable|string',
         ]);
 
         $pointage->statut = $request->statut;
-        $pointage->heure_arrivee = $request->statut === 'present' ? $request->heure_arrivee : null;
-        $pointage->heure_sortie = $request->statut === 'present' ? $request->heure_sortie : null;
+        $pointage->heure_arrivee = ($request->statut === 'present' || $request->statut === 'retard') ? $request->heure_arrivee : null;
+        $pointage->heure_sortie = ($request->statut === 'present' || $request->statut === 'retard') ? $request->heure_sortie : null;
         $pointage->commentaire = $request->commentaire;
 
         $pointage->save();
@@ -264,18 +264,36 @@ class PointageController extends Controller
             $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
             $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
     
+            // Récupérer tous les employés actifs
+            $employees = Employee::actif()->orderBy('nom')->get();
+            
+            // Créer un tableau avec tous les jours du mois
+            $joursDuMois = collect(CarbonPeriod::create($debut, $fin));
+    
             // Récupérer tous les pointages pour ce mois
             $pointages = Pointage::whereBetween('date', [$debut, $fin])
-                ->with('employee') // Charger la relation employee
-                ->orderBy('date')
-                ->get();
+                ->with('employee')
+                ->get()
+                ->groupBy(['employee_id', function ($item) {
+                    return $item->date->format('Y-m-d');
+                }])
+                ->map(function ($employeePointages) {
+                    return $employeePointages->map(function ($datePointages) {
+                        return $datePointages instanceof \Illuminate\Support\Collection ? 
+                               $datePointages->first() : $datePointages;
+                    });
+                });
     
             // Générer le PDF
             $pdf = \PDF::loadView('archives.pointages.pdf_export', [
+                'employees' => $employees,
+                'joursDuMois' => $joursDuMois,
                 'pointages' => $pointages,
                 'mois' => $mois,
-                'annee' => $annee
-            ]);
+                'annee' => $annee,
+                'debut' => $debut,
+                'fin' => $fin
+            ])->setPaper('a4', 'landscape');
     
             // Télécharger le PDF
             return $pdf->download("pointages_{$annee}_{$mois}.pdf");
