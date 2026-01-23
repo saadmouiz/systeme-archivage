@@ -71,7 +71,7 @@ class AdminSeeder extends Seeder
 
        // Création des administrateurs et assignation des rôles
        foreach ($admins as $adminData) {
-           $admin = Admin::firstOrCreate(
+           $admin = Admin::updateOrCreate(
                ['email' => $adminData['email']],
                [
                    'name' => $adminData['name'],
