@@ -56,32 +56,32 @@ class AuthServiceProvider extends ServiceProvider
 
 
         Gate::define('access-beneficiaires', function ($user) {
-            return $user->hasRole('superadmin') || $user->hasRole('admin1') || $user->hasRole('admin2') || $user->hasRole('admin3'); 
+            return $user->hasRole('superadmin') || $user->hasRole('admin2') || $user->hasRole('admin3'); 
         });
         Gate::define('access-pointages', function ($user) {
-            return $user->hasRole('superadmin') || $user->hasRole('admin3'); 
+            return $user->hasRole('superadmin') || $user->hasRole('admin1') || $user->hasRole('admin3'); 
         
         });
 
 // Permissions spécifiques pour les pointages
 Gate::define('view_pointages', function ($user) {
-    return $user->hasRole('superadmin') || $user->hasRole('admin3');
+    return $user->hasRole('superadmin') || $user->hasRole('admin1') || $user->hasRole('admin3');
 });
 
 Gate::define('create_pointages', function ($user) {
-    return $user->hasRole('superadmin') || $user->hasRole('admin3');
+    return $user->hasRole('superadmin') || $user->hasRole('admin1') || $user->hasRole('admin3');
 });
 
 Gate::define('store_pointages', function ($user) {
-    return $user->hasRole('superadmin') || $user->hasRole('admin3') ;
+    return $user->hasRole('superadmin') || $user->hasRole('admin1') || $user->hasRole('admin3') ;
 });
 
 Gate::define('view_employee_pointages', function ($user) {
-    return $user->hasRole('superadmin') || $user->hasRole('admin3') ;
+    return $user->hasRole('superadmin') || $user->hasRole('admin1') || $user->hasRole('admin3') ;
 });
 
 Gate::define('export_pointages', function ($user) {
-    return $user->hasRole('superadmin') || $user->hasRole('admin3') ;
+    return $user->hasRole('superadmin') || $user->hasRole('admin1') || $user->hasRole('admin3') ;
 });
         
 
