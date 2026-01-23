@@ -161,25 +161,6 @@
             @if($beneficiaires->count() > 0)
                 @foreach($beneficiaires as $type => $typeBeneficiaires)
                 <div class="group">
-                    <!-- Filtre par Année (devant Document éducatif) -->
-                    @if($type === 'Document éducatif')
-                    <div class="mb-6 bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
-                        <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Filtrer par Année</h3>
-                        <div class="flex flex-wrap gap-3">
-                            <a href="{{ route('archives.beneficiaires.index', array_merge(request()->except('annee'), ['type' => 'Document éducatif', 'ecole' => request('ecole')])) }}" 
-                               class="px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 {{ !request('annee') ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                                Toutes les années
-                            </a>
-                            @foreach([2019, 2021, 2022, 2023, 2024, 2025] as $annee)
-                                <a href="{{ route('archives.beneficiaires.index', array_merge(request()->except('annee'), ['type' => 'Document éducatif', 'ecole' => request('ecole'), 'annee' => $annee])) }}" 
-                                   class="px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 {{ request('annee') == $annee ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                                    {{ $annee }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-
                     <!-- Section Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between">
