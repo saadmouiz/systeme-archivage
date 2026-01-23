@@ -56,7 +56,7 @@ class AuthServiceProvider extends ServiceProvider
 
 
         Gate::define('access-beneficiaires', function ($user) {
-            return $user->hasRole('superadmin') || $user->hasRole('admin2') || $user->hasRole('admin3'); 
+            return $user->hasRole('superadmin') || $user->hasRole('admin1') || $user->hasRole('admin2') || $user->hasRole('admin3'); 
         });
         Gate::define('access-pointages', function ($user) {
             return $user->hasRole('superadmin') || $user->hasRole('admin3'); 

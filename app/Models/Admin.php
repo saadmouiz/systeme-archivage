@@ -13,7 +13,7 @@ class Admin extends Authenticatable
     public function hasAccess($section)
     {
         $permissions = [
-            'admin1' => ['financiers', 'employes', 'administratif', 'rh'],
+            'admin1' => ['financiers', 'employes', 'administratif', 'rh', 'beneficiaires'],
             'admin2' => ['beneficiaires',  'evenement', 'communication'],
             'admin3' => ['pointages' , 'beneficiaires'],
             'superadmin' => ['financiers', 'employes', 'administratif', 'rh', 'beneficiaires', 'partenaires', 'evenement', 'communication','pointages', 'courriers'],
