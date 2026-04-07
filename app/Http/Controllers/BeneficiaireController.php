@@ -10,6 +10,8 @@ use App\Models\ArchivePartenaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
 
 class BeneficiaireController extends Controller
 {
@@ -31,6 +33,106 @@ class BeneficiaireController extends Controller
         'Bac+2' => 'Bac+2',
         'Bac+3' => 'Bac+3'
     ];
+
+    private function getEcolesForFilter()
+    {
+        return ArchivePartenaire::query()
+            ->orderBy('nom')
+            ->get();
+    }
+
+    private function normalizeBeneficiaireType(string $type): string
+    {
+        $normalized = mb_strtolower(trim($type));
+        $normalized = str_replace(['é', 'è', 'ê', 'ë'], 'e', $normalized);
+
+        if (str_contains($normalized, 'document') && str_contains($normalized, 'educatif')) {
+            return 'Document éducatif';
+        }
+
+        if (str_contains($normalized, 'dossier') && str_contains($normalized, 'individuel')) {
+            return 'Dossier individuel';
+        }
+
+        if (str_contains($normalized, 'conflits') && str_contains($normalized, 'juridique')) {
+            return 'Conflits d\'ordre juridique';
+        }
+
+        return $type;
+    }
+
+    private function applySearchFilters(Builder $query, string $search): void
+    {
+        $terms = preg_split('/\s+/', trim($search)) ?: [];
+        $terms = array_values(array_filter($terms, fn ($term) => $term !== ''));
+
+        foreach ($terms as $term) {
+            $query->where(function ($q) use ($term) {
+                $q->where('nom', 'like', "%{$term}%")
+                  ->orWhere('prenom', 'like', "%{$term}%")
+                  ->orWhere('cin', 'like', "%{$term}%")
+                  ->orWhere('reference', 'like', "%{$term}%")
+                  ->orWhereHas('ecole', function ($ecoleQuery) use ($term) {
+                      $ecoleQuery->where('nom', 'like', "%{$term}%");
+                  });
+
+                // Année saisie seule: couvre explicitement XX/YYYY et XX-YYYY.
+                if (preg_match('/^\d{4}$/', $term)) {
+                    $q->orWhere('reference', 'like', "%/{$term}")
+                      ->orWhere('reference', 'like', "%-{$term}");
+                }
+            });
+        }
+    }
+
+    private function getAvailableAnnees(Request $request, bool $refusedOnly = false): array
+    {
+        $query = Beneficiaire::query();
+
+        if ($request->has('type') && $request->type) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('ecole')) {
+            $query->where('ecole_id', $request->ecole);
+        }
+
+        if ($refusedOnly) {
+            $query->where('status', 'Refuser');
+        } else {
+            $query->where(function ($q) {
+                $q->where('status', '!=', 'Refuser')
+                  ->orWhereNull('status');
+            });
+        }
+
+        $years = [];
+
+        $references = (clone $query)
+            ->whereNotNull('reference')
+            ->pluck('reference');
+
+        foreach ($references as $reference) {
+            if (preg_match_all('/\b(19|20)\d{2}\b/', (string) $reference, $matches)) {
+                foreach ($matches[0] as $year) {
+                    $years[] = (int) $year;
+                }
+            }
+        }
+
+        $createdYears = (clone $query)
+            ->selectRaw('DISTINCT YEAR(created_at) as year')
+            ->pluck('year')
+            ->filter()
+            ->map(fn ($year) => (int) $year)
+            ->toArray();
+
+        $years = array_merge($years, $createdYears, [(int) Carbon::now()->year]);
+        $years = array_values(array_unique(array_filter($years, fn ($year) => $year >= 1900 && $year <= 2100)));
+        sort($years);
+
+        return $years;
+    }
 
     public function index(Request $request)
     {
@@ -63,13 +165,8 @@ class BeneficiaireController extends Controller
 
         // Recherche
         if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('cin', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
+            $search = trim($request->search);
+            $this->applySearchFilters($query, $search);
         }
 
         // Exclure les bénéficiaires refusés (status = 'Refuser')
@@ -81,9 +178,7 @@ class BeneficiaireController extends Controller
         $beneficiaires = $query->orderBy('id', 'asc')->get()->groupBy('type');
 
         // Récupérer les écoles et centres pour le filtre
-        $ecoles = ArchivePartenaire::whereIn('type', ['école', 'Centre', 'centre'])
-            ->orderBy('nom')
-            ->get();
+        $ecoles = $this->getEcolesForFilter();
 
         // Debug: Logger le nombre de bénéficiaires
         \Log::info('Bénéficiaires trouvés: ' . $beneficiaires->count());
@@ -97,16 +192,15 @@ class BeneficiaireController extends Controller
         return view('archives.beneficiaires.index', [
             'beneficiaires' => $beneficiaires,
             'types' => array_values($this->types),
-            'ecoles' => $ecoles
+            'ecoles' => $ecoles,
+            'annees' => $this->getAvailableAnnees($request, false),
         ]);
     }
 
     public function create()
 {
     // Récupérer les écoles ET les centres pour le dropdown
-    $ecoles = ArchivePartenaire::whereIn('type', ['école', 'Centre', 'centre'])
-        ->orderBy('nom')
-        ->get(); // Récupère une collection d'objets
+    $ecoles = $this->getEcolesForFilter(); // Récupère une collection d'objets
 
     return view('archives.beneficiaires.create', [
         'types' => $this->types,
@@ -204,6 +298,7 @@ class BeneficiaireController extends Controller
             ],
             'fichier' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240'
         ]);
+        $validated['type'] = $this->normalizeBeneficiaireType($validated['type']);
     
         try {
             if ($request->hasFile('fichier')) {
@@ -259,9 +354,7 @@ class BeneficiaireController extends Controller
     public function edit(Beneficiaire $beneficiaire)
     {
         // Récupérer les écoles et centres pour le formulaire
-        $ecoles = ArchivePartenaire::whereIn('type', ['école', 'Centre', 'centre'])
-            ->orderBy('nom')
-            ->pluck('nom', 'id');
+        $ecoles = $this->getEcolesForFilter()->pluck('nom', 'id');
 
         return view('archives.beneficiaires.edit', [
             'beneficiaire' => $beneficiaire,
@@ -325,6 +418,7 @@ class BeneficiaireController extends Controller
             ],
             'fichier' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240'
         ]);
+        $validated['type'] = $this->normalizeBeneficiaireType($validated['type']);
 
         if ($request->hasFile('fichier')) {
             if ($beneficiaire->fichier) {
@@ -525,26 +619,20 @@ private function sanitizeFileName($baseFileName, $filePath)
 
         // Recherche
         if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nom', 'like', "%{$search}%")
-                  ->orWhere('prenom', 'like', "%{$search}%")
-                  ->orWhere('cin', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
+            $search = trim($request->search);
+            $this->applySearchFilters($query, $search);
         }
 
         $beneficiaires = $query->orderBy('id', 'desc')->get()->groupBy('type');
 
         // Récupérer les écoles et centres pour le filtre
-        $ecoles = ArchivePartenaire::whereIn('type', ['école', 'Centre', 'centre'])
-            ->orderBy('nom')
-            ->get();
+        $ecoles = $this->getEcolesForFilter();
 
         return view('archives.beneficiaires.refused', [
             'beneficiaires' => $beneficiaires,
             'types' => array_values($this->types),
-            'ecoles' => $ecoles
+            'ecoles' => $ecoles,
+            'annees' => $this->getAvailableAnnees($request, true),
         ]);
     }
 }

@@ -22,6 +22,30 @@ class PartenaireController extends Controller
         'en attente' => 'En attente'
     ];
 
+    private function normalizeType(string $type): string
+    {
+        $normalized = mb_strtolower(trim($type));
+        $normalized = str_replace(['é', 'è', 'ê', 'ë'], 'e', $normalized);
+
+        if (in_array($normalized, ['ecole', '?cole', '??cole'], true)) {
+            return 'école';
+        }
+
+        if (str_contains($normalized, 'centre')) {
+            return 'Centre';
+        }
+
+        if ($normalized === 'association partenaire') {
+            return 'Association partenaire';
+        }
+
+        if ($normalized === 'entreprise et sponsor') {
+            return 'Entreprise et Sponsor';
+        }
+
+        return $type;
+    }
+
     public function index(Request $request)
     {
         $query = ArchivePartenaire::query();
@@ -73,6 +97,7 @@ class PartenaireController extends Controller
             'fichier' => 'nullable|file|mimes:pdf,doc,docx,jpg,png|max:10240',
             'statut_partenariat' => 'required|string' // Changé de statut
         ]);
+        $validated['type'] = $this->normalizeType($validated['type']);
     
         if ($request->hasFile('fichier')) {
             $file = $request->file('fichier');
@@ -120,6 +145,7 @@ class PartenaireController extends Controller
             'fichier' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
             'contributions' => 'nullable|array',
         ]);
+        $validated['type'] = $this->normalizeType($validated['type']);
 
         if ($request->hasFile('fichier')) {
             if ($partenaire->fichier) {

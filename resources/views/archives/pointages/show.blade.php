@@ -1,4 +1,4 @@
-﻿@extends('layouts.sidebar')
+@extends('layouts.sidebar')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -333,7 +333,8 @@
                                                 'retard' => ['bg-red-100 text-red-900', 'bg-red-900', 'Retard'],
                                                 'conge' => ['bg-red-100 text-red-900', 'bg-red-900', 'Congé'],
                                                 'maladie' => ['bg-red-100 text-red-900', 'bg-red-900', 'Maladie'],
-                                            ][$pointage->statut];
+                                                'jour_ferie' => ['bg-gray-100 text-gray-800', 'bg-gray-500', 'Jour férié'],
+                                            ][$pointage->statut] ?? ['bg-gray-100 text-gray-800', 'bg-gray-400', ucfirst(str_replace('_', ' ', $pointage->statut))];
                                         @endphp
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $statusConfig[0] }}">
                                             <div class="w-2 h-2 {{ $statusConfig[1] }} rounded-full mr-2"></div>

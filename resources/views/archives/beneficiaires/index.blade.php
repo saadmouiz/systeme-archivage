@@ -68,7 +68,7 @@
                             </div>
                             <input type="text" 
                                    name="search" 
-                                   placeholder="Rechercher par nom, prénom, CIN..." 
+                                   placeholder="Rechercher par nom, prénom, CIN, école + année (ex: Raja 2025)..." 
                                    class="w-full pl-12 pr-32 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
                                    value="{{ request('search') }}">
                             <button type="submit" 
@@ -126,7 +126,7 @@
                                class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('annee') ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                 Toutes
                             </a>
-                            @foreach([2019, 2021, 2022, 2023, 2024, 2025] as $annee)
+                            @foreach(($annees ?? []) as $annee)
                                 <a href="{{ route('archives.beneficiaires.index', array_merge(request()->all(), ['annee' => $annee])) }}" 
                                    class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('annee') == $annee ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $annee }}

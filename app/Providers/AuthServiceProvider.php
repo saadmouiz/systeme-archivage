@@ -100,7 +100,8 @@ Gate::define('access-partenaires', function ($user) {
 
         // Accès aux courriers - seulement pour superadmin
         Gate::define('access-courriers', function ($user) {
-            return $user->hasRole('superadmin');
+            return $user->hasRole('superadmin')
+            || $user->hasRole('admin3');
         });
     }
 }
