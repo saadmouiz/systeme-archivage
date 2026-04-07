@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -198,6 +198,7 @@
                 </li>
                 @endcan
 
+                @can('access-visiteurs')
                 <li>
                     <a href="{{ route('visiteurs.index') }}" 
                        class="sidebar-link flex items-center p-2 text-gray-700 rounded-lg group {{ request()->routeIs('visiteurs.*') ? 'active' : '' }}">
@@ -207,6 +208,7 @@
                         <span class="ml-3">Visiteurs</span>
                     </a>
                 </li>
+                @endcan
 
                 <!-- COMMUNICATION -->
                 @if(Gate::check('access-communications') || Gate::check('access-evenements'))

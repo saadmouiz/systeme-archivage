@@ -89,6 +89,10 @@ Gate::define('access-partenaires', function ($user) {
     return $user->hasRole('superadmin');
 });
 
+Gate::define('access-visiteurs', function ($user) {
+    return $user->hasRole('superadmin') || $user->hasRole('admin3');
+});
+
 
         Gate::define('access-communications', function ($user) {
             return $user->hasRole('superadmin') || $user->hasRole('admin2');

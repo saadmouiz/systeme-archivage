@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/statistics', [DashboardController::class, 'statistics'])->name('statistics');
     
     // Routes pour les visiteurs
-    Route::resource('visiteurs', VisiteurController::class);
+    Route::resource('visiteurs', VisiteurController::class)->middleware('can:access-visiteurs');
     
     // Archives - page principale accessible Ã  tous les admins authentifiÃ©s
     Route::prefix('archives')->name('archives.')->group(function () {
