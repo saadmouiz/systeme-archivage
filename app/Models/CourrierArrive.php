@@ -51,8 +51,15 @@ class CourrierArrive extends Model
 
         static::creating(function ($model) {
             if (empty($model->numero_arrive)) {
-                $lastNum = self::withTrashed()->orderBy('numero_arrive', 'desc')->first();
-                $model->numero_arrive = $lastNum ? (int)$lastNum->numero_arrive + 1 : 1;
+                // Ne pas utiliser orderBy('numero_arrive','desc') sur une chaîne : le tri texte
+                // met "9" après "10", donc le dernier enregistrement peut être 9 → +1 = 10 déjà pris.
+                $maxNum = self::withTrashed()
+                    ->pluck('numero_arrive')
+                    ->filter(fn ($v) => $v !== null && $v !== '')
+                    ->map(fn ($v) => is_numeric((string) $v) ? (int) $v : 0)
+                    ->max() ?? 0;
+
+                $model->numero_arrive = (string) ($maxNum + 1);
             }
         });
     }

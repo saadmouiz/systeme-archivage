@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 class CourrierSortant extends Model
 {
@@ -28,16 +29,24 @@ class CourrierSortant extends Model
 
         static::creating(function ($model) {
             if (empty($model->numero_sortant)) {
-                $lastNum = self::withTrashed()->orderBy('numero_sortant', 'desc')->first();
-                if ($lastNum) {
-                    // Format: 01/2024, 02/2024, etc.
-                    $parts = explode('/', $lastNum->numero_sortant);
-                    $num = isset($parts[0]) ? (int)$parts[0] : 0;
-                    $year = date('Y');
-                    $model->numero_sortant = sprintf('%02d/%s', $num + 1, $year);
-                } else {
-                    $model->numero_sortant = '01/' . date('Y');
-                }
+                // Année du courrier (alignée sur la date saisie, pas sur un tri texte erroné)
+                $year = $model->date_sortant
+                    ? Carbon::parse($model->date_sortant)->format('Y')
+                    : date('Y');
+
+                // Ne pas utiliser orderBy('numero_sortant','desc') : le tri texte met "99/2026" après "100/2026"
+                // et régénère un numéro déjà existant → duplicate key.
+                $maxNum = self::withTrashed()
+                    ->where('numero_sortant', 'like', '%/' . $year)
+                    ->get()
+                    ->map(function ($row) {
+                        $parts = explode('/', (string) $row->numero_sortant);
+
+                        return isset($parts[0]) ? (int) $parts[0] : 0;
+                    })
+                    ->max() ?? 0;
+
+                $model->numero_sortant = sprintf('%02d/%s', $maxNum + 1, $year);
             }
         });
     }
