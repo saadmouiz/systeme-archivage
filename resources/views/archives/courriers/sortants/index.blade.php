@@ -21,14 +21,23 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('archives.courriers.sortants.create') }}" 
-                   class="group relative inline-flex items-center px-8 py-4 bg-[#871C1C] border border-red-300 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-900/25 transition-all duration-300 hover:scale-105">
-                    <div class="absolute inset-0 bg-gradient-to-r from-red-900 to-red-700 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-                    <svg class="w-5 h-5 mr-3 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    <span class="relative z-10">Nouveau Courrier</span>
-                </a>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ route('archives.courriers.sortants.export.pdf', request()->only(['search', 'annee', 'date_from', 'date_to'])) }}" 
+                       class="inline-flex items-center px-6 py-3 bg-white border border-red-300 text-red-900 font-semibold rounded-2xl shadow-lg hover:bg-red-50 transition-all duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Exporter PDF{{ request('annee') ? ' ' . request('annee') : '' }}
+                    </a>
+                    <a href="{{ route('archives.courriers.sortants.create') }}" 
+                       class="group relative inline-flex items-center px-8 py-4 bg-[#871C1C] border border-red-300 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-red-900/25 transition-all duration-300 hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-r from-red-900 to-red-700 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                        <svg class="w-5 h-5 mr-3 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        <span class="relative z-10">Nouveau Courrier</span>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -58,7 +67,7 @@
         <div class="mb-12">
             <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20">
                 <form action="{{ route('archives.courriers.sortants.index') }}" method="GET" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,6 +79,15 @@
                                    placeholder="Rechercher..." 
                                    class="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-red-900/20 focus:border-red-900 transition-all duration-300 bg-white/50 backdrop-blur-sm"
                                    value="{{ request('search') }}">
+                        </div>
+                        <div>
+                            <select name="annee"
+                                    class="w-full px-4 py-4 text-lg border-2 border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-red-900/20 focus:border-red-900 transition-all duration-300 bg-white/50 backdrop-blur-sm">
+                                <option value="">Toutes les années</option>
+                                @foreach(($annees ?? []) as $annee)
+                                    <option value="{{ $annee }}" {{ (string) request('annee') === (string) $annee ? 'selected' : '' }}>{{ $annee }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div>
                             <input type="date" 
@@ -84,7 +102,7 @@
                                    value="{{ request('date_to') }}">
                         </div>
                     </div>
-                    <div class="flex gap-4">
+                    <div class="flex flex-wrap gap-4">
                         <button type="submit" 
                                 class="px-8 py-3 bg-red-900 text-white font-semibold rounded-xl hover:bg-red-700 shadow-lg hover:shadow-xl transition-all duration-200">
                             Filtrer
@@ -92,6 +110,10 @@
                         <a href="{{ route('archives.courriers.sortants.index') }}" 
                            class="px-8 py-3 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all duration-200">
                             Réinitialiser
+                        </a>
+                        <a href="{{ route('archives.courriers.sortants.export.pdf', request()->only(['search', 'annee', 'date_from', 'date_to'])) }}" 
+                           class="px-8 py-3 bg-white border border-red-300 text-red-900 font-semibold rounded-xl hover:bg-red-50 transition-all duration-200">
+                            Exporter PDF{{ request('annee') ? ' ' . request('annee') : '' }}
                         </a>
                     </div>
                 </form>

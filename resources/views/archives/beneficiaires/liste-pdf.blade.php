@@ -180,6 +180,10 @@
     <div class="header">
         <img src="{{ public_path('asset/hhh.jpeg') }}" alt="Logo Association" class="logo">
         <h1 class="title">Liste des Bénéficiaires</h1>
+        @if(!empty($annee))
+            <p class="subtitle">Année {{ $annee }}</p>
+        @endif
+        <p class="date">Généré le {{ date('d/m/Y') }}</p>
     </div>
 
     <!-- Tableau -->

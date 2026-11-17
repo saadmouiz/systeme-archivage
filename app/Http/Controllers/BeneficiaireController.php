@@ -72,6 +72,7 @@ class BeneficiaireController extends Controller
                   ->orWhere('prenom', 'like', "%{$term}%")
                   ->orWhere('cin', 'like', "%{$term}%")
                   ->orWhere('reference', 'like', "%{$term}%")
+                  ->orWhere('nom_association', 'like', "%{$term}%")
                   ->orWhereHas('ecole', function ($ecoleQuery) use ($term) {
                       $ecoleQuery->where('nom', 'like', "%{$term}%");
                   });
@@ -79,10 +80,30 @@ class BeneficiaireController extends Controller
                 // Année saisie seule: couvre explicitement XX/YYYY et XX-YYYY.
                 if (preg_match('/^\d{4}$/', $term)) {
                     $q->orWhere('reference', 'like', "%/{$term}")
-                      ->orWhere('reference', 'like', "%-{$term}");
+                      ->orWhere('reference', 'like', "%-{$term}")
+                      ->orWhere('reference', 'like', "%/{$term}/%")
+                      ->orWhere('reference', 'like', "%-{$term}-%");
                 }
             });
         }
+    }
+
+    /**
+     * Filtre par année extraite de la référence (ex: 21/2019 → 2019).
+     */
+    private function applyReferenceYearFilter(Builder $query, string $annee): void
+    {
+        $annee = preg_replace('/\D/', '', $annee);
+        if ($annee === '' || strlen($annee) !== 4) {
+            return;
+        }
+
+        $query->where(function ($q) use ($annee) {
+            $q->where('reference', 'like', "%/{$annee}")
+              ->orWhere('reference', 'like', "%-{$annee}")
+              ->orWhere('reference', 'like', "%/{$annee}/%")
+              ->orWhere('reference', 'like', "%-{$annee}-%");
+        });
     }
 
     private function getAvailableAnnees(Request $request, bool $refusedOnly = false): array
@@ -110,28 +131,45 @@ class BeneficiaireController extends Controller
 
         $references = (clone $query)
             ->whereNotNull('reference')
+            ->where('reference', '!=', '')
             ->pluck('reference');
 
         foreach ($references as $reference) {
-            if (preg_match_all('/\b(19|20)\d{2}\b/', (string) $reference, $matches)) {
-                foreach ($matches[0] as $year) {
+            // Priorité au format XX/YYYY ou XX-YYYY
+            if (preg_match_all('/[\/\-]((?:19|20)\d{2})\b/', (string) $reference, $matches)) {
+                foreach ($matches[1] as $year) {
+                    $years[] = (int) $year;
+                }
+            } elseif (preg_match_all('/\b((?:19|20)\d{2})\b/', (string) $reference, $matches)) {
+                foreach ($matches[1] as $year) {
                     $years[] = (int) $year;
                 }
             }
         }
 
-        $createdYears = (clone $query)
-            ->selectRaw('DISTINCT YEAR(created_at) as year')
-            ->pluck('year')
-            ->filter()
-            ->map(fn ($year) => (int) $year)
-            ->toArray();
-
-        $years = array_merge($years, $createdYears, [(int) Carbon::now()->year]);
         $years = array_values(array_unique(array_filter($years, fn ($year) => $year >= 1900 && $year <= 2100)));
-        sort($years);
+        rsort($years);
 
         return $years;
+    }
+
+    private function applyBeneficiaireListFilters(Builder $query, Request $request): void
+    {
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('ecole')) {
+            $query->where('ecole_id', $request->ecole);
+        }
+
+        if ($request->filled('annee')) {
+            $this->applyReferenceYearFilter($query, (string) $request->annee);
+        }
+
+        if ($request->filled('search')) {
+            $this->applySearchFilters($query, trim($request->search));
+        }
     }
 
     public function index(Request $request)
@@ -152,15 +190,9 @@ class BeneficiaireController extends Controller
             $query->where('ecole_id', $request->ecole);
         }
 
-        // Filtrage par année (basé sur la référence)
+        // Filtrage par année (basé sur la référence, ex: 21/2019 → 2019)
         if ($request->filled('annee')) {
-            $annee = $request->annee;
-            $query->where(function($q) use ($annee) {
-                // Format: XX/YYYY ou XX-YYYY
-                $q->where('reference', 'like', "%/{$annee}")
-                  ->orWhere('reference', 'like', "%-{$annee}")
-                  ->orWhere('reference', 'like', "%{$annee}%");
-            });
+            $this->applyReferenceYearFilter($query, (string) $request->annee);
         }
 
         // Recherche
@@ -263,6 +295,7 @@ class BeneficiaireController extends Controller
                 Rule::requiredIf(fn() => $request->type === 'Document éducatif'),
                 'in:Association,Eps'
             ],
+            'nom_association' => 'nullable|string|max:255',
             'niveau' => [
                 'nullable',
                 Rule::requiredIf(fn() => $request->type === 'Dossier individuel'),
@@ -312,6 +345,7 @@ class BeneficiaireController extends Controller
                 // Pour Dossier individuel, supprimer les champs éducatifs (garder genre)
                 $validated['status'] = null;
                 $validated['ass_eps'] = null;
+                $validated['nom_association'] = null;
                 $validated['ecole_id'] = null;
             } elseif ($validated['type'] === 'Document éducatif') {
                 // Pour Document éducatif, supprimer les champs académiques et société
@@ -319,11 +353,15 @@ class BeneficiaireController extends Controller
                 $validated['specialite'] = null;
                 $validated['type_intervention'] = null;
                 $validated['societe'] = null;
+                if (($validated['ass_eps'] ?? null) !== 'Association') {
+                    $validated['nom_association'] = null;
+                }
             } else {
                 // Pour les autres types, supprimer tous les champs conditionnels
                 $validated['genre'] = null;
                 $validated['status'] = null;
                 $validated['ass_eps'] = null;
+                $validated['nom_association'] = null;
                 $validated['ecole_id'] = null;
                 $validated['niveau'] = null;
                 $validated['specialite'] = null;
@@ -389,6 +427,7 @@ class BeneficiaireController extends Controller
                 'required_if:type,Document éducatif',
                 'in:Association,Eps'
             ],
+            'nom_association' => 'nullable|string|max:255',
             'niveau' => [
                 'nullable',
                 'required_if:type,Dossier individuel',
@@ -435,6 +474,7 @@ class BeneficiaireController extends Controller
             // Pour Dossier individuel, supprimer les champs éducatifs (garder genre)
             $validated['status'] = null;
             $validated['ass_eps'] = null;
+            $validated['nom_association'] = null;
             $validated['ecole_id'] = null;
         } elseif ($validated['type'] === 'Document éducatif') {
             // Pour Document éducatif, supprimer les champs académiques et société
@@ -442,11 +482,15 @@ class BeneficiaireController extends Controller
             $validated['specialite'] = null;
             $validated['type_intervention'] = null;
             $validated['societe'] = null;
+            if (($validated['ass_eps'] ?? null) !== 'Association') {
+                $validated['nom_association'] = null;
+            }
         } else {
             // Pour les autres types, supprimer tous les champs conditionnels
             $validated['genre'] = null;
             $validated['status'] = null;
             $validated['ass_eps'] = null;
+            $validated['nom_association'] = null;
             $validated['ecole_id'] = null;
             $validated['niveau'] = null;
             $validated['specialite'] = null;
@@ -514,53 +558,73 @@ private function sanitizeFileName($baseFileName, $filePath)
     return $baseFileName . '.' . $extension;
 }
 
-    public function liste()
+    public function liste(Request $request)
     {
-        // Statistiques globales (avant pagination)
-        $total = Beneficiaire::count();
-        $totalFilles = Beneficiaire::where('genre', 'Femme')->count();
-        $totalGarcons = Beneficiaire::where('genre', 'Homme')->count();
-        
-        // Utiliser la méthode utilitaire (avec pagination)
-        $beneficiaires = $this->getBeneficiairesListData(true);
+        $baseQuery = Beneficiaire::query();
+        $this->applyBeneficiaireListFilters($baseQuery, $request);
 
-        return view('archives.beneficiaires.liste', compact('beneficiaires', 'total', 'totalFilles', 'totalGarcons'));
+        $total = (clone $baseQuery)->count();
+        $totalFilles = (clone $baseQuery)->where('genre', 'Femme')->count();
+        $totalGarcons = (clone $baseQuery)->where('genre', 'Homme')->count();
+        
+        $beneficiaires = $this->getBeneficiairesListData($request, true);
+        $annees = $this->getAvailableAnnees($request, false);
+
+        return view('archives.beneficiaires.liste', compact(
+            'beneficiaires',
+            'total',
+            'totalFilles',
+            'totalGarcons',
+            'annees'
+        ));
     }
 
-    public function exportListePdf()
+    public function exportListePdf(Request $request)
     {
-        // Utiliser exactement la même logique que la méthode liste() (SANS pagination pour PDF)
-        $beneficiaires = $this->getBeneficiairesListData(false);
-        
-        // Statistiques (MÊME LOGIQUE QUE liste())
-        $total = Beneficiaire::count();
-        $totalFilles = Beneficiaire::where('genre', 'Femme')->count();
-        $totalGarcons = Beneficiaire::where('genre', 'Homme')->count();
+        $beneficiaires = $this->getBeneficiairesListData($request, false);
 
-        $pdf = \PDF::loadView('archives.beneficiaires.liste-pdf', compact('beneficiaires', 'total', 'totalFilles', 'totalGarcons'));
+        $baseQuery = Beneficiaire::query();
+        $this->applyBeneficiaireListFilters($baseQuery, $request);
+
+        $total = (clone $baseQuery)->count();
+        $totalFilles = (clone $baseQuery)->where('genre', 'Femme')->count();
+        $totalGarcons = (clone $baseQuery)->where('genre', 'Homme')->count();
+        $annee = $request->filled('annee') ? $request->annee : null;
+
+        $pdf = \PDF::loadView('archives.beneficiaires.liste-pdf', compact(
+            'beneficiaires',
+            'total',
+            'totalFilles',
+            'totalGarcons',
+            'annee'
+        ));
+
+        $filename = $annee
+            ? "liste_beneficiaires_{$annee}_" . date('Y-m-d') . '.pdf'
+            : 'liste_beneficiaires_' . date('Y-m-d') . '.pdf';
         
-        return $pdf->download('liste_beneficiaires_' . date('Y-m-d') . '.pdf');
+        return $pdf->download($filename);
     }
 
     /**
      * Méthode utilitaire pour récupérer les données des bénéficiaires
      * Utilisée par liste() et exportListePdf() pour garantir la cohérence
      */
-    private function getBeneficiairesListData($paginated = true)
+    private function getBeneficiairesListData(Request $request, $paginated = true)
     {
         $query = Beneficiaire::with('ecole')->orderBy('id', 'asc');
+        $this->applyBeneficiaireListFilters($query, $request);
         
         if ($paginated) {
-            $beneficiairesPaginated = $query->paginate(15);
-            $beneficiaires = $beneficiairesPaginated->through(function ($beneficiaire) {
-                return $this->mapBeneficiaireData($beneficiaire);
-            });
-            return $beneficiaires;
-        } else {
-            return $query->get()->map(function ($beneficiaire) {
+            $beneficiairesPaginated = $query->paginate(15)->appends($request->query());
+            return $beneficiairesPaginated->through(function ($beneficiaire) {
                 return $this->mapBeneficiaireData($beneficiaire);
             });
         }
+
+        return $query->get()->map(function ($beneficiaire) {
+            return $this->mapBeneficiaireData($beneficiaire);
+        });
     }
 
     /**
@@ -615,6 +679,11 @@ private function sanitizeFileName($baseFileName, $filePath)
         // Filtrage par école
         if ($request->filled('ecole')) {
             $query->where('ecole_id', $request->ecole);
+        }
+
+        // Filtrage par année (référence)
+        if ($request->filled('annee')) {
+            $this->applyReferenceYearFilter($query, (string) $request->annee);
         }
 
         // Recherche

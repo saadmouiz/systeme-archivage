@@ -43,6 +43,15 @@
                         </svg>
                         <span class="whitespace-nowrap">Bénéficiaires Refusés</span>
                     </a>
+                    <a href="{{ route('archives.beneficiaires.liste.export.pdf', request()->only(['type', 'ecole', 'annee', 'search'])) }}" 
+                       class="inline-flex items-center px-6 py-2 bg-white border border-red-300 text-red-900 rounded-xl hover:bg-red-50 shadow-lg hover:shadow-xl transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span class="whitespace-nowrap">
+                            Exporter PDF{{ request('annee') ? ' ' . request('annee') : '' }}
+                        </span>
+                    </a>
                     <a href="{{ route('archives.beneficiaires.create') }}" 
                        class="inline-flex items-center px-6 py-2 bg-[#871C1C] border border-red-300 text-white rounded-xl hover:bg-red-900 shadow-lg hover:shadow-xl transition-all duration-200">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,24 +126,35 @@
                     </div>
                     @endif
 
-                    <!-- Filtre par Année (pour Document éducatif) -->
-                    @if(request('type') === 'Document éducatif' || request('ecole'))
+                    <!-- Filtre par Année (extrait de la référence, ex: 21/2019 → 2019) -->
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Année</h3>
+                        <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Année (référence)</h3>
                         <div class="flex flex-wrap gap-3">
-                            <a href="{{ route('archives.beneficiaires.index', array_merge(request()->except('annee'), ['type' => request('type'), 'ecole' => request('ecole')])) }}" 
+                            <a href="{{ route('archives.beneficiaires.index', request()->except('annee')) }}" 
                                class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('annee') ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                 Toutes
                             </a>
-                            @foreach(($annees ?? []) as $annee)
-                                <a href="{{ route('archives.beneficiaires.index', array_merge(request()->all(), ['annee' => $annee])) }}" 
-                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('annee') == $annee ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                            @forelse(($annees ?? []) as $annee)
+                                <a href="{{ route('archives.beneficiaires.index', array_merge(request()->except('annee'), ['annee' => $annee])) }}" 
+                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ (string) request('annee') === (string) $annee ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $annee }}
                                 </a>
-                            @endforeach
+                            @empty
+                                <span class="text-sm text-gray-500 py-3">Aucune année détectée dans les références</span>
+                            @endforelse
                         </div>
+                        @if(request('annee'))
+                            <div class="mt-4">
+                                <a href="{{ route('archives.beneficiaires.liste.export.pdf', request()->only(['type', 'ecole', 'annee', 'search'])) }}"
+                                   class="inline-flex items-center px-5 py-2.5 text-sm font-medium bg-[#871C1C] text-white rounded-xl hover:bg-red-900 shadow-md transition-all duration-200">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    Exporter PDF {{ request('annee') }}
+                                </a>
+                            </div>
+                        @endif
                     </div>
-                    @endif
                 </div>
             </div>
         </div>

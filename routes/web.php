@@ -41,7 +41,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/statistics', [DashboardController::class, 'statistics'])->name('statistics');
     
     // Routes pour les visiteurs
-    Route::resource('visiteurs', VisiteurController::class)->middleware('can:access-visiteurs');
+    Route::middleware(['can:access-visiteurs'])->group(function () {
+        Route::get('visiteurs/export-excel', [VisiteurController::class, 'exportExcel'])->name('visiteurs.export.excel');
+        Route::resource('visiteurs', VisiteurController::class);
+    });
     
     // Archives - page principale accessible Ã  tous les admins authentifiÃ©s
     Route::prefix('archives')->name('archives.')->group(function () {
@@ -79,11 +82,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/pointages', [PointageController::class, 'index'])->name('pointages.index');
             Route::get('/pointages/create', [PointageController::class, 'create'])->name('pointages.create');
             Route::post('/pointages', [PointageController::class, 'store'])->name('pointages.store');
+            Route::get('/pointages/export-pdf', [PointageController::class, 'exportPdf'])->name('pointages.export-pdf');
             Route::get('/pointages/{employee}', [PointageController::class, 'show'])->name('pointages.show');
             Route::get('/pointages/{pointage}/edit', [PointageController::class, 'edit'])->name('pointages.edit');
             Route::put('/pointages/{pointage}', [PointageController::class, 'update'])->name('pointages.update');
             Route::delete('/pointages/{pointage}', [PointageController::class, 'destroy'])->name('pointages.destroy');
-            Route::get('/pointages/export-pdf', [PointageController::class, 'exportPdf'])->name('pointages.export-pdf');
         });
 
         // Admin 2 : AccÃ¨s aux bÃ©nÃ©ficiaires, partenaires, communications, Ã©vÃ©nements  
@@ -130,6 +133,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/arrivants', [CourrierController::class, 'indexArrivants'])->name('arrivants.index');
             Route::get('/arrivants/create', [CourrierController::class, 'createArrivant'])->name('arrivants.create');
             Route::post('/arrivants', [CourrierController::class, 'storeArrivant'])->name('arrivants.store');
+            Route::get('/arrivants/export-pdf', [CourrierController::class, 'exportArrivantsPdf'])->name('arrivants.export.pdf');
             Route::get('/arrivants/{courrier}', [CourrierController::class, 'showArrivant'])->name('arrivants.show');
             Route::get('/arrivants/{courrier}/edit', [CourrierController::class, 'editArrivant'])->name('arrivants.edit');
             Route::put('/arrivants/{courrier}', [CourrierController::class, 'updateArrivant'])->name('arrivants.update');
@@ -140,6 +144,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/sortants', [CourrierController::class, 'indexSortants'])->name('sortants.index');
             Route::get('/sortants/create', [CourrierController::class, 'createSortant'])->name('sortants.create');
             Route::post('/sortants', [CourrierController::class, 'storeSortant'])->name('sortants.store');
+            Route::get('/sortants/export-pdf', [CourrierController::class, 'exportSortantsPdf'])->name('sortants.export.pdf');
             Route::get('/sortants/{courrier}', [CourrierController::class, 'showSortant'])->name('sortants.show');
             Route::get('/sortants/{courrier}/edit', [CourrierController::class, 'editSortant'])->name('sortants.edit');
             Route::put('/sortants/{courrier}', [CourrierController::class, 'updateSortant'])->name('sortants.update');

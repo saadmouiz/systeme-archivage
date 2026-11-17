@@ -159,6 +159,16 @@
                             </select>
                         </div>
 
+                        <div id="nom_association_div" style="{{ old('ass_eps', $beneficiaire->ass_eps) === 'Association' ? '' : 'display:none;' }}">
+                            <label for="nom_association" class="block text-sm font-medium text-gray-700">Nom de l'association</label>
+                            <input type="text"
+                                   name="nom_association"
+                                   id="nom_association"
+                                   value="{{ old('nom_association', $beneficiaire->nom_association) }}"
+                                   placeholder="Ex: Association Initiative Al Amal"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">
+                        </div>
+
                         <div>
                             <label for="ecole_id" class="block text-sm font-medium text-gray-700">École/Centre</label>
                             <select name="ecole_id" 
@@ -339,5 +349,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Exécuter au chargement pour gérer le cas où le type est déjà sélectionné
     toggleConditionalFields();
+
+    const assEpsSelect = document.getElementById('ass_eps');
+    const nomAssociationDiv = document.getElementById('nom_association_div');
+
+    function toggleNomAssociation() {
+        if (!assEpsSelect || !nomAssociationDiv) return;
+        nomAssociationDiv.style.display = assEpsSelect.value === 'Association' ? 'block' : 'none';
+        if (assEpsSelect.value !== 'Association') {
+            const input = document.getElementById('nom_association');
+            if (input) input.value = '';
+        }
+    }
+
+    if (assEpsSelect) {
+        assEpsSelect.addEventListener('change', toggleNomAssociation);
+        toggleNomAssociation();
+    }
 });
 </script>

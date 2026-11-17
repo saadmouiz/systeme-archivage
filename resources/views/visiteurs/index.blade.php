@@ -4,17 +4,53 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <!-- En-tête -->
-        <div class="mb-8 flex justify-between items-center">
+        <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Gestion des Visiteurs</h1>
                 <p class="mt-2 text-sm text-gray-600">Suivi des visiteurs de l'association</p>
             </div>
-            <a href="{{ route('visiteurs.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900">
-                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Nouveau Visiteur
-            </a>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('visiteurs.export.excel', request()->only('annee')) }}"
+                   class="inline-flex items-center px-4 py-2 border border-green-700 rounded-md shadow-sm text-sm font-medium text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700">
+                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Exporter Excel{{ request('annee') ? ' ' . request('annee') : '' }}
+                </a>
+                <a href="{{ route('visiteurs.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-900 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-900">
+                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nouveau Visiteur
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="mb-8 bg-white overflow-hidden shadow rounded-lg p-5">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wider">Filtrer par année (date d'arrivée)</h3>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('visiteurs.index') }}"
+                   class="px-4 py-2 text-sm font-medium rounded-xl transition-all {{ !request('annee') ? 'bg-[#FEE2E2] border border-red-300 text-red-900' : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-white' }}">
+                    Toutes
+                </a>
+                @forelse(($annees ?? []) as $annee)
+                    <a href="{{ route('visiteurs.index', ['annee' => $annee]) }}"
+                       class="px-4 py-2 text-sm font-medium rounded-xl transition-all {{ (string) request('annee') === (string) $annee ? 'bg-[#FEE2E2] border border-red-300 text-red-900' : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-white' }}">
+                        {{ $annee }}
+                    </a>
+                @empty
+                    <span class="text-sm text-gray-500 py-2">Aucune année disponible</span>
+                @endforelse
+            </div>
+            @if(request('annee'))
+                <div class="mt-4">
+                    <a href="{{ route('visiteurs.export.excel', ['annee' => request('annee')]) }}"
+                       class="inline-flex items-center px-4 py-2 text-sm font-medium bg-green-700 text-white rounded-xl hover:bg-green-800">
+                        Exporter Excel {{ request('annee') }}
+                    </a>
+                </div>
+            @endif
         </div>
 
         <!-- Carte de statistiques -->
@@ -30,7 +66,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">
-                                    Total des visiteurs
+                                    Total des visiteurs{{ request('annee') ? ' (' . request('annee') . ')' : '' }}
                                 </dt>
                                 <dd class="flex items-baseline">
                                     <div class="text-2xl font-semibold text-gray-900">
@@ -43,6 +79,12 @@
                 </div>
             </div>
         </div>
+
+        @if(session('success'))
+            <div class="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded">
+                <p class="text-sm text-green-800">{{ session('success') }}</p>
+            </div>
+        @endif
 
         <!-- Liste des visiteurs -->
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -70,7 +112,7 @@
                                     {{ $visiteur->cin }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $visiteur->heure_arrivee->format('d/m/Y H:i') }}
+                                    {{ optional($visiteur->heure_arrivee)->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
@@ -106,8 +148,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                    Aucun visiteur enregistré
+                                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    Aucun visiteur enregistré{{ request('annee') ? ' pour ' . request('annee') : '' }}
                                 </td>
                             </tr>
                         @endforelse
@@ -117,5 +159,4 @@
         </div>
     </div>
 </div>
-@endsection 
-
+@endsection

@@ -19,6 +19,7 @@ class Beneficiaire extends Model
         'genre',
         'status',
         'ass_eps',
+        'nom_association',
         'niveau',
         'specialite',
         'type_intervention',

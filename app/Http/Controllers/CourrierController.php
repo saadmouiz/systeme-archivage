@@ -14,29 +14,30 @@ class CourrierController extends Controller
     
     public function indexArrivants(Request $request)
     {
-        $query = CourrierArrive::query();
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('numero_arrive', 'like', "%{$search}%")
-                  ->orWhere('numero_document', 'like', "%{$search}%")
-                  ->orWhere('expediteur', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('date_from')) {
-            $query->where('date_arrive', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->where('date_arrive', '<=', $request->date_to);
-        }
-
-        $courriers = $query->latest('date_arrive')->paginate(50);
+        $query = $this->buildArrivantsQuery($request);
+        $courriers = $query->latest('date_arrive')->paginate(50)->appends($request->query());
+        $annees = $this->getAvailableAnnees('date_arrive', CourrierArrive::class);
         
-        return view('archives.courriers.arrivants.index', compact('courriers'));
+        return view('archives.courriers.arrivants.index', compact('courriers', 'annees'));
+    }
+
+    public function exportArrivantsPdf(Request $request)
+    {
+        $courriers = $this->buildArrivantsQuery($request)->latest('date_arrive')->get();
+        $annee = $request->filled('annee') ? $request->annee : null;
+
+        $pdf = \PDF::loadView('archives.courriers.export-pdf', [
+            'courriers' => $courriers,
+            'annee' => $annee,
+            'type' => 'arrivants',
+            'title' => 'Courriers Arrivants',
+        ])->setPaper('a4', 'landscape');
+
+        $filename = $annee
+            ? "courriers_arrivants_{$annee}.pdf"
+            : 'courriers_arrivants_' . date('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function createArrivant()
@@ -165,29 +166,30 @@ class CourrierController extends Controller
 
     public function indexSortants(Request $request)
     {
-        $query = CourrierSortant::query();
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('numero_sortant', 'like', "%{$search}%")
-                  ->orWhere('destinataire', 'like', "%{$search}%")
-                  ->orWhere('sujet', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('date_from')) {
-            $query->where('date_sortant', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->where('date_sortant', '<=', $request->date_to);
-        }
-
-        $courriers = $query->latest('date_sortant')->paginate(50);
+        $query = $this->buildSortantsQuery($request);
+        $courriers = $query->latest('date_sortant')->paginate(50)->appends($request->query());
+        $annees = $this->getAvailableAnnees('date_sortant', CourrierSortant::class);
         
-        return view('archives.courriers.sortants.index', compact('courriers'));
+        return view('archives.courriers.sortants.index', compact('courriers', 'annees'));
+    }
+
+    public function exportSortantsPdf(Request $request)
+    {
+        $courriers = $this->buildSortantsQuery($request)->latest('date_sortant')->get();
+        $annee = $request->filled('annee') ? $request->annee : null;
+
+        $pdf = \PDF::loadView('archives.courriers.export-pdf', [
+            'courriers' => $courriers,
+            'annee' => $annee,
+            'type' => 'sortants',
+            'title' => 'Courriers Sortants',
+        ])->setPaper('a4', 'landscape');
+
+        $filename = $annee
+            ? "courriers_sortants_{$annee}.pdf"
+            : 'courriers_sortants_' . date('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function createSortant()
@@ -292,6 +294,81 @@ class CourrierController extends Controller
         $originalName = basename($courrier->fichier);
 
         return response()->download($path, $originalName);
+    }
+
+    private function buildArrivantsQuery(Request $request)
+    {
+        $query = CourrierArrive::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('numero_arrive', 'like', "%{$search}%")
+                  ->orWhere('numero_document', 'like', "%{$search}%")
+                  ->orWhere('expediteur', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('annee')) {
+            $query->whereYear('date_arrive', (int) $request->annee);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->where('date_arrive', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->where('date_arrive', '<=', $request->date_to);
+        }
+
+        return $query;
+    }
+
+    private function buildSortantsQuery(Request $request)
+    {
+        $query = CourrierSortant::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('numero_sortant', 'like', "%{$search}%")
+                  ->orWhere('destinataire', 'like', "%{$search}%")
+                  ->orWhere('sujet', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('annee')) {
+            $annee = (int) $request->annee;
+            $query->where(function ($q) use ($annee) {
+                $q->whereYear('date_sortant', $annee)
+                  ->orWhere('numero_sortant', 'like', "%/{$annee}");
+            });
+        }
+
+        if ($request->filled('date_from')) {
+            $query->where('date_sortant', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->where('date_sortant', '<=', $request->date_to);
+        }
+
+        return $query;
+    }
+
+    private function getAvailableAnnees(string $dateColumn, string $modelClass): array
+    {
+        return $modelClass::query()
+            ->whereNotNull($dateColumn)
+            ->selectRaw("DISTINCT YEAR({$dateColumn}) as year")
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->filter()
+            ->map(fn ($year) => (int) $year)
+            ->values()
+            ->toArray();
     }
 }
 

@@ -84,6 +84,9 @@
                                         </span>
                                     </p>
                                 @endif
+                                @if($beneficiaire->nom_association)
+                                    <p><span class="font-medium">Nom de l'association:</span> {{ $beneficiaire->nom_association }}</p>
+                                @endif
                                 @if($beneficiaire->ecole)
                                     <p><span class="font-medium">École:</span> {{ $beneficiaire->ecole->nom }}</p>
                                 @endif

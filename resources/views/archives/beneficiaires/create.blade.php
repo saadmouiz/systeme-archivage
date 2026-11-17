@@ -227,6 +227,17 @@
                         </div>
                     </div>
 
+                    <!-- Nom d'association -->
+                    <div id="nom_association_div" class="mt-6 {{ old('ass_eps') === 'Association' ? '' : 'hidden' }}">
+                        <label for="nom_association" class="block text-sm font-medium text-gray-700 mb-1">Nom de l'association</label>
+                        <input type="text" name="nom_association" id="nom_association" value="{{ old('nom_association') }}"
+                            placeholder="Ex: Association Initiative Al Amal"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                        @error('nom_association')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <!-- École/Centre -->
                     <div class="mt-6">
                         <label for="ecole_id" class="block text-sm font-medium text-gray-700 mb-1">École/Centre <span class="text-red-500">*</span></label>
@@ -516,6 +527,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Exécuter au chargement pour gérer le cas où le type est déjà sélectionné
     toggleConditionalFields();
+
+    const assEpsSelect = document.getElementById('ass_eps');
+    const nomAssociationDiv = document.getElementById('nom_association_div');
+
+    function toggleNomAssociation() {
+        if (!assEpsSelect || !nomAssociationDiv) return;
+        if (assEpsSelect.value === 'Association') {
+            nomAssociationDiv.classList.remove('hidden');
+        } else {
+            nomAssociationDiv.classList.add('hidden');
+            const input = document.getElementById('nom_association');
+            if (input) input.value = '';
+        }
+    }
+
+    if (assEpsSelect) {
+        assEpsSelect.addEventListener('change', toggleNomAssociation);
+        toggleNomAssociation();
+    }
     
     // Afficher le nom du fichier sélectionné
     const fileInput = document.getElementById('fichier');
