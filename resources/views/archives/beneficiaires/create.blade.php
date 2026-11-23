@@ -14,6 +14,24 @@
                 </a>
             </div>
 
+            @if(session('duplicate_warning'))
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mx-6 mt-4">
+                    <p class="text-sm font-medium text-amber-900">{{ session('duplicate_warning') }}</p>
+                    @if(session('duplicate_id'))
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <a href="{{ route('archives.beneficiaires.show', session('duplicate_id')) }}"
+                               class="inline-flex items-center px-3 py-1.5 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700">
+                                Consulter le dossier existant
+                            </a>
+                            <a href="{{ route('archives.beneficiaires.edit', session('duplicate_id')) }}"
+                               class="inline-flex items-center px-3 py-1.5 text-sm bg-white border border-amber-600 text-amber-800 rounded-lg hover:bg-amber-50">
+                                Ajouter une mise à jour / document
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
             @if($errors->any())
                 <div class="bg-red-50 border-l-4 border-red-500 p-4 mx-6 mt-4">
                     <div class="flex">
@@ -130,16 +148,57 @@
                         </div>
                     </div>
 
-                    <!-- Genre -->
-                    <div class="mt-5">
-                        <label for="genre" class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
-                        <select name="genre" id="genre" 
+                    <div id="cin-duplicate-alert" class="mt-4 hidden bg-amber-50 border border-amber-300 rounded-lg p-4">
+                        <p id="cin-duplicate-message" class="text-sm text-amber-900 font-medium"></p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <a id="cin-duplicate-show" href="#" class="inline-flex items-center px-3 py-1.5 text-sm bg-amber-600 text-white rounded-lg hover:bg-amber-700">Consulter le dossier existant</a>
+                            <a id="cin-duplicate-edit" href="#" class="inline-flex items-center px-3 py-1.5 text-sm bg-white border border-amber-600 text-amber-800 rounded-lg hover:bg-amber-50">Ajouter une mise à jour / document</a>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+                        <div>
+                            <label for="date_naissance" class="block text-sm font-medium text-gray-700 mb-1">Date de naissance</label>
+                            <input type="date" name="date_naissance" id="date_naissance" value="{{ old('date_naissance') }}"
                                 class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                            <option value="">Sélectionnez un genre</option>
-                            <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
-                            <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
+                            @error('date_naissance')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="genre" class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
+                            <select name="genre" id="genre" 
+                                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                                <option value="">Sélectionnez un genre</option>
+                                <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
+                                <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
+                            </select>
+                            @error('genre')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Situation sociale -->
+                    <div class="mt-5">
+                        <label for="situation_sociale" class="block text-sm font-medium text-gray-700 mb-1">Situation sociale / Profil de vulnérabilité <span class="text-red-500">*</span></label>
+                        <select name="situation_sociale" id="situation_sociale" required
+                                class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200">
+                            <option value="">Sélectionnez une situation</option>
+                            @foreach(($situationsSociales ?? []) as $value => $label)
+                                <option value="{{ $value }}" {{ old('situation_sociale') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
                         </select>
-                        @error('genre')
+                        @error('situation_sociale')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div id="situation_sociale_precision_div" class="mt-4 {{ old('situation_sociale') === 'autre' ? '' : 'hidden' }}">
+                        <label for="situation_sociale_precision" class="block text-sm font-medium text-gray-700 mb-1">Précision de la situation <span class="text-red-500">*</span></label>
+                        <input type="text" name="situation_sociale_precision" id="situation_sociale_precision" value="{{ old('situation_sociale_precision') }}"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                            placeholder="Précisez la situation de vulnérabilité">
+                        @error('situation_sociale_precision')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -546,6 +605,67 @@ document.addEventListener('DOMContentLoaded', function() {
         assEpsSelect.addEventListener('change', toggleNomAssociation);
         toggleNomAssociation();
     }
+
+    const situationSelect = document.getElementById('situation_sociale');
+    const situationPrecisionDiv = document.getElementById('situation_sociale_precision_div');
+    function toggleSituationPrecision() {
+        if (!situationSelect || !situationPrecisionDiv) return;
+        const isAutre = situationSelect.value === 'autre';
+        situationPrecisionDiv.classList.toggle('hidden', !isAutre);
+        const precision = document.getElementById('situation_sociale_precision');
+        if (precision) {
+            if (isAutre) precision.setAttribute('required', 'required');
+            else { precision.removeAttribute('required'); precision.value = ''; }
+        }
+    }
+    if (situationSelect) {
+        situationSelect.addEventListener('change', toggleSituationPrecision);
+        toggleSituationPrecision();
+    }
+
+    // Contrôle doublons CIN (EVO-01)
+    const cinInput = document.getElementById('cin');
+    const alertBox = document.getElementById('cin-duplicate-alert');
+    let cinTimer = null;
+    async function checkDuplicate() {
+        const cin = (cinInput?.value || '').trim();
+        const nom = (document.getElementById('nom')?.value || '').trim();
+        const prenom = (document.getElementById('prenom')?.value || '').trim();
+        const dateNaissance = document.getElementById('date_naissance')?.value || '';
+        if (!cin && !(nom && prenom && dateNaissance)) {
+            alertBox?.classList.add('hidden');
+            return;
+        }
+        const params = new URLSearchParams({ cin, nom, prenom, date_naissance: dateNaissance });
+        try {
+            const res = await fetch(`{{ route('archives.beneficiaires.check-cin') }}?${params.toString()}`, {
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await res.json();
+            if (data.exists) {
+                document.getElementById('cin-duplicate-message').textContent = data.message;
+                document.getElementById('cin-duplicate-show').href = data.beneficiaire.show_url;
+                document.getElementById('cin-duplicate-edit').href = data.beneficiaire.edit_url;
+                alertBox.classList.remove('hidden');
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    ['cin', 'nom', 'prenom', 'date_naissance'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => {
+            clearTimeout(cinTimer);
+            cinTimer = setTimeout(checkDuplicate, 400);
+        });
+        el.addEventListener('change', () => {
+            clearTimeout(cinTimer);
+            cinTimer = setTimeout(checkDuplicate, 200);
+        });
+    });
     
     // Afficher le nom du fichier sélectionné
     const fileInput = document.getElementById('fichier');

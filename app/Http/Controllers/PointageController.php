@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Archive\Employee;
 use App\Models\Pointage;
+use App\Support\AuditLogger;
+use App\Support\PeriodLock;
+use App\Support\RecordLockService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PointageController extends Controller
 {
@@ -35,9 +40,14 @@ class PointageController extends Controller
         // Mois et année par défaut (mois en cours)
         $mois = $request->mois ?? Carbon::now()->month;
         $annee = $request->annee ?? Carbon::now()->year;
+        $genre = $request->genre;
 
         // Récupérer seulement les employés actifs
-        $employees = Employee::actif()->orderBy('nom')->get();
+        $employeesQuery = Employee::actif()->orderBy('nom');
+        if ($request->filled('genre')) {
+            $employeesQuery->where('genre', $request->genre);
+        }
+        $employees = $employeesQuery->get();
 
         // Créer un tableau avec tous les jours du mois
         $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
@@ -46,6 +56,7 @@ class PointageController extends Controller
 
         // Récupérer tous les pointages pour ce mois
         $pointages = Pointage::whereBetween('date', [$debut, $fin])
+            ->when($employees->isNotEmpty(), fn ($q) => $q->whereIn('employee_id', $employees->pluck('id')))
             ->get()
             ->groupBy(['employee_id', function ($item) {
                 return $item->date->format('Y-m-d');
@@ -58,7 +69,7 @@ class PointageController extends Controller
                 });
             });
 
-        return view('archives.pointages.index', compact('employees', 'pointages', 'joursDuMois', 'mois', 'annee'));
+        return view('archives.pointages.index', compact('employees', 'pointages', 'joursDuMois', 'mois', 'annee', 'genre'));
     }
 
     /**
@@ -93,6 +104,7 @@ class PointageController extends Controller
         }
 
         $date = Carbon::parse($request->date);
+        PeriodLock::assertOpen((int) $date->year, 'pointages');
 
         // Valider les données pour chaque employé
         $request->validate([
@@ -191,9 +203,26 @@ class PointageController extends Controller
             abort(403, 'Accès interdit.');
         }
 
-        $employees = Employee::actif()->orderBy('nom')->get();
+        PeriodLock::assertOpen((int) $pointage->date->year, 'pointages');
 
-        return view('archives.pointages.edit', compact('pointage', 'employees'));
+        $lockService = app(RecordLockService::class);
+        $editLock = $lockService->acquire($pointage, auth()->user());
+        $employees = Employee::actif()->orderBy('nom')->get();
+        $employee = $pointage->employee;
+
+        return view('archives.pointages.edit', compact('pointage', 'employees', 'employee', 'editLock'));
+    }
+
+    public function heartbeatLock(Pointage $pointage)
+    {
+        $ok = app(RecordLockService::class)->heartbeat($pointage, auth()->user());
+        return response()->json(['ok' => $ok]);
+    }
+
+    public function releaseLock(Pointage $pointage)
+    {
+        app(RecordLockService::class)->release($pointage, auth()->user());
+        return response()->json(['ok' => true]);
     }
 
     /**
@@ -206,6 +235,14 @@ class PointageController extends Controller
             abort(403, 'Accès interdit.');
         }
 
+        PeriodLock::assertOpen((int) $pointage->date->year, 'pointages');
+
+        $lockService = app(RecordLockService::class);
+        $lockResult = $lockService->acquire($pointage, auth()->user());
+        if (!$lockResult['acquired']) {
+            return back()->withInput()->with('error', $lockResult['message']);
+        }
+
         $request->validate([
             'statut' => 'required|in:present,absent,retard,conge,maladie,jour_ferie',
             'heure_arrivee' => 'nullable|date_format:H:i',
@@ -213,12 +250,20 @@ class PointageController extends Controller
             'commentaire' => 'nullable|string',
         ]);
 
+        $before = $pointage->only(['statut', 'heure_arrivee', 'heure_sortie', 'commentaire']);
+
         $pointage->statut = $request->statut;
         $pointage->heure_arrivee = ($request->statut === 'present' || $request->statut === 'retard') ? $request->heure_arrivee : null;
         $pointage->heure_sortie = ($request->statut === 'present' || $request->statut === 'retard') ? $request->heure_sortie : null;
         $pointage->commentaire = $request->commentaire;
 
         $pointage->save();
+
+        $changes = AuditLogger::diff($pointage, $before, $pointage->only(['statut', 'heure_arrivee', 'heure_sortie', 'commentaire']));
+        if ($changes) {
+            AuditLogger::log($pointage, 'updated', $changes);
+        }
+        $lockService->release($pointage, auth()->user());
 
         return redirect()->route('archives.pointages.show', [
             'employee' => $pointage->employee,
@@ -237,10 +282,17 @@ class PointageController extends Controller
             abort(403, 'Accès interdit.');
         }
 
+        PeriodLock::assertOpen((int) $pointage->date->year, 'pointages');
+
         $employee = $pointage->employee;
         $mois = $pointage->date->month;
         $annee = $pointage->date->year;
 
+        AuditLogger::log($pointage, 'deleted', [
+            'employee_id' => $pointage->employee_id,
+            'date' => optional($pointage->date)->format('Y-m-d'),
+            'statut' => $pointage->statut,
+        ]);
         $pointage->delete();
 
         return redirect()->route('archives.pointages.show', [
@@ -264,14 +316,19 @@ class PointageController extends Controller
             $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
             $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
     
-            // Récupérer tous les employés actifs
-            $employees = Employee::actif()->orderBy('nom')->get();
+            // Récupérer les employés actifs (filtre genre EVO-08)
+            $employeesQuery = Employee::actif()->orderBy('nom');
+            if ($request->filled('genre')) {
+                $employeesQuery->where('genre', $request->genre);
+            }
+            $employees = $employeesQuery->get();
             
             // Créer un tableau avec tous les jours du mois
             $joursDuMois = collect(CarbonPeriod::create($debut, $fin));
     
             // Récupérer tous les pointages pour ce mois
             $pointages = Pointage::whereBetween('date', [$debut, $fin])
+                ->when($employees->isNotEmpty(), fn ($q) => $q->whereIn('employee_id', $employees->pluck('id')))
                 ->with('employee')
                 ->get()
                 ->groupBy(['employee_id', function ($item) {
@@ -301,6 +358,91 @@ class PointageController extends Controller
             \Log::error('Erreur export PDF: ' . $e->getMessage());
             return back()->with('error', 'Erreur lors de l\'export PDF : ' . $e->getMessage());
         }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $mois = $request->input('mois', Carbon::now()->month);
+        $annee = $request->input('annee', Carbon::now()->year);
+        $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
+        $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
+
+        $employeesQuery = Employee::actif()->orderBy('nom');
+        if ($request->filled('genre')) {
+            $employeesQuery->where('genre', $request->genre);
+        }
+        $employees = $employeesQuery->get();
+        $joursDuMois = collect(CarbonPeriod::create($debut, $fin));
+
+        $pointages = Pointage::whereBetween('date', [$debut, $fin])
+            ->whereIn('employee_id', $employees->pluck('id'))
+            ->get()
+            ->groupBy(['employee_id', function ($item) {
+                return $item->date->format('Y-m-d');
+            }]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Pointages');
+        $sheet->setCellValue('A1', 'Employé');
+        $col = 2;
+        foreach ($joursDuMois as $jour) {
+            $sheet->setCellValueByColumnAndRow($col, 1, $jour->format('d'));
+            $col++;
+        }
+
+        $row = 2;
+        foreach ($employees as $employee) {
+            $sheet->setCellValueByColumnAndRow(1, $row, $employee->nom . ' ' . $employee->prenom);
+            $col = 2;
+            foreach ($joursDuMois as $jour) {
+                $key = $jour->format('Y-m-d');
+                $p = data_get($pointages, $employee->id . '.' . $key);
+                if ($p instanceof \Illuminate\Support\Collection) {
+                    $p = $p->first();
+                }
+                $sheet->setCellValueByColumnAndRow($col, $row, $p->statut ?? '-');
+                $col++;
+            }
+            $row++;
+        }
+
+        $filename = "pointages_{$annee}_{$mois}.xlsx";
+        return response()->streamDownload(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    public function printReport(Request $request)
+    {
+        $mois = $request->input('mois', Carbon::now()->month);
+        $annee = $request->input('annee', Carbon::now()->year);
+        $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
+        $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
+        $joursDuMois = collect(CarbonPeriod::create($debut, $fin));
+
+        $employeesQuery = Employee::actif()->orderBy('nom');
+        if ($request->filled('genre')) {
+            $employeesQuery->where('genre', $request->genre);
+        }
+        $employees = $employeesQuery->get();
+
+        $pointages = Pointage::whereBetween('date', [$debut, $fin])
+            ->whereIn('employee_id', $employees->pluck('id'))
+            ->get()
+            ->groupBy(['employee_id', function ($item) {
+                return $item->date->format('Y-m-d');
+            }])
+            ->map(function ($employeePointages) {
+                return $employeePointages->map(function ($datePointages) {
+                    return $datePointages instanceof \Illuminate\Support\Collection ?
+                           $datePointages->first() : $datePointages;
+                });
+            });
+
+        return view('archives.pointages.print', compact('employees', 'joursDuMois', 'pointages', 'mois', 'annee'));
     }
 
     /**

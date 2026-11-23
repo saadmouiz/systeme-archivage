@@ -7,6 +7,21 @@
             <div class="p-6">
                 <h1 class="text-2xl font-bold text-gray-800 mb-6">Modifier le Dossier Bénéficiaire</h1>
 
+                @if(!empty($editLock) && empty($editLock['acquired']))
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6">
+                        <p class="text-amber-800 font-medium">{{ $editLock['message'] }}</p>
+                        <p class="text-sm text-amber-700 mt-1">Vous pouvez consulter le formulaire, mais l'enregistrement sera refusé tant que le verrou est actif.</p>
+                    </div>
+                @elseif(!empty($editLock) && !empty($editLock['acquired']))
+                    <div class="bg-green-50 border border-green-200 text-green-800 text-sm rounded-md p-3 mb-6">
+                        Vous éditez ce dossier. Le verrou expire automatiquement après inactivité.
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 text-red-700">{{ session('error') }}</div>
+                @endif
+
                 @if ($errors->any())
                     <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
                         <div class="flex">
@@ -88,15 +103,42 @@
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="date_naissance" class="block text-sm font-medium text-gray-700">Date de naissance</label>
+                            <input type="date"
+                                   name="date_naissance"
+                                   id="date_naissance"
+                                   value="{{ old('date_naissance', optional($beneficiaire->date_naissance)->format('Y-m-d')) }}"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">
+                        </div>
+                        <div>
+                            <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
+                            <select name="genre" 
+                                    id="genre" 
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md">
+                                <option value="">Sélectionnez un genre</option>
+                                <option value="Homme" {{ old('genre', $beneficiaire->genre) == 'Homme' ? 'selected' : '' }}>Homme</option>
+                                <option value="Femme" {{ old('genre', $beneficiaire->genre) == 'Femme' ? 'selected' : '' }}>Femme</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div>
-                        <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
-                        <select name="genre" 
-                                id="genre" 
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-900 focus:border-red-900 rounded-md">
-                            <option value="">Sélectionnez un genre</option>
-                            <option value="Homme" {{ old('genre', $beneficiaire->genre) == 'Homme' ? 'selected' : '' }}>Homme</option>
-                            <option value="Femme" {{ old('genre', $beneficiaire->genre) == 'Femme' ? 'selected' : '' }}>Femme</option>
+                        <label for="situation_sociale" class="block text-sm font-medium text-gray-700">Situation sociale / Profil de vulnérabilité</label>
+                        <select name="situation_sociale" id="situation_sociale" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">
+                            <option value="">Sélectionnez une situation</option>
+                            @foreach(($situationsSociales ?? []) as $value => $label)
+                                <option value="{{ $value }}" {{ old('situation_sociale', $beneficiaire->situation_sociale) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
                         </select>
+                    </div>
+                    <div id="situation_sociale_precision_div" style="{{ old('situation_sociale', $beneficiaire->situation_sociale) === 'autre' ? '' : 'display:none;' }}">
+                        <label for="situation_sociale_precision" class="block text-sm font-medium text-gray-700">Précision</label>
+                        <input type="text" name="situation_sociale_precision" id="situation_sociale_precision"
+                               value="{{ old('situation_sociale_precision', $beneficiaire->situation_sociale_precision) }}"
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-900 focus:border-red-900">
                     </div>
 
                     <!-- Champs conditionnels pour Dossier individuel -->
@@ -366,5 +408,41 @@ document.addEventListener('DOMContentLoaded', function() {
         assEpsSelect.addEventListener('change', toggleNomAssociation);
         toggleNomAssociation();
     }
+
+    const situationSelect = document.getElementById('situation_sociale');
+    const situationPrecisionDiv = document.getElementById('situation_sociale_precision_div');
+    function toggleSituationPrecision() {
+        if (!situationSelect || !situationPrecisionDiv) return;
+        situationPrecisionDiv.style.display = situationSelect.value === 'autre' ? 'block' : 'none';
+    }
+    if (situationSelect) {
+        situationSelect.addEventListener('change', toggleSituationPrecision);
+        toggleSituationPrecision();
+    }
 });
 </script>
+
+@push('scripts')
+@if(!empty($editLock['acquired']))
+<script>
+(function () {
+    const heartbeatUrl = @json(route('archives.beneficiaires.lock.heartbeat', $beneficiaire));
+    const releaseUrl = @json(route('archives.beneficiaires.lock.release', $beneficiaire));
+    const csrf = document.querySelector('input[name="_token"]')?.value;
+    setInterval(() => {
+        fetch(heartbeatUrl, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+        }).catch(() => {});
+    }, 60000);
+    window.addEventListener('beforeunload', () => {
+        if (navigator.sendBeacon && csrf) {
+            const data = new FormData();
+            data.append('_token', csrf);
+            navigator.sendBeacon(releaseUrl, data);
+        }
+    });
+})();
+</script>
+@endif
+@endpush

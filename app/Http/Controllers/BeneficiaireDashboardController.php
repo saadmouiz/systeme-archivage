@@ -22,7 +22,48 @@ use Illuminate\Support\Facades\Storage;
 
 class BeneficiaireDashboardController extends Controller
 {
-    public function index()
+    private function applyEducatifDashboardFilters($query, Request $request)
+    {
+        $query->where('type', 'Document éducatif');
+
+        if ($request->filled('annee')) {
+            $annee = preg_replace('/\D/', '', (string) $request->annee);
+            if (strlen($annee) === 4) {
+                $query->where(function ($q) use ($annee) {
+                    $q->where('reference', 'like', "%/{$annee}")
+                      ->orWhere('reference', 'like', "%-{$annee}");
+                });
+            }
+        }
+
+        if ($request->filled('situation_sociale')) {
+            $query->where('situation_sociale', $request->situation_sociale);
+        }
+
+        return $query;
+    }
+
+    private function getDashboardAnnees(): array
+    {
+        $years = [];
+        Beneficiaire::query()
+            ->where('type', 'Document éducatif')
+            ->whereNotNull('reference')
+            ->pluck('reference')
+            ->each(function ($reference) use (&$years) {
+                if (preg_match_all('/[\/\-]((?:19|20)\d{2})\b/', (string) $reference, $matches)) {
+                    foreach ($matches[1] as $year) {
+                        $years[] = (int) $year;
+                    }
+                }
+            });
+
+        $years = array_values(array_unique(array_filter($years)));
+        rsort($years);
+        return $years;
+    }
+
+    public function index(Request $request)
     {
         // Vérifier si la table des bénéficiaires existe
         if (!Schema::hasTable('beneficiaires')) {
@@ -55,20 +96,25 @@ class BeneficiaireDashboardController extends Controller
                 'croissanceAnnuelle' => 0,
                 'ceMois' => 0,
                 'documentsParType' => collect(),
+                'annees' => [],
+                'selectedAnnee' => null,
+                'situationsSociales' => Beneficiaire::SITUATIONS_SOCIALES,
+                'statsParSituation' => collect(),
             ]);
         }
 
+        $baseQuery = $this->applyEducatifDashboardFilters(Beneficiaire::query(), $request);
+
         // Statistiques générales des documents éducatifs uniquement
-        $totalBeneficiaires = Beneficiaire::where('type', 'Document éducatif')->count();
-        $beneficiairesParType = Beneficiaire::where('type', 'Document éducatif')
+        $totalBeneficiaires = (clone $baseQuery)->count();
+        $beneficiairesParType = (clone $baseQuery)
             ->select('type', DB::raw('count(*) as total'))
             ->groupBy('type')
             ->get()
             ->pluck('total', 'type');
 
         // Statistiques détaillées par école avec genre et status (documents éducatifs uniquement)
-        $statsParEcole = Beneficiaire::with('ecole')
-            ->where('type', 'Document éducatif')
+        $statsParEcole = (clone $baseQuery)->with('ecole')
             ->select(
                 'ecole_id',
                 DB::raw('count(*) as total_beneficiaires'),
@@ -83,13 +129,18 @@ class BeneficiaireDashboardController extends Controller
             ->groupBy('ecole_id')
             ->get()
             ->map(function($item) {
+                $total = (int) $item->total_beneficiaires;
+                $hommes = (int) $item->hommes;
+                $femmes = (int) $item->femmes;
                 return [
                     'etablissement' => $item->ecole ? $item->ecole->nom : 'Non spécifiée',
-                    'candidat' => $item->total_beneficiaires,
+                    'candidat' => $total,
                     'inscrit' => $item->inscrit,
                     'refuser' => $item->refuser,
-                    'hommes' => $item->hommes,
-                    'femmes' => $item->femmes,
+                    'hommes' => $hommes,
+                    'femmes' => $femmes,
+                    'hommes_pct' => $total > 0 ? round(($hommes / $total) * 100, 1) : 0,
+                    'femmes_pct' => $total > 0 ? round(($femmes / $total) * 100, 1) : 0,
                     'association' => $item->association,
                     'eps' => $item->eps
                 ];
@@ -106,7 +157,7 @@ class BeneficiaireDashboardController extends Controller
         // Calcul des totaux pour les documents éducatifs (pour le tableau & le graphique)
         // On ne se base plus uniquement sur les écoles afin de ne pas perdre les lignes
         // qui n'ont pas d'`ecole_id` renseigné.
-        $totauxQuery = Beneficiaire::where('type', 'Document éducatif')
+        $totauxQuery = (clone $baseQuery)
             ->select(
                 DB::raw('count(*) as candidat'),
                 DB::raw('SUM(CASE WHEN status = "Accepter" THEN 1 ELSE 0 END) as inscrit'),
@@ -131,14 +182,24 @@ class BeneficiaireDashboardController extends Controller
         // Statistiques globales pour les documents éducatifs uniquement (pour les graphiques)
         // Utilisation des valeurs exactes de status: "Accepter" et "Refuser"
         $statsGlobales = [
-            'hommes' => (int)Beneficiaire::where('type', 'Document éducatif')->where('genre', 'Homme')->count(),
-            'femmes' => (int)Beneficiaire::where('type', 'Document éducatif')->where('genre', 'Femme')->count(),
-            'inscrit' => (int)Beneficiaire::where('type', 'Document éducatif')->where('status', 'Accepter')->count(),
-            'refuser' => (int)Beneficiaire::where('type', 'Document éducatif')->where('status', 'Refuser')->count(),
+            'hommes' => (int) (clone $baseQuery)->where('genre', 'Homme')->count(),
+            'femmes' => (int) (clone $baseQuery)->where('genre', 'Femme')->count(),
+            'inscrit' => (int) (clone $baseQuery)->where('status', 'Accepter')->count(),
+            'refuser' => (int) (clone $baseQuery)->where('status', 'Refuser')->count(),
         ];
 
+        $statsParSituation = (clone $baseQuery)
+            ->select('situation_sociale', DB::raw('count(*) as total'))
+            ->whereNotNull('situation_sociale')
+            ->groupBy('situation_sociale')
+            ->get()
+            ->mapWithKeys(function ($row) {
+                $label = Beneficiaire::SITUATIONS_SOCIALES[$row->situation_sociale] ?? $row->situation_sociale;
+                return [$label => (int) $row->total];
+            });
+
         // Évolution mensuelle des documents éducatifs
-        $evolutionMensuelle = Beneficiaire::where('type', 'Document éducatif')
+        $evolutionMensuelle = (clone $baseQuery)
             ->select(
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as mois'),
                 DB::raw('count(*) as total')
@@ -176,15 +237,14 @@ class BeneficiaireDashboardController extends Controller
         }
 
         // Documents éducatifs récents (derniers 30 jours)
-        $beneficiairesRecents = Beneficiaire::with('ecole')
-            ->where('type', 'Document éducatif')
+        $beneficiairesRecents = (clone $baseQuery)->with('ecole')
             ->where('created_at', '>=', Carbon::now()->subDays(30))
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
 
         // Répartition par mois de l'année en cours (documents éducatifs uniquement)
-        $repartitionAnnuelle = Beneficiaire::where('type', 'Document éducatif')
+        $repartitionAnnuelle = (clone $baseQuery)
             ->select(
                 DB::raw('MONTH(created_at) as mois'),
                 DB::raw('count(*) as total')
@@ -196,8 +256,7 @@ class BeneficiaireDashboardController extends Controller
             ->pluck('total', 'mois');
 
         // Top 5 des écoles avec le plus de documents éducatifs
-        $topEcoles = Beneficiaire::with('ecole')
-            ->where('type', 'Document éducatif')
+        $topEcoles = (clone $baseQuery)->with('ecole')
             ->select('ecole_id', DB::raw('count(*) as total'))
             ->whereNotNull('ecole_id')
             ->groupBy('ecole_id')
@@ -216,17 +275,21 @@ class BeneficiaireDashboardController extends Controller
         $croissanceAnnuelle = $this->calculerCroissanceAnnuelle();
 
         // Documents éducatifs créés ce mois
-        $ceMois = Beneficiaire::where('type', 'Document éducatif')
+        $ceMois = (clone $baseQuery)
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->count();
 
         // Documents par type de fichier (documents éducatifs uniquement)
-        $documentsParType = Beneficiaire::where('type', 'Document éducatif')
+        $documentsParType = (clone $baseQuery)
             ->select('type', DB::raw('count(*) as total'))
             ->groupBy('type')
             ->get()
             ->pluck('total', 'type');
+
+        $annees = $this->getDashboardAnnees();
+        $selectedAnnee = $request->annee;
+        $situationsSociales = Beneficiaire::SITUATIONS_SOCIALES;
 
         return view('archives.beneficiaires.dashboard', compact(
             'totalBeneficiaires',
@@ -243,7 +306,11 @@ class BeneficiaireDashboardController extends Controller
             'croissanceMensuelle',
             'croissanceAnnuelle',
             'ceMois',
-            'documentsParType'
+            'documentsParType',
+            'annees',
+            'selectedAnnee',
+            'situationsSociales',
+            'statsParSituation'
         ));
     }
 
@@ -603,10 +670,10 @@ class BeneficiaireDashboardController extends Controller
         return round((($anneeActuelle - $anneePrecedente) / $anneePrecedente) * 100, 2);
     }
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        // Récupérer les données du tableau
-        $statsParEcole = Beneficiaire::with('ecole')
+        // Récupérer les données du tableau (filtrées par année / situation)
+        $statsParEcole = $this->applyEducatifDashboardFilters(Beneficiaire::with('ecole'), $request)
             ->select(
                 'ecole_id',
                 DB::raw('count(*) as total_beneficiaires'),
@@ -617,18 +684,22 @@ class BeneficiaireDashboardController extends Controller
                 DB::raw('SUM(CASE WHEN ass_eps = "Association" THEN 1 ELSE 0 END) as association'),
                 DB::raw('SUM(CASE WHEN ass_eps = "Eps" THEN 1 ELSE 0 END) as eps')
             )
-            ->whereRaw('LOWER(type) LIKE ?', ['%document%educatif%'])
             ->whereNotNull('ecole_id')
             ->groupBy('ecole_id')
             ->get()
             ->map(function($item) {
+                $total = (int) $item->total_beneficiaires;
+                $hommes = (int) $item->hommes;
+                $femmes = (int) $item->femmes;
                 return [
                     'etablissement' => $item->ecole ? $item->ecole->nom : 'Non spécifiée',
-                    'candidat' => $item->total_beneficiaires,
+                    'candidat' => $total,
                     'inscrit' => $item->inscrit,
                     'refuser' => $item->refuser,
-                    'hommes' => $item->hommes,
-                    'femmes' => $item->femmes,
+                    'hommes' => $hommes,
+                    'femmes' => $femmes,
+                    'hommes_pct' => $total > 0 ? round(($hommes / $total) * 100, 1) : 0,
+                    'femmes_pct' => $total > 0 ? round(($femmes / $total) * 100, 1) : 0,
                     'association' => $item->association,
                     'eps' => $item->eps
                 ];
@@ -743,7 +814,8 @@ class BeneficiaireDashboardController extends Controller
 </Workbook>';
 
         // Créer la réponse avec les headers appropriés pour Excel
-        $filename = 'statistiques-beneficiaires-' . date('Y-m-d') . '.xls';
+        $suffix = $request->filled('annee') ? '-' . $request->annee : '';
+        $filename = 'statistiques-beneficiaires' . $suffix . '-' . date('Y-m-d') . '.xls';
         
         return response($htmlContent)
             ->header('Content-Type', 'application/vnd.ms-excel')

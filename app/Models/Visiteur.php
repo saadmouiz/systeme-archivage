@@ -13,6 +13,7 @@ class Visiteur extends Model
         'nom',
         'prenom',
         'cin',
+        'genre',
         'heure_arrivee',
     ];
 

@@ -30,6 +30,18 @@
                     </div>
 
                     <div>
+                        <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
+                        <select name="genre" id="genre" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-red-900 focus:border-red-900 sm:text-sm">
+                            <option value="">Sélectionnez</option>
+                            <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
+                            <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
+                        </select>
+                        @error('genre')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
                         <label for="fonction" class="block text-sm font-medium text-gray-700">Fonction</label>
                         <input type="text" name="fonction" id="fonction" value="{{ old('fonction') }}" class="mt-1 focus:ring-red-900 focus:border-red-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                         @error('fonction')

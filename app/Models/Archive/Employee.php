@@ -18,6 +18,7 @@ class Employee extends Model
     protected $fillable = [
         'nom',
         'prenom',
+        'genre',
         'fonction',
         'type_contrat',
         'date_embauche',
@@ -48,6 +49,7 @@ class Employee extends Model
         return [
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
+            'genre' => 'nullable|in:Homme,Femme',
             'fonction' => 'required|string|max:255',
             'type_contrat' => 'required|in:CDI,CDD,Stage,Autre',
             'date_embauche' => 'required|date',

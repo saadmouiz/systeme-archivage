@@ -9,7 +9,21 @@
                 <h1 class="text-3xl font-bold text-gray-900">Dashboard Documents Éducatifs</h1>
                 <p class="mt-2 text-lg text-gray-600">Statistiques et analyses des documents éducatifs uniquement</p>
             </div>
-            <div class="flex flex-wrap gap-3 justify-end">
+            <div class="flex flex-wrap gap-3 justify-end items-center">
+                <form method="GET" action="{{ route('archives.beneficiaires.dashboard') }}" class="flex flex-wrap gap-2 items-center">
+                    <select name="annee" onchange="this.form.submit()" class="rounded-md border-gray-300 text-sm focus:ring-red-900 focus:border-red-900">
+                        <option value="">Toutes les années</option>
+                        @foreach(($annees ?? []) as $annee)
+                            <option value="{{ $annee }}" {{ (string) ($selectedAnnee ?? '') === (string) $annee ? 'selected' : '' }}>{{ $annee }}</option>
+                        @endforeach
+                    </select>
+                    <select name="situation_sociale" onchange="this.form.submit()" class="rounded-md border-gray-300 text-sm focus:ring-red-900 focus:border-red-900 max-w-xs">
+                        <option value="">Toutes situations</option>
+                        @foreach(($situationsSociales ?? []) as $value => $label)
+                            <option value="{{ $value }}" {{ request('situation_sociale') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </form>
                 <a href="{{ route('archives.beneficiaires.create') }}" 
                    class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 transition-colors">
                     <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,12 +32,12 @@
                     <span class="hidden sm:inline">Ajouter un bénéficiaire</span>
                     <span class="sm:hidden">Ajouter</span>
                 </a>
-                <a href="{{ route('archives.beneficiaires.export.excel') }}" 
+                <a href="{{ route('archives.beneficiaires.export.excel', request()->only(['annee', 'situation_sociale'])) }}" 
                    class="inline-flex items-center px-3 py-2 sm:px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-900 hover:bg-red-800 transition-colors">
                     <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    <span class="hidden sm:inline">Exporter en Excel</span>
+                    <span class="hidden sm:inline">Exporter en Excel{{ $selectedAnnee ? ' ' . $selectedAnnee : '' }}</span>
                     <span class="sm:hidden">Excel</span>
                 </a>
                 <a href="{{ route('archives.index') }}" 
@@ -139,12 +153,12 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
-                                    {{ $stat['hommes'] }}
+                                    {{ $stat['hommes'] }} ({{ $stat['hommes_pct'] ?? 0 }}%)
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-900">
-                                    {{ $stat['femmes'] }}
+                                    {{ $stat['femmes'] }} ({{ $stat['femmes_pct'] ?? 0 }}%)
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

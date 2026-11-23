@@ -5,9 +5,16 @@
     <div class="max-w-3xl mx-auto">
         <div class="bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="p-6">
+                @if(session('success'))
+                    <div class="mb-4 bg-green-50 border-l-4 border-green-500 p-4 text-green-800">{{ session('success') }}</div>
+                @endif
                 <div class="flex justify-between items-start mb-6">
                     <h1 class="text-2xl font-bold text-gray-800">{{ $beneficiaire->nom_complet }}</h1>
-                    <div class="flex space-x-2">
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{{ route('archives.beneficiaires.reorient.form', $beneficiaire) }}"
+                           class="inline-flex items-center px-4 py-2 bg-indigo-700 text-white rounded-md hover:bg-indigo-800">
+                            Nouvelle inscription / Réorientation
+                        </a>
                         <a href="{{ route('archives.beneficiaires.edit', $beneficiaire) }}" 
                            class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,6 +52,17 @@
                             @endif
                             @if($beneficiaire->age)
                                 <p><span class="font-medium">Age:</span> {{ $beneficiaire->age }} ans</p>
+                            @endif
+                            @if($beneficiaire->date_naissance)
+                                <p><span class="font-medium">Date de naissance:</span> {{ $beneficiaire->date_naissance->format('d/m/Y') }}</p>
+                            @endif
+                            @if($beneficiaire->situation_sociale)
+                                <p><span class="font-medium">Situation sociale:</span>
+                                    {{ \App\Models\Beneficiaire::SITUATIONS_SOCIALES[$beneficiaire->situation_sociale] ?? $beneficiaire->situation_sociale }}
+                                    @if($beneficiaire->situation_sociale_precision)
+                                        — {{ $beneficiaire->situation_sociale_precision }}
+                                    @endif
+                                </p>
                             @endif
                             @if($beneficiaire->societe)
                                 <p><span class="font-medium">Société:</span> {{ $beneficiaire->societe }}</p>
@@ -172,6 +190,115 @@
                         </div>
                     </div>
                 @endif
+
+                <div class="mb-6" id="fiche-tabs">
+                    <div class="border-b border-gray-200 mb-4 flex gap-4">
+                        <button type="button" data-tab="parcours" class="tab-btn pb-2 border-b-2 border-red-900 text-red-900 text-sm font-medium">Parcours actuel</button>
+                        <button type="button" data-tab="historique" class="tab-btn pb-2 border-b-2 border-transparent text-gray-500 text-sm font-medium">Historique des parcours</button>
+                        <button type="button" data-tab="audit" class="tab-btn pb-2 border-b-2 border-transparent text-gray-500 text-sm font-medium">Journal d'audit</button>
+                    </div>
+
+                    <div data-panel="parcours" class="tab-panel bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                        @php $actuel = $beneficiaire->parcours->firstWhere('is_current', true); @endphp
+                        @if($actuel)
+                            <p><span class="font-medium">École / Partenaire :</span> {{ optional($actuel->ecole)->nom ?? '—' }}</p>
+                            <p><span class="font-medium">Filière :</span> {{ $actuel->filiere ?? '—' }}</p>
+                            <p><span class="font-medium">Niveau :</span> {{ $actuel->niveau ?? '—' }}</p>
+                            <p><span class="font-medium">Année académique :</span> {{ $actuel->annee_academique ?? $beneficiaire->annee_academique ?? '—' }}</p>
+                            <p><span class="font-medium">Statut :</span> {{ $actuel->statut }}</p>
+                        @else
+                            <p class="text-gray-500">Aucun parcours formalisé. Utilisez « Réorientation » pour en créer un, ou renseignez l'école/filière.</p>
+                            @if($beneficiaire->ecole)
+                                <p><span class="font-medium">École (fiche) :</span> {{ $beneficiaire->ecole->nom }}</p>
+                            @endif
+                            @if($beneficiaire->filiere)
+                                <p><span class="font-medium">Filière (fiche) :</span> {{ $beneficiaire->filiere }}</p>
+                            @endif
+                        @endif
+                    </div>
+
+                    <div data-panel="historique" class="tab-panel overflow-x-auto hidden">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="px-3 py-2 text-left">Période</th>
+                                    <th class="px-3 py-2 text-left">École</th>
+                                    <th class="px-3 py-2 text-left">Filière</th>
+                                    <th class="px-3 py-2 text-left">Année</th>
+                                    <th class="px-3 py-2 text-left">Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($beneficiaire->parcours as $p)
+                                    <tr class="border-t {{ $p->is_current ? 'bg-green-50' : '' }}">
+                                        <td class="px-3 py-2">
+                                            {{ optional($p->started_at)->format('d/m/Y') ?? '—' }}
+                                            →
+                                            {{ $p->is_current ? 'en cours' : (optional($p->ended_at)->format('d/m/Y') ?? '—') }}
+                                        </td>
+                                        <td class="px-3 py-2">{{ optional($p->ecole)->nom ?? '—' }}</td>
+                                        <td class="px-3 py-2">{{ $p->filiere ?? '—' }}</td>
+                                        <td class="px-3 py-2">{{ $p->annee_academique ?? '—' }}</td>
+                                        <td class="px-3 py-2">{{ $p->is_current ? 'Actuel' : ($p->statut ?: 'Archivé / Terminé') }}</td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="5" class="px-3 py-4 text-gray-500">Aucun historique.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div data-panel="audit" class="tab-panel overflow-x-auto hidden">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="px-3 py-2 text-left">Date</th>
+                                    <th class="px-3 py-2 text-left">Auteur</th>
+                                    <th class="px-3 py-2 text-left">Action</th>
+                                    <th class="px-3 py-2 text-left">Détails</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($beneficiaire->auditLogs as $log)
+                                    <tr class="border-t">
+                                        <td class="px-3 py-2 whitespace-nowrap">{{ $log->created_at->format('d/m/Y H:i') }}</td>
+                                        <td class="px-3 py-2">{{ $log->user_name ?? '—' }}</td>
+                                        <td class="px-3 py-2">{{ $log->action }}</td>
+                                        <td class="px-3 py-2 text-xs text-gray-600">
+                                            @if($log->changes)
+                                                <code>{{ \Illuminate\Support\Str::limit(json_encode($log->changes, JSON_UNESCAPED_UNICODE), 120) }}</code>
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="4" class="px-3 py-4 text-gray-500">Aucune modification tracée.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <script>
+                    (function () {
+                        const root = document.getElementById('fiche-tabs');
+                        if (!root) return;
+                        root.querySelectorAll('.tab-btn').forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                const tab = btn.dataset.tab;
+                                root.querySelectorAll('.tab-btn').forEach(b => {
+                                    b.classList.toggle('border-red-900', b === btn);
+                                    b.classList.toggle('text-red-900', b === btn);
+                                    b.classList.toggle('border-transparent', b !== btn);
+                                    b.classList.toggle('text-gray-500', b !== btn);
+                                });
+                                root.querySelectorAll('.tab-panel').forEach(panel => {
+                                    panel.classList.toggle('hidden', panel.dataset.panel !== tab);
+                                });
+                            });
+                        });
+                    })();
+                </script>
 
                 <div class="mt-6 flex justify-end">
                     <a href="{{ route('archives.beneficiaires.index') }}" 

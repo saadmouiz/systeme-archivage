@@ -17,6 +17,14 @@
             </div>
         </div>
 
+        @if(!empty($editLock) && empty($editLock['acquired']))
+            <div class="mb-4 px-4 py-3 bg-amber-100 border border-amber-300 text-amber-900 rounded">
+                {{ $editLock['message'] }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="mb-4 px-4 py-3 bg-red-100 border border-red-200 text-red-700 rounded">{{ session('error') }}</div>
+        @endif
         @if($errors->any())
             <div class="mb-4 px-4 py-3 bg-red-100 border border-red-200 text-red-700 rounded">
                 <ul class="list-disc list-inside">
@@ -88,5 +96,29 @@
         });
     }
 </script>
+@push('scripts')
+@if(!empty($editLock['acquired']))
+<script>
+(function () {
+    const heartbeatUrl = @json(route('archives.pointages.lock.heartbeat', $pointage));
+    const releaseUrl = @json(route('archives.pointages.lock.release', $pointage));
+    const csrf = document.querySelector('input[name="_token"]')?.value;
+    setInterval(() => {
+        fetch(heartbeatUrl, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+        }).catch(() => {});
+    }, 60000);
+    window.addEventListener('beforeunload', () => {
+        if (navigator.sendBeacon && csrf) {
+            const data = new FormData();
+            data.append('_token', csrf);
+            navigator.sendBeacon(releaseUrl, data);
+        }
+    });
+})();
+</script>
+@endif
+@endpush
 @endsection
 

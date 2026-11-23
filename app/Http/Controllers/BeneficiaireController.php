@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\AssociationPartenaire;
 use App\Http\Controllers\Controller;
 use App\Models\Beneficiaire;
+use App\Models\BeneficiaireParcours;
+use App\Support\AuditLogger;
+use App\Support\PeriodLock;
+use App\Support\RecordLockService;
+use App\Support\SearchNormalizer;
 use Illuminate\Validation\Rule;
 use App\Models\ArchivePartenaire;
 use Illuminate\Http\Request;
@@ -67,25 +72,106 @@ class BeneficiaireController extends Controller
         $terms = array_values(array_filter($terms, fn ($term) => $term !== ''));
 
         foreach ($terms as $term) {
-            $query->where(function ($q) use ($term) {
-                $q->where('nom', 'like', "%{$term}%")
-                  ->orWhere('prenom', 'like', "%{$term}%")
-                  ->orWhere('cin', 'like', "%{$term}%")
-                  ->orWhere('reference', 'like', "%{$term}%")
-                  ->orWhere('nom_association', 'like', "%{$term}%")
-                  ->orWhereHas('ecole', function ($ecoleQuery) use ($term) {
-                      $ecoleQuery->where('nom', 'like', "%{$term}%");
+            $normalized = SearchNormalizer::normalize($term);
+            $like = '%' . $normalized . '%';
+
+            $query->where(function ($q) use ($term, $like, $normalized) {
+                $nomExpr = SearchNormalizer::sqlExpr('nom');
+                $prenomExpr = SearchNormalizer::sqlExpr('prenom');
+                $cinExpr = SearchNormalizer::sqlExpr('cin');
+                $refExpr = SearchNormalizer::sqlExpr('reference');
+                $assocExpr = SearchNormalizer::sqlExpr('nom_association');
+
+                $q->whereRaw("{$nomExpr} LIKE ?", [$like])
+                  ->orWhereRaw("{$prenomExpr} LIKE ?", [$like])
+                  ->orWhereRaw("{$cinExpr} LIKE ?", [$like])
+                  ->orWhereRaw("{$refExpr} LIKE ?", [$like])
+                  ->orWhereRaw("{$assocExpr} LIKE ?", [$like])
+                  ->orWhereHas('ecole', function ($ecoleQuery) use ($like) {
+                      $ecoleExpr = SearchNormalizer::sqlExpr('nom');
+                      $ecoleQuery->whereRaw("{$ecoleExpr} LIKE ?", [$like]);
                   });
 
                 // Année saisie seule: couvre explicitement XX/YYYY et XX-YYYY.
-                if (preg_match('/^\d{4}$/', $term)) {
-                    $q->orWhere('reference', 'like', "%/{$term}")
-                      ->orWhere('reference', 'like', "%-{$term}")
-                      ->orWhere('reference', 'like', "%/{$term}/%")
-                      ->orWhere('reference', 'like', "%-{$term}-%");
+                if (preg_match('/^\d{4}$/', $normalized)) {
+                    $q->orWhere('reference', 'like', "%/{$normalized}")
+                      ->orWhere('reference', 'like', "%-{$normalized}")
+                      ->orWhere('reference', 'like', "%/{$normalized}/%")
+                      ->orWhere('reference', 'like', "%-{$normalized}-%");
                 }
             });
         }
+    }
+
+    private function findDuplicateBeneficiaire(?string $cin, ?string $nom, ?string $prenom, $dateNaissance = null, ?int $ignoreId = null): ?Beneficiaire
+    {
+        if ($cin) {
+            $cin = trim($cin);
+            $query = Beneficiaire::query()->whereRaw(SearchNormalizer::sqlExpr('cin') . ' = ?', [SearchNormalizer::normalize($cin)]);
+            if ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            }
+            $byCin = $query->first();
+            if ($byCin) {
+                return $byCin;
+            }
+        }
+
+        if ($nom && $prenom && $dateNaissance) {
+            $query = Beneficiaire::query()
+                ->whereRaw(SearchNormalizer::sqlExpr('nom') . ' = ?', [SearchNormalizer::normalize($nom)])
+                ->whereRaw(SearchNormalizer::sqlExpr('prenom') . ' = ?', [SearchNormalizer::normalize($prenom)])
+                ->whereDate('date_naissance', $dateNaissance);
+            if ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            }
+            return $query->first();
+        }
+
+        return null;
+    }
+
+    public function checkCin(Request $request)
+    {
+        $cin = trim((string) $request->query('cin', ''));
+        $nom = trim((string) $request->query('nom', ''));
+        $prenom = trim((string) $request->query('prenom', ''));
+        $dateNaissance = $request->query('date_naissance');
+
+        if ($cin === '' && ($nom === '' || $prenom === '' || !$dateNaissance)) {
+            return response()->json(['exists' => false]);
+        }
+
+        $existing = $this->findDuplicateBeneficiaire(
+            $cin !== '' ? $cin : null,
+            $nom !== '' ? $nom : null,
+            $prenom !== '' ? $prenom : null,
+            $dateNaissance ?: null
+        );
+
+        if (!$existing) {
+            return response()->json(['exists' => false]);
+        }
+
+        return response()->json([
+            'exists' => true,
+            'beneficiaire' => [
+                'id' => $existing->id,
+                'reference' => $existing->reference,
+                'nom' => $existing->nom,
+                'prenom' => $existing->prenom,
+                'cin' => $existing->cin,
+                'show_url' => route('archives.beneficiaires.show', $existing),
+                'edit_url' => route('archives.beneficiaires.edit', $existing),
+            ],
+            'message' => sprintf(
+                'Attention : Un bénéficiaire avec le CIN %s existe déjà dans le système (Réf: %s - %s %s).',
+                $existing->cin ?: 'N/A',
+                $existing->reference ?: 'N/A',
+                $existing->nom,
+                $existing->prenom
+            ),
+        ]);
     }
 
     /**
@@ -167,6 +253,18 @@ class BeneficiaireController extends Controller
             $this->applyReferenceYearFilter($query, (string) $request->annee);
         }
 
+        if ($request->filled('situation_sociale')) {
+            $query->where('situation_sociale', $request->situation_sociale);
+        }
+
+        if ($request->filled('societe')) {
+            $query->where('societe', 'like', '%' . $request->societe . '%');
+        }
+
+        if ($request->filled('type_intervention')) {
+            $query->where('type_intervention', $request->type_intervention);
+        }
+
         if ($request->filled('search')) {
             $this->applySearchFilters($query, trim($request->search));
         }
@@ -195,6 +293,18 @@ class BeneficiaireController extends Controller
             $this->applyReferenceYearFilter($query, (string) $request->annee);
         }
 
+        if ($request->filled('situation_sociale')) {
+            $query->where('situation_sociale', $request->situation_sociale);
+        }
+
+        if ($request->filled('societe')) {
+            $query->where('societe', 'like', '%' . $request->societe . '%');
+        }
+
+        if ($request->filled('type_intervention')) {
+            $query->where('type_intervention', $request->type_intervention);
+        }
+
         // Recherche
         if ($request->filled('search')) {
             $search = trim($request->search);
@@ -212,34 +322,26 @@ class BeneficiaireController extends Controller
         // Récupérer les écoles et centres pour le filtre
         $ecoles = $this->getEcolesForFilter();
 
-        // Debug: Logger le nombre de bénéficiaires
-        \Log::info('Bénéficiaires trouvés: ' . $beneficiaires->count());
-        \Log::info('Types: ' . $beneficiaires->keys()->implode(', '));
-        
-        // Debug avancé
-        foreach ($beneficiaires as $type => $items) {
-            \Log::info("Type '$type': " . $items->count() . " éléments");
-        }
-
         return view('archives.beneficiaires.index', [
             'beneficiaires' => $beneficiaires,
             'types' => array_values($this->types),
             'ecoles' => $ecoles,
             'annees' => $this->getAvailableAnnees($request, false),
+            'situationsSociales' => Beneficiaire::SITUATIONS_SOCIALES,
         ]);
     }
 
     public function create()
-{
-    // Récupérer les écoles ET les centres pour le dropdown
-    $ecoles = $this->getEcolesForFilter(); // Récupère une collection d'objets
+    {
+        $ecoles = $this->getEcolesForFilter();
 
-    return view('archives.beneficiaires.create', [
-        'types' => $this->types,
-        'niveaux' => $this->niveaux,
-        'ecoles' => $ecoles
-    ]);
-}
+        return view('archives.beneficiaires.create', [
+            'types' => $this->types,
+            'niveaux' => $this->niveaux,
+            'ecoles' => $ecoles,
+            'situationsSociales' => Beneficiaire::SITUATIONS_SOCIALES,
+        ]);
+    }
     public function store(Request $request)
     {
         // FIX: Vérifier et créer les colonnes si elles n'existent pas
@@ -280,10 +382,18 @@ class BeneficiaireController extends Controller
             'ville' => 'required|string|max:255',
             'cin' => 'nullable|string',
             'age' => 'nullable|integer|min:1|max:120',
+            'date_naissance' => 'nullable|date',
             'genre' => [
                 'nullable',
                 Rule::requiredIf(fn() => $request->type === 'Document éducatif'),
                 'in:Homme,Femme'
+            ],
+            'situation_sociale' => 'required|string|in:' . implode(',', array_keys(Beneficiaire::SITUATIONS_SOCIALES)),
+            'situation_sociale_precision' => [
+                'nullable',
+                Rule::requiredIf(fn() => $request->situation_sociale === 'autre'),
+                'string',
+                'max:255',
             ],
             'status' => [
                 'nullable',
@@ -332,6 +442,29 @@ class BeneficiaireController extends Controller
             'fichier' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240'
         ]);
         $validated['type'] = $this->normalizeBeneficiaireType($validated['type']);
+
+        $duplicate = $this->findDuplicateBeneficiaire(
+            $validated['cin'] ?? null,
+            $validated['nom'] ?? null,
+            $validated['prenom'] ?? null,
+            $validated['date_naissance'] ?? null
+        );
+        if ($duplicate) {
+            return back()
+                ->withInput()
+                ->with('duplicate_warning', sprintf(
+                    'Attention : Un bénéficiaire avec le CIN %s existe déjà dans le système (Réf: %s - %s %s).',
+                    $duplicate->cin ?: 'N/A',
+                    $duplicate->reference ?: 'N/A',
+                    $duplicate->nom,
+                    $duplicate->prenom
+                ))
+                ->with('duplicate_id', $duplicate->id);
+        }
+
+        if (($validated['situation_sociale'] ?? null) !== 'autre') {
+            $validated['situation_sociale_precision'] = null;
+        }
     
         try {
             if ($request->hasFile('fichier')) {
@@ -369,7 +502,15 @@ class BeneficiaireController extends Controller
                 $validated['societe'] = null;
             }
     
-            Beneficiaire::create($validated);
+            $year = PeriodLock::yearFromReference($validated['reference'] ?? null)
+                ?? PeriodLock::yearFromAcademique($validated['annee_academique'] ?? null);
+            if ($year) {
+                PeriodLock::assertOpen($year, 'beneficiaires');
+            }
+
+            $beneficiaire = Beneficiaire::create($validated);
+            $this->ensureCurrentParcours($beneficiaire);
+            AuditLogger::log($beneficiaire, 'created', ['fields' => array_keys($validated)]);
     
             return redirect()->route('archives.beneficiaires.index')
                 ->with('success', 'Dossier bénéficiaire ajouté avec succès');
@@ -385,12 +526,22 @@ class BeneficiaireController extends Controller
 
     public function show(Beneficiaire $beneficiaire)
     {
-        $beneficiaire->load('ecole');
+        $this->ensureCurrentParcours($beneficiaire);
+        $beneficiaire->load(['ecole', 'parcours.ecole', 'auditLogs']);
         return view('archives.beneficiaires.show', compact('beneficiaire'));
     }
 
     public function edit(Beneficiaire $beneficiaire)
     {
+        $year = PeriodLock::yearFromReference($beneficiaire->reference)
+            ?? PeriodLock::yearFromAcademique($beneficiaire->annee_academique);
+        if ($year) {
+            PeriodLock::assertOpen($year, 'beneficiaires');
+        }
+
+        $lockService = app(RecordLockService::class);
+        $lockResult = $lockService->acquire($beneficiaire, auth()->user());
+
         // Récupérer les écoles et centres pour le formulaire
         $ecoles = $this->getEcolesForFilter()->pluck('nom', 'id');
 
@@ -398,7 +549,136 @@ class BeneficiaireController extends Controller
             'beneficiaire' => $beneficiaire,
             'types' => $this->types,
             'niveaux' => $this->niveaux,
-            'ecoles' => $ecoles
+            'ecoles' => $ecoles,
+            'situationsSociales' => Beneficiaire::SITUATIONS_SOCIALES,
+            'editLock' => $lockResult,
+        ]);
+    }
+
+    public function heartbeatLock(Beneficiaire $beneficiaire)
+    {
+        $ok = app(RecordLockService::class)->heartbeat($beneficiaire, auth()->user());
+        return response()->json(['ok' => $ok]);
+    }
+
+    public function releaseLock(Beneficiaire $beneficiaire)
+    {
+        app(RecordLockService::class)->release($beneficiaire, auth()->user());
+        return response()->json(['ok' => true]);
+    }
+
+    public function reorientForm(Beneficiaire $beneficiaire)
+    {
+        $this->ensureCurrentParcours($beneficiaire);
+        $beneficiaire->load(['ecole', 'parcoursActuel.ecole']);
+        $ecoles = $this->getEcolesForFilter()->pluck('nom', 'id');
+
+        return view('archives.beneficiaires.reorient', [
+            'beneficiaire' => $beneficiaire,
+            'ecoles' => $ecoles,
+            'statutsFin' => BeneficiaireParcours::STATUTS_FIN,
+        ]);
+    }
+
+    public function reorient(Request $request, Beneficiaire $beneficiaire)
+    {
+        $validated = $request->validate([
+            'ecole_id' => 'required|exists:archive_partenaires,id',
+            'filiere' => 'required|string|max:255',
+            'niveau' => 'nullable|string|max:255',
+            'annee_academique' => 'required|string|max:20',
+            'statut_ancien' => 'required|in:Validé,Réorienté,Abandon',
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        $year = PeriodLock::yearFromAcademique($validated['annee_academique']);
+        if ($year) {
+            PeriodLock::assertOpen($year, 'beneficiaires');
+        }
+
+        DB::transaction(function () use ($beneficiaire, $validated) {
+            $this->ensureCurrentParcours($beneficiaire);
+            $current = $beneficiaire->parcours()->where('is_current', true)->first();
+
+            if ($current) {
+                $current->update([
+                    'is_current' => false,
+                    'statut' => $validated['statut_ancien'],
+                    'ended_at' => now(),
+                ]);
+            } else {
+                // Archive snapshot from fiche if somehow missing
+                BeneficiaireParcours::create([
+                    'beneficiaire_id' => $beneficiaire->id,
+                    'ecole_id' => $beneficiaire->ecole_id,
+                    'filiere' => $beneficiaire->filiere,
+                    'niveau' => $beneficiaire->niveau,
+                    'annee_academique' => $beneficiaire->annee_academique,
+                    'statut' => $validated['statut_ancien'],
+                    'is_current' => false,
+                    'started_at' => $beneficiaire->created_at,
+                    'ended_at' => now(),
+                    'created_by' => auth()->id(),
+                ]);
+            }
+
+            BeneficiaireParcours::create([
+                'beneficiaire_id' => $beneficiaire->id,
+                'ecole_id' => $validated['ecole_id'],
+                'filiere' => $validated['filiere'],
+                'niveau' => $validated['niveau'] ?? null,
+                'annee_academique' => $validated['annee_academique'],
+                'statut' => 'Actuel',
+                'is_current' => true,
+                'notes' => $validated['notes'] ?? null,
+                'started_at' => now(),
+                'created_by' => auth()->id(),
+            ]);
+
+            $beneficiaire->update([
+                'ecole_id' => $validated['ecole_id'],
+                'filiere' => $validated['filiere'],
+                'niveau' => $validated['niveau'] ?? $beneficiaire->niveau,
+                'annee_academique' => $validated['annee_academique'],
+            ]);
+
+            AuditLogger::log($beneficiaire, 'reorientation', [
+                'ancien_statut' => $validated['statut_ancien'],
+                'nouvelle_ecole_id' => $validated['ecole_id'],
+                'nouvelle_filiere' => $validated['filiere'],
+                'annee_academique' => $validated['annee_academique'],
+            ]);
+        });
+
+        return redirect()
+            ->route('archives.beneficiaires.show', $beneficiaire)
+            ->with('success', 'Réorientation enregistrée. L\'historique du parcours a été conservé.');
+    }
+
+    private function ensureCurrentParcours(Beneficiaire $beneficiaire): void
+    {
+        if ($beneficiaire->parcours()->exists()) {
+            return;
+        }
+
+        // Seed initial parcours from current fiche fields (document éducatif or any with ecole/filiere)
+        if (!$beneficiaire->ecole_id && !$beneficiaire->filiere && !$beneficiaire->annee_academique) {
+            return;
+        }
+
+        BeneficiaireParcours::create([
+            'beneficiaire_id' => $beneficiaire->id,
+            'ecole_id' => $beneficiaire->ecole_id,
+            'filiere' => $beneficiaire->filiere,
+            'niveau' => $beneficiaire->niveau,
+            'annee_academique' => $beneficiaire->annee_academique
+                ?? (PeriodLock::yearFromReference($beneficiaire->reference)
+                    ? PeriodLock::yearFromReference($beneficiaire->reference) . '/' . (PeriodLock::yearFromReference($beneficiaire->reference) + 1)
+                    : null),
+            'statut' => 'Actuel',
+            'is_current' => true,
+            'started_at' => $beneficiaire->created_at ?? now(),
+            'created_by' => auth()->id(),
         ]);
     }
 
@@ -412,10 +692,18 @@ class BeneficiaireController extends Controller
             'ville' => 'required|string|max:255',
             'cin' => 'nullable|string|max:20',
             'age' => 'nullable|integer|min:1|max:120',
+            'date_naissance' => 'nullable|date',
             'genre' => [
                 'nullable',
                 'required_if:type,Document éducatif',
                 'in:Homme,Femme'
+            ],
+            'situation_sociale' => 'required|string|in:' . implode(',', array_keys(Beneficiaire::SITUATIONS_SOCIALES)),
+            'situation_sociale_precision' => [
+                'nullable',
+                Rule::requiredIf(fn() => $request->situation_sociale === 'autre'),
+                'string',
+                'max:255',
             ],
             'status' => [
                 'nullable',
@@ -459,6 +747,30 @@ class BeneficiaireController extends Controller
         ]);
         $validated['type'] = $this->normalizeBeneficiaireType($validated['type']);
 
+        $duplicate = $this->findDuplicateBeneficiaire(
+            $validated['cin'] ?? null,
+            $validated['nom'] ?? null,
+            $validated['prenom'] ?? null,
+            $validated['date_naissance'] ?? null,
+            $beneficiaire->id
+        );
+        if ($duplicate) {
+            return back()
+                ->withInput()
+                ->with('duplicate_warning', sprintf(
+                    'Attention : Un bénéficiaire avec le CIN %s existe déjà dans le système (Réf: %s - %s %s).',
+                    $duplicate->cin ?: 'N/A',
+                    $duplicate->reference ?: 'N/A',
+                    $duplicate->nom,
+                    $duplicate->prenom
+                ))
+                ->with('duplicate_id', $duplicate->id);
+        }
+
+        if (($validated['situation_sociale'] ?? null) !== 'autre') {
+            $validated['situation_sociale_precision'] = null;
+        }
+
         if ($request->hasFile('fichier')) {
             if ($beneficiaire->fichier) {
                 Storage::disk('public')->delete($beneficiaire->fichier);
@@ -498,11 +810,39 @@ class BeneficiaireController extends Controller
             $validated['societe'] = null;
         }
 
+        $year = PeriodLock::yearFromReference($validated['reference'] ?? $beneficiaire->reference)
+            ?? PeriodLock::yearFromAcademique($beneficiaire->annee_academique);
+        if ($year) {
+            PeriodLock::assertOpen($year, 'beneficiaires');
+        }
+
+        $lockService = app(RecordLockService::class);
+        $lockResult = $lockService->acquire($beneficiaire, auth()->user());
+        if (!$lockResult['acquired']) {
+            return back()->withInput()->with('error', $lockResult['message']);
+        }
+
         // Détecter le changement de statut de 'Accepter' à 'Refuser'
         $ancienStatus = $beneficiaire->status;
         $nouveauStatus = $validated['status'] ?? null;
+        $before = $beneficiaire->only(array_keys($validated));
         
         $beneficiaire->update($validated);
+        $changes = AuditLogger::diff($beneficiaire, $before, $beneficiaire->only(array_keys($validated)));
+        if ($changes) {
+            AuditLogger::log($beneficiaire, 'updated', $changes);
+        }
+        $this->ensureCurrentParcours($beneficiaire);
+        $current = $beneficiaire->parcours()->where('is_current', true)->first();
+        if ($current && $beneficiaire->type === 'Document éducatif') {
+            $current->update([
+                'ecole_id' => $beneficiaire->ecole_id,
+                'filiere' => $beneficiaire->filiere,
+                'niveau' => $beneficiaire->niveau,
+                'annee_academique' => $beneficiaire->annee_academique,
+            ]);
+        }
+        $lockService->release($beneficiaire, auth()->user());
 
         // Si le statut passe de 'Accepter' à 'Refuser', rediriger vers la page des refusés
         if ($ancienStatus === 'Accepter' && $nouveauStatus === 'Refuser') {
@@ -510,15 +850,28 @@ class BeneficiaireController extends Controller
                 ->with('success', 'Le dossier a été marqué comme refusé et déplacé vers la liste des bénéficiaires refusés.');
         }
 
-        return redirect()->route('archives.beneficiaires.index')
+        return redirect()->route('archives.beneficiaires.show', $beneficiaire)
             ->with('success', 'Dossier bénéficiaire mis à jour avec succès');
     }
 
     public function destroy(Beneficiaire $beneficiaire)
     {
+        $year = PeriodLock::yearFromReference($beneficiaire->reference)
+            ?? PeriodLock::yearFromAcademique($beneficiaire->annee_academique);
+        if ($year) {
+            PeriodLock::assertOpen($year, 'beneficiaires');
+        }
+
         if ($beneficiaire->fichier) {
             Storage::disk('public')->delete($beneficiaire->fichier);
         }
+
+        AuditLogger::log($beneficiaire, 'deleted', [
+            'nom' => $beneficiaire->nom,
+            'prenom' => $beneficiaire->prenom,
+            'cin' => $beneficiaire->cin,
+            'reference' => $beneficiaire->reference,
+        ]);
         
         $beneficiaire->delete();
 

@@ -21,7 +21,7 @@
                 </div>
                 
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <form method="GET" action="{{ route('archives.pointages.index') }}" class="flex items-center gap-2">
+                    <form method="GET" action="{{ route('archives.pointages.index') }}" class="flex flex-wrap items-center gap-2">
                         <div class="relative">
                             <select name="mois" class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent shadow-sm">
                                 @foreach(range(1, 12) as $m)
@@ -47,6 +47,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                 </svg>
                             </div>
+                        </div>
+                        <div class="relative">
+                            <select name="genre" class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-transparent shadow-sm">
+                                <option value="">Tous genres</option>
+                                <option value="Homme" {{ request('genre') === 'Homme' ? 'selected' : '' }}>Hommes</option>
+                                <option value="Femme" {{ request('genre') === 'Femme' ? 'selected' : '' }}>Femmes</option>
+                            </select>
                         </div>
                         <button type="submit" class="bg-[#991B1B] border border-red-800 hover:bg-red-900 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl">
                             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -325,8 +332,8 @@
         </div>
 
         <!-- Quick Actions -->
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <a href="{{ route('archives.pointages.export-pdf', ['mois' => $mois, 'annee' => $annee]) }}" class="bg-[#FEE2E2] rounded-2xl shadow-lg border border-red-300 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer block">
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <a href="{{ route('archives.pointages.export-pdf', ['mois' => $mois, 'annee' => $annee, 'genre' => request('genre')]) }}" class="bg-[#FEE2E2] rounded-2xl shadow-lg border border-red-300 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer block">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-[#FEE2E2] rounded-xl flex items-center justify-center mr-4">
                         <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,6 +343,32 @@
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Export PDF</h3>
                         <p class="text-sm text-gray-500">Générer un rapport mensuel</p>
+                    </div>
+                </div>
+            </a>
+            <a href="{{ route('archives.pointages.export-excel', ['mois' => $mois, 'annee' => $annee, 'genre' => request('genre')]) }}" class="bg-[#FEE2E2] rounded-2xl shadow-lg border border-red-300 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer block">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-[#FEE2E2] rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Export Excel</h3>
+                        <p class="text-sm text-gray-500">Exporter le mois filtré</p>
+                    </div>
+                </div>
+            </a>
+            <a href="{{ route('archives.pointages.print', ['mois' => $mois, 'annee' => $annee, 'genre' => request('genre')]) }}" class="bg-[#FEE2E2] rounded-2xl shadow-lg border border-red-300 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer block">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-[#FEE2E2] rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-red-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Imprimer le rapport</h3>
+                        <p class="text-sm text-gray-500">Version impression sans menus</p>
                     </div>
                 </div>
             </a>

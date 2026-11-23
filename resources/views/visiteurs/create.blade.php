@@ -44,6 +44,18 @@
                         @enderror
                     </div>
 
+                    <div>
+                        <label for="genre" class="block text-sm font-medium text-gray-700">Genre</label>
+                        <select name="genre" id="genre" class="mt-1 focus:ring-red-900 focus:border-red-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            <option value="">Sélectionnez</option>
+                            <option value="Homme" {{ old('genre') === 'Homme' ? 'selected' : '' }}>Homme</option>
+                            <option value="Femme" {{ old('genre') === 'Femme' ? 'selected' : '' }}>Femme</option>
+                        </select>
+                        @error('genre')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <!-- Heure d'arrivée -->
                     <div class="sm:col-span-2">
                         <label for="heure_arrivee" class="block text-sm font-medium text-gray-700">Heure d'arrivée</label>

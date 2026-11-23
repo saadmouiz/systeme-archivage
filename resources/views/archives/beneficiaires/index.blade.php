@@ -107,17 +107,34 @@
                         </div>
                     </div>
 
-                    <!-- Écoles -->
-                    @if($ecoles->count() > 0)
+                    <!-- Situation sociale -->
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Écoles</h3>
+                        <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Situation sociale</h3>
                         <div class="flex flex-wrap gap-3">
-                            <a href="{{ route('archives.beneficiaires.index', ['type' => request('type')]) }}" 
+                            <a href="{{ route('archives.beneficiaires.index', request()->except('situation_sociale')) }}"
+                               class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('situation_sociale') ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                                Toutes
+                            </a>
+                            @foreach(($situationsSociales ?? []) as $value => $label)
+                                <a href="{{ route('archives.beneficiaires.index', array_merge(request()->except('situation_sociale'), ['situation_sociale' => $value])) }}"
+                                   class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('situation_sociale') === $value ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
+                                    {{ $label }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Écoles : uniquement Document éducatif -->
+                    @if(request('type') === 'Document éducatif' && $ecoles->count() > 0)
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Écoles / partenaires</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="{{ route('archives.beneficiaires.index', request()->except('ecole')) }}" 
                                class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ !request('ecole') ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                 Toutes
                             </a>
                             @foreach($ecoles as $ecole)
-                                <a href="{{ route('archives.beneficiaires.index', ['type' => request('type'), 'ecole' => $ecole->id]) }}" 
+                                <a href="{{ route('archives.beneficiaires.index', array_merge(request()->except('ecole'), ['ecole' => $ecole->id])) }}" 
                                    class="px-6 py-3 text-sm font-medium rounded-2xl transition-all duration-300 {{ request('ecole') == $ecole->id ? 'bg-[#FEE2E2] border border-red-300 text-red-900 shadow-lg scale-105' : 'bg-white/60 text-gray-700 hover:bg-white hover:shadow-md border border-gray-200' }}">
                                     {{ $ecole->nom }}
                                 </a>
@@ -126,7 +143,35 @@
                     </div>
                     @endif
 
-                    <!-- Filtre par Année (extrait de la référence, ex: 21/2019 → 2019) -->
+                    <!-- Filtres insertion professionnelle -->
+                    @if(request('type') === 'Dossier individuel')
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Insertion professionnelle</h3>
+                        <form method="GET" action="{{ route('archives.beneficiaires.index') }}" class="flex flex-wrap gap-3 items-end">
+                            <input type="hidden" name="type" value="Dossier individuel">
+                            @if(request('annee')) <input type="hidden" name="annee" value="{{ request('annee') }}"> @endif
+                            @if(request('situation_sociale')) <input type="hidden" name="situation_sociale" value="{{ request('situation_sociale') }}"> @endif
+                            @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Société d'accueil</label>
+                                <input type="text" name="societe" value="{{ request('societe') }}" placeholder="Société"
+                                       class="rounded-xl border-gray-300 text-sm focus:ring-red-900 focus:border-red-900">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Type d'intervention</label>
+                                <select name="type_intervention" class="rounded-xl border-gray-300 text-sm focus:ring-red-900 focus:border-red-900">
+                                    <option value="">Tous</option>
+                                    <option value="IP" {{ request('type_intervention') === 'IP' ? 'selected' : '' }}>IP</option>
+                                    <option value="AGR" {{ request('type_intervention') === 'AGR' ? 'selected' : '' }}>AGR</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="px-5 py-2 bg-[#FEE2E2] border border-red-300 text-red-900 rounded-xl text-sm font-medium">Filtrer</button>
+                        </form>
+                    </div>
+                    @endif
+
+                    <!-- Année (référence) : éducatif ou avec filtre année déjà actif -->
+                    @if(request('type') === 'Document éducatif' || request('annee') || !request('type'))
                     <div>
                         <h3 class="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wider">Année (référence)</h3>
                         <div class="flex flex-wrap gap-3">
@@ -145,7 +190,7 @@
                         </div>
                         @if(request('annee'))
                             <div class="mt-4">
-                                <a href="{{ route('archives.beneficiaires.liste.export.pdf', request()->only(['type', 'ecole', 'annee', 'search'])) }}"
+                                <a href="{{ route('archives.beneficiaires.liste.export.pdf', request()->only(['type', 'ecole', 'annee', 'search', 'situation_sociale'])) }}"
                                    class="inline-flex items-center px-5 py-2.5 text-sm font-medium bg-[#871C1C] text-white rounded-xl hover:bg-red-900 shadow-md transition-all duration-200">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -155,6 +200,7 @@
                             </div>
                         @endif
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

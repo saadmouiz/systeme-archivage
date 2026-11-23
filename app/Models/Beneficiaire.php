@@ -16,7 +16,10 @@ class Beneficiaire extends Model
         'prenom',
         'cin',
         'age',
+        'date_naissance',
         'genre',
+        'situation_sociale',
+        'situation_sociale_precision',
         'status',
         'ass_eps',
         'nom_association',
@@ -30,18 +33,45 @@ class Beneficiaire extends Model
         'fichier',  // Assurez-vous que ce champ est bien présent
         'ecole_id',
         'filiere',
+        'annee_academique',
         'ville',
         'metadata'
     ];
 
     protected $casts = [
-        'metadata' => 'array'
+        'metadata' => 'array',
+        'date_naissance' => 'date',
+    ];
+
+    public const SITUATIONS_SOCIALES = [
+        'precarite_economique' => 'Précarité économique (Difficultés financières)',
+        'orphelin' => 'Orphelin(e) (Paternel, maternel ou absolu)',
+        'monoparental_divorcee' => 'Foyer monoparental – Mère divorcée',
+        'monoparental_veuve' => 'Foyer monoparental – Mère veuve',
+        'monoparental_celibataire' => 'Foyer monoparental – Mère célibataire',
+        'issu_eps' => 'Issu(e) d\'un Établissement de Protection Sociale (EPS) (Ancien pensionnaire)',
+        'autre' => 'Autre situation de vulnérabilité',
     ];
 
     // Relation avec l'école
     public function ecole()
     {
         return $this->belongsTo(ArchivePartenaire::class, 'ecole_id');
+    }
+
+    public function parcours()
+    {
+        return $this->hasMany(BeneficiaireParcours::class)->orderByDesc('started_at')->orderByDesc('id');
+    }
+
+    public function parcoursActuel()
+    {
+        return $this->hasOne(BeneficiaireParcours::class)->where('is_current', true);
+    }
+
+    public function auditLogs()
+    {
+        return $this->morphMany(AuditLog::class, 'auditable')->latest();
     }
 
     // Accesseur pour le nom complet

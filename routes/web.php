@@ -17,6 +17,7 @@ use App\Http\Controllers\LegalDocumentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\VisiteurController;
 use App\Http\Controllers\CourrierController;
+use App\Http\Controllers\AnneeClotureController;
 use Carbon\Carbon;
 
 // Routes d'authentification
@@ -43,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
     // Routes pour les visiteurs
     Route::middleware(['can:access-visiteurs'])->group(function () {
         Route::get('visiteurs/export-excel', [VisiteurController::class, 'exportExcel'])->name('visiteurs.export.excel');
+        Route::get('visiteurs/export-pdf', [VisiteurController::class, 'exportPdf'])->name('visiteurs.export.pdf');
+        Route::get('visiteurs/print', [VisiteurController::class, 'printReport'])->name('visiteurs.print');
         Route::resource('visiteurs', VisiteurController::class);
     });
     
@@ -83,15 +86,35 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/pointages/create', [PointageController::class, 'create'])->name('pointages.create');
             Route::post('/pointages', [PointageController::class, 'store'])->name('pointages.store');
             Route::get('/pointages/export-pdf', [PointageController::class, 'exportPdf'])->name('pointages.export-pdf');
+            Route::get('/pointages/export-excel', [PointageController::class, 'exportExcel'])->name('pointages.export-excel');
+            Route::get('/pointages/print', [PointageController::class, 'printReport'])->name('pointages.print');
             Route::get('/pointages/{employee}', [PointageController::class, 'show'])->name('pointages.show');
             Route::get('/pointages/{pointage}/edit', [PointageController::class, 'edit'])->name('pointages.edit');
+            Route::post('/pointages/{pointage}/lock/heartbeat', [PointageController::class, 'heartbeatLock'])->name('pointages.lock.heartbeat');
+            Route::post('/pointages/{pointage}/lock/release', [PointageController::class, 'releaseLock'])->name('pointages.lock.release');
             Route::put('/pointages/{pointage}', [PointageController::class, 'update'])->name('pointages.update');
             Route::delete('/pointages/{pointage}', [PointageController::class, 'destroy'])->name('pointages.destroy');
         });
 
+        Route::middleware(['can:access-admin1-sections'])->group(function () {
+            Route::get('/clotures', [AnneeClotureController::class, 'index'])->name('clotures.index');
+            Route::post('/clotures', [AnneeClotureController::class, 'store'])->name('clotures.store');
+            Route::delete('/clotures/{cloture}', [AnneeClotureController::class, 'destroy'])->name('clotures.destroy');
+        });
+
         // Admin 2 : AccÃ¨s aux bÃ©nÃ©ficiaires, partenaires, communications, Ã©vÃ©nements  
         Route::middleware(['can:access-beneficiaires'])->group(function () {
+            Route::get('/beneficiaires/check-cin', [BeneficiaireController::class, 'checkCin'])
+                ->name('beneficiaires.check-cin');
             Route::resource('beneficiaires', BeneficiaireController::class);
+            Route::get('/beneficiaires/{beneficiaire}/reorient', [BeneficiaireController::class, 'reorientForm'])
+                ->name('beneficiaires.reorient.form');
+            Route::post('/beneficiaires/{beneficiaire}/reorient', [BeneficiaireController::class, 'reorient'])
+                ->name('beneficiaires.reorient');
+            Route::post('/beneficiaires/{beneficiaire}/lock/heartbeat', [BeneficiaireController::class, 'heartbeatLock'])
+                ->name('beneficiaires.lock.heartbeat');
+            Route::post('/beneficiaires/{beneficiaire}/lock/release', [BeneficiaireController::class, 'releaseLock'])
+                ->name('beneficiaires.lock.release');
             Route::get('/beneficiaires-refused', [BeneficiaireController::class, 'refused'])
                 ->name('beneficiaires.refused');
             Route::get('/beneficiaires/{beneficiaire}/download', [BeneficiaireController::class, 'download'])
