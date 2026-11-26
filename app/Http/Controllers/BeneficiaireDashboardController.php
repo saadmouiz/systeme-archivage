@@ -36,7 +36,7 @@ class BeneficiaireDashboardController extends Controller
             }
         }
 
-        if ($request->filled('situation_sociale')) {
+        if ($request->filled('situation_sociale') && \Schema::hasColumn('beneficiaires', 'situation_sociale')) {
             $query->where('situation_sociale', $request->situation_sociale);
         }
 
@@ -65,6 +65,8 @@ class BeneficiaireDashboardController extends Controller
 
     public function index(Request $request)
     {
+        \App\Support\CdcSchemaEnsurer::ensure();
+
         // Vérifier si la table des bénéficiaires existe
         if (!Schema::hasTable('beneficiaires')) {
             return view('archives.beneficiaires.dashboard', [
@@ -188,15 +190,18 @@ class BeneficiaireDashboardController extends Controller
             'refuser' => (int) (clone $baseQuery)->where('status', 'Refuser')->count(),
         ];
 
-        $statsParSituation = (clone $baseQuery)
-            ->select('situation_sociale', DB::raw('count(*) as total'))
-            ->whereNotNull('situation_sociale')
-            ->groupBy('situation_sociale')
-            ->get()
-            ->mapWithKeys(function ($row) {
-                $label = Beneficiaire::SITUATIONS_SOCIALES[$row->situation_sociale] ?? $row->situation_sociale;
-                return [$label => (int) $row->total];
-            });
+        $statsParSituation = collect();
+        if (Schema::hasColumn('beneficiaires', 'situation_sociale')) {
+            $statsParSituation = (clone $baseQuery)
+                ->select('situation_sociale', DB::raw('count(*) as total'))
+                ->whereNotNull('situation_sociale')
+                ->groupBy('situation_sociale')
+                ->get()
+                ->mapWithKeys(function ($row) {
+                    $label = Beneficiaire::SITUATIONS_SOCIALES[$row->situation_sociale] ?? $row->situation_sociale;
+                    return [$label => (int) $row->total];
+                });
+        }
 
         // Évolution mensuelle des documents éducatifs
         $evolutionMensuelle = (clone $baseQuery)

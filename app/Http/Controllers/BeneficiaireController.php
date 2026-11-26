@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Beneficiaire;
 use App\Models\BeneficiaireParcours;
 use App\Support\AuditLogger;
+use App\Support\CdcSchemaEnsurer;
 use App\Support\PeriodLock;
 use App\Support\RecordLockService;
 use App\Support\SearchNormalizer;
@@ -122,7 +123,7 @@ class BeneficiaireController extends Controller
             }
         }
 
-        if ($nom && $prenom && $dateNaissance) {
+        if ($nom && $prenom && $dateNaissance && Schema::hasColumn('beneficiaires', 'date_naissance')) {
             $query = Beneficiaire::query()
                 ->whereRaw(SearchNormalizer::sqlExpr('nom') . ' = ?', [SearchNormalizer::normalize($nom)])
                 ->whereRaw(SearchNormalizer::sqlExpr('prenom') . ' = ?', [SearchNormalizer::normalize($prenom)])
@@ -258,7 +259,7 @@ class BeneficiaireController extends Controller
             $this->applyReferenceYearFilter($query, (string) $request->annee);
         }
 
-        if ($request->filled('situation_sociale')) {
+        if ($request->filled('situation_sociale') && Schema::hasColumn('beneficiaires', 'situation_sociale')) {
             $query->where('situation_sociale', $request->situation_sociale);
         }
 
@@ -280,6 +281,7 @@ class BeneficiaireController extends Controller
         // Forcer la reconnexion à la base de données
         DB::purge();
         DB::reconnect();
+        CdcSchemaEnsurer::ensure();
         
         $query = Beneficiaire::with('ecole');
 
@@ -298,7 +300,7 @@ class BeneficiaireController extends Controller
             $this->applyReferenceYearFilter($query, (string) $request->annee);
         }
 
-        if ($request->filled('situation_sociale')) {
+        if ($request->filled('situation_sociale') && Schema::hasColumn('beneficiaires', 'situation_sociale')) {
             $query->where('situation_sociale', $request->situation_sociale);
         }
 
@@ -351,6 +353,7 @@ class BeneficiaireController extends Controller
     {
         // FIX: Vérifier et créer les colonnes si elles n'existent pas
         try {
+            CdcSchemaEnsurer::ensure();
             // Log de la base de données utilisée
             $dbName = \DB::connection()->getDatabaseName();
             \Log::info('Base de données utilisée: ' . $dbName);
