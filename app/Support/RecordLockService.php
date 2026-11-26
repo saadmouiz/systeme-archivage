@@ -12,6 +12,10 @@ class RecordLockService
 
     public function acquire(Model $model, $user): array
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('edit_locks')) {
+            return ['acquired' => true, 'lock' => null, 'message' => null];
+        }
+
         $this->purgeExpired();
 
         $type = $model->getMorphClass();
@@ -46,6 +50,10 @@ class RecordLockService
 
     public function heartbeat(Model $model, $user): bool
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('edit_locks')) {
+            return true;
+        }
+
         $lock = EditLock::query()
             ->where('lockable_type', $model->getMorphClass())
             ->where('lockable_id', $model->getKey())
@@ -62,6 +70,10 @@ class RecordLockService
 
     public function release(Model $model, $user = null): void
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('edit_locks')) {
+            return;
+        }
+
         $query = EditLock::query()
             ->where('lockable_type', $model->getMorphClass())
             ->where('lockable_id', $model->getKey());
@@ -75,6 +87,10 @@ class RecordLockService
 
     public function currentLock(Model $model): ?EditLock
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('edit_locks')) {
+            return null;
+        }
+
         $this->purgeExpired();
 
         return EditLock::query()
@@ -86,6 +102,10 @@ class RecordLockService
 
     public function purgeExpired(): void
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('edit_locks')) {
+            return;
+        }
+
         EditLock::query()->where('expires_at', '<=', Carbon::now())->delete();
     }
 }

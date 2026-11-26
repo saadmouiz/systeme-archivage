@@ -534,8 +534,16 @@ class BeneficiaireController extends Controller
 
     public function show(Beneficiaire $beneficiaire)
     {
+        CdcSchemaEnsurer::ensure();
         $this->ensureCurrentParcours($beneficiaire);
-        $beneficiaire->load(['ecole', 'parcours.ecole', 'auditLogs']);
+        $with = ['ecole'];
+        if (Schema::hasTable('beneficiaire_parcours')) {
+            $with[] = 'parcours.ecole';
+        }
+        if (Schema::hasTable('audit_logs')) {
+            $with[] = 'auditLogs';
+        }
+        $beneficiaire->load($with);
         return view('archives.beneficiaires.show', compact('beneficiaire'));
     }
 
@@ -665,6 +673,10 @@ class BeneficiaireController extends Controller
 
     private function ensureCurrentParcours(Beneficiaire $beneficiaire): void
     {
+        if (!Schema::hasTable('beneficiaire_parcours')) {
+            return;
+        }
+
         if ($beneficiaire->parcours()->exists()) {
             return;
         }

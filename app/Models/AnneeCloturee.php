@@ -24,6 +24,10 @@ class AnneeCloturee extends Model
 
     public static function isClosed(int $annee, string $module = 'beneficiaires'): bool
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('annees_cloturees')) {
+            return false;
+        }
+
         return static::query()
             ->where('annee', $annee)
             ->whereIn('module', [$module, 'all'])

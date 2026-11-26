@@ -8,6 +8,10 @@ class PeriodLock
 {
     public static function assertOpen(int $annee, string $module = 'beneficiaires'): void
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('annees_cloturees')) {
+            return;
+        }
+
         if (AnneeCloturee::isClosed($annee, $module)) {
             abort(403, "L'exercice {$annee} est clôturé : aucune modification n'est autorisée.");
         }

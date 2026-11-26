@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnneeCloturee;
+use App\Support\CdcSchemaEnsurer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -11,6 +12,7 @@ class AnneeClotureController extends Controller
     public function index()
     {
         $this->authorizeAdmin();
+        CdcSchemaEnsurer::ensure();
 
         $clotures = AnneeCloturee::query()->orderByDesc('annee')->orderBy('module')->get();
         $currentYear = (int) date('Y');

@@ -10,6 +10,10 @@ class AuditLogger
 {
     public static function log(Model $model, string $action, array $changes = [], $user = null): void
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('audit_logs')) {
+            return;
+        }
+
         $user = $user ?: auth()->user();
 
         AuditLog::create([
