@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Visiteur;
 use App\Support\CdcSchemaEnsurer;
+use App\Support\ExcelExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class VisiteurController extends Controller
@@ -92,38 +91,23 @@ class VisiteurController extends Controller
         $visiteurs = $this->applyFilters(Visiteur::query(), $request)->orderBy('heure_arrivee')->get();
         $annee = $request->filled('annee') ? (string) $request->annee : 'toutes';
 
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Visiteurs');
+        $rows = $visiteurs->map(function ($visiteur) {
+            return [
+                $visiteur->nom,
+                $visiteur->prenom,
+                $visiteur->cin,
+                $visiteur->genre,
+                optional($visiteur->heure_arrivee)->format('d/m/Y'),
+                optional($visiteur->heure_arrivee)->format('H:i'),
+            ];
+        })->all();
 
-        $headers = ['Nom', 'Prénom', 'CIN', 'Genre', "Date d'arrivée", "Heure d'arrivée"];
-        foreach ($headers as $index => $header) {
-            $sheet->setCellValueByColumnAndRow($index + 1, 1, $header);
-        }
-
-        $row = 2;
-        foreach ($visiteurs as $visiteur) {
-            $sheet->setCellValueByColumnAndRow(1, $row, $visiteur->nom);
-            $sheet->setCellValueByColumnAndRow(2, $row, $visiteur->prenom);
-            $sheet->setCellValueByColumnAndRow(3, $row, $visiteur->cin);
-            $sheet->setCellValueByColumnAndRow(4, $row, $visiteur->genre);
-            $sheet->setCellValueByColumnAndRow(5, $row, optional($visiteur->heure_arrivee)->format('d/m/Y'));
-            $sheet->setCellValueByColumnAndRow(6, $row, optional($visiteur->heure_arrivee)->format('H:i'));
-            $row++;
-        }
-
-        foreach (range(1, 6) as $col) {
-            $sheet->getColumnDimensionByColumn($col)->setAutoSize(true);
-        }
-
-        $filename = "visiteurs_{$annee}_" . date('Y-m-d') . '.xlsx';
-
-        return response()->streamDownload(function () use ($spreadsheet) {
-            $writer = new Xlsx($spreadsheet);
-            $writer->save('php://output');
-        }, $filename, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ]);
+        return ExcelExport::download(
+            "visiteurs_{$annee}_" . date('Y-m-d') . '.xlsx',
+            'Visiteurs',
+            ['Nom', 'Prénom', 'CIN', 'Genre', "Date d'arrivée", "Heure d'arrivée"],
+            $rows
+        );
     }
 
     public function exportPdf(Request $request)

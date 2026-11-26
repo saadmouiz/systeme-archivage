@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="UTF-8">
     <title>Rapport Visiteurs</title>
     <style>
@@ -8,7 +9,7 @@
         h1 { font-size: 18px; margin: 0 0 8px; }
         .meta { color: #666; margin-bottom: 16px; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #d1d5db; padding: 6px 8px; text-align: left; }
+        th, td { border: 1px solid #d1d5db; padding: 6px 8px; text-align: left; font-family: DejaVu Sans, sans-serif; }
         th { background: #f3f4f6; font-size: 10px; text-transform: uppercase; }
     </style>
 </head>
@@ -33,9 +34,9 @@
         <tbody>
             @forelse($visiteurs as $visiteur)
                 <tr>
-                    <td>{{ $visiteur->nom }}</td>
-                    <td>{{ $visiteur->prenom }}</td>
-                    <td>{{ $visiteur->cin }}</td>
+                    <td>@pdfText($visiteur->nom)</td>
+                    <td>@pdfText($visiteur->prenom)</td>
+                    <td>@pdfText($visiteur->cin)</td>
                     <td>{{ $visiteur->genre ?? '-' }}</td>
                     <td>{{ optional($visiteur->heure_arrivee)->format('d/m/Y H:i') }}</td>
                 </tr>

@@ -5,6 +5,8 @@
 /public/storage
 /storage/*.key
 /vendor
+/composer.phar
+composer-setup.php
 .env
 .env.backup
 .env.production

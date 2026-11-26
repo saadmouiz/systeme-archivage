@@ -6,14 +6,13 @@ use App\Models\Archive\Employee;
 use App\Models\Pointage;
 use App\Support\AuditLogger;
 use App\Support\CdcSchemaEnsurer;
+use App\Support\ExcelExport;
 use App\Support\PeriodLock;
 use App\Support\RecordLockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PointageController extends Controller
 {
@@ -367,6 +366,8 @@ class PointageController extends Controller
 
     public function exportExcel(Request $request)
     {
+        ExcelExport::assertAvailable();
+
         $mois = $request->input('mois', Carbon::now()->month);
         $annee = $request->input('annee', Carbon::now()->year);
         $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
@@ -387,38 +388,31 @@ class PointageController extends Controller
                 return $item->date->format('Y-m-d');
             }]);
 
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Pointages');
-        $sheet->setCellValue('A1', 'Employé');
-        $col = 2;
+        $headers = ['Employé'];
         foreach ($joursDuMois as $jour) {
-            $sheet->setCellValueByColumnAndRow($col, 1, $jour->format('d'));
-            $col++;
+            $headers[] = $jour->format('d');
         }
 
-        $row = 2;
+        $rows = [];
         foreach ($employees as $employee) {
-            $sheet->setCellValueByColumnAndRow(1, $row, $employee->nom . ' ' . $employee->prenom);
-            $col = 2;
+            $row = [$employee->nom . ' ' . $employee->prenom];
             foreach ($joursDuMois as $jour) {
                 $key = $jour->format('Y-m-d');
                 $p = data_get($pointages, $employee->id . '.' . $key);
                 if ($p instanceof \Illuminate\Support\Collection) {
                     $p = $p->first();
                 }
-                $sheet->setCellValueByColumnAndRow($col, $row, $p->statut ?? '-');
-                $col++;
+                $row[] = $p->statut ?? '-';
             }
-            $row++;
+            $rows[] = $row;
         }
 
-        $filename = "pointages_{$annee}_{$mois}.xlsx";
-        return response()->streamDownload(function () use ($spreadsheet) {
-            (new Xlsx($spreadsheet))->save('php://output');
-        }, $filename, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ]);
+        return ExcelExport::download(
+            "pointages_{$annee}_{$mois}.xlsx",
+            'Pointages',
+            $headers,
+            $rows
+        );
     }
 
     public function printReport(Request $request)

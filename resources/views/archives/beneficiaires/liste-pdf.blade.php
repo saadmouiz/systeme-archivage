@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Bénéficiaires</title>
@@ -203,7 +204,7 @@
             @forelse($beneficiaires as $beneficiaire)
                 <tr>
                     <td>{{ $beneficiaire['id'] }}</td>
-                    <td>{{ $beneficiaire['nom_complet'] }}</td>
+                    <td>@pdfText($beneficiaire['nom_complet'])</td>
                     <td>
                         <span class="{{ $beneficiaire['type'] === 'Employé' ? 'type-employe' : 'type-etudiant' }}">
                             {{ $beneficiaire['type'] }}
