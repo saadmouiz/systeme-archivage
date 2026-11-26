@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Archive\Employee;
 use App\Models\Pointage;
 use App\Support\AuditLogger;
+use App\Support\CdcSchemaEnsurer;
 use App\Support\PeriodLock;
 use App\Support\RecordLockService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -37,6 +39,8 @@ class PointageController extends Controller
             abort(403, 'Accès interdit.');
         }
 
+        CdcSchemaEnsurer::ensure();
+
         // Mois et année par défaut (mois en cours)
         $mois = $request->mois ?? Carbon::now()->month;
         $annee = $request->annee ?? Carbon::now()->year;
@@ -44,7 +48,7 @@ class PointageController extends Controller
 
         // Récupérer seulement les employés actifs
         $employeesQuery = Employee::actif()->orderBy('nom');
-        if ($request->filled('genre')) {
+        if ($request->filled('genre') && Schema::hasColumn('employees', 'genre')) {
             $employeesQuery->where('genre', $request->genre);
         }
         $employees = $employeesQuery->get();
@@ -317,8 +321,9 @@ class PointageController extends Controller
             $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
     
             // Récupérer les employés actifs (filtre genre EVO-08)
+            CdcSchemaEnsurer::ensure();
             $employeesQuery = Employee::actif()->orderBy('nom');
-            if ($request->filled('genre')) {
+            if ($request->filled('genre') && Schema::hasColumn('employees', 'genre')) {
                 $employeesQuery->where('genre', $request->genre);
             }
             $employees = $employeesQuery->get();
@@ -367,8 +372,9 @@ class PointageController extends Controller
         $debut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
         $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
 
+        CdcSchemaEnsurer::ensure();
         $employeesQuery = Employee::actif()->orderBy('nom');
-        if ($request->filled('genre')) {
+        if ($request->filled('genre') && Schema::hasColumn('employees', 'genre')) {
             $employeesQuery->where('genre', $request->genre);
         }
         $employees = $employeesQuery->get();
@@ -423,8 +429,9 @@ class PointageController extends Controller
         $fin = Carbon::createFromDate($annee, $mois, 1)->endOfMonth();
         $joursDuMois = collect(CarbonPeriod::create($debut, $fin));
 
+        CdcSchemaEnsurer::ensure();
         $employeesQuery = Employee::actif()->orderBy('nom');
-        if ($request->filled('genre')) {
+        if ($request->filled('genre') && Schema::hasColumn('employees', 'genre')) {
             $employeesQuery->where('genre', $request->genre);
         }
         $employees = $employeesQuery->get();

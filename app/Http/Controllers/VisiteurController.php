@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Visiteur;
+use App\Support\CdcSchemaEnsurer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -18,7 +20,7 @@ class VisiteurController extends Controller
         if ($request->filled('mois')) {
             $query->whereMonth('heure_arrivee', (int) $request->mois);
         }
-        if ($request->filled('genre')) {
+        if ($request->filled('genre') && Schema::hasColumn('visiteurs', 'genre')) {
             $query->where('genre', $request->genre);
         }
         return $query;
@@ -26,6 +28,7 @@ class VisiteurController extends Controller
 
     public function index(Request $request)
     {
+        CdcSchemaEnsurer::ensure();
         $query = $this->applyFilters(Visiteur::query(), $request);
         $visiteurs = $query->orderByDesc('heure_arrivee')->get();
         $annees = $this->getAvailableAnnees();
@@ -35,11 +38,13 @@ class VisiteurController extends Controller
 
     public function create()
     {
+        CdcSchemaEnsurer::ensure();
         return view('visiteurs.create');
     }
 
     public function store(Request $request)
     {
+        CdcSchemaEnsurer::ensure();
         $request->validate([
             'nom' => 'required',
             'prenom' => 'required',
@@ -63,6 +68,7 @@ class VisiteurController extends Controller
 
     public function update(Request $request, Visiteur $visiteur)
     {
+        CdcSchemaEnsurer::ensure();
         $request->validate([
             'nom' => 'required',
             'prenom' => 'required',
@@ -82,6 +88,7 @@ class VisiteurController extends Controller
 
     public function exportExcel(Request $request): StreamedResponse
     {
+        CdcSchemaEnsurer::ensure();
         $visiteurs = $this->applyFilters(Visiteur::query(), $request)->orderBy('heure_arrivee')->get();
         $annee = $request->filled('annee') ? (string) $request->annee : 'toutes';
 
@@ -121,6 +128,7 @@ class VisiteurController extends Controller
 
     public function exportPdf(Request $request)
     {
+        CdcSchemaEnsurer::ensure();
         $visiteurs = $this->applyFilters(Visiteur::query(), $request)->orderBy('heure_arrivee')->get();
         $annee = $request->annee;
         $mois = $request->mois;
@@ -133,6 +141,7 @@ class VisiteurController extends Controller
 
     public function printReport(Request $request)
     {
+        CdcSchemaEnsurer::ensure();
         $visiteurs = $this->applyFilters(Visiteur::query(), $request)->orderBy('heure_arrivee')->get();
         $annee = $request->annee;
         $mois = $request->mois;
