@@ -15,6 +15,7 @@ use App\Models\ArchivePartenaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
@@ -80,17 +81,21 @@ class BeneficiaireController extends Controller
                 $prenomExpr = SearchNormalizer::sqlExpr('prenom');
                 $cinExpr = SearchNormalizer::sqlExpr('cin');
                 $refExpr = SearchNormalizer::sqlExpr('reference');
-                $assocExpr = SearchNormalizer::sqlExpr('nom_association');
 
                 $q->whereRaw("{$nomExpr} LIKE ?", [$like])
                   ->orWhereRaw("{$prenomExpr} LIKE ?", [$like])
                   ->orWhereRaw("{$cinExpr} LIKE ?", [$like])
                   ->orWhereRaw("{$refExpr} LIKE ?", [$like])
-                  ->orWhereRaw("{$assocExpr} LIKE ?", [$like])
                   ->orWhereHas('ecole', function ($ecoleQuery) use ($like) {
                       $ecoleExpr = SearchNormalizer::sqlExpr('nom');
                       $ecoleQuery->whereRaw("{$ecoleExpr} LIKE ?", [$like]);
                   });
+
+                // Colonne ajoutée par migration : ignorer si absente en prod.
+                if (Schema::hasColumn('beneficiaires', 'nom_association')) {
+                    $assocExpr = SearchNormalizer::sqlExpr('nom_association');
+                    $q->orWhereRaw("{$assocExpr} LIKE ?", [$like]);
+                }
 
                 // Année saisie seule: couvre explicitement XX/YYYY et XX-YYYY.
                 if (preg_match('/^\d{4}$/', $normalized)) {

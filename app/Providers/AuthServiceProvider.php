@@ -102,10 +102,12 @@ Gate::define('access-visiteurs', function ($user) {
             return $user->hasRole('superadmin') || $user->hasRole('admin2');
         });
 
-        // Accès aux courriers - seulement pour superadmin
+        // Accès aux courriers : superadmin + admin1 (administratif) + admin2 + admin3
         Gate::define('access-courriers', function ($user) {
             return $user->hasRole('superadmin')
-            || $user->hasRole('admin3');
+                || $user->hasRole('admin1')
+                || $user->hasRole('admin2')
+                || $user->hasRole('admin3');
         });
     }
 }

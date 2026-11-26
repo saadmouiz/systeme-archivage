@@ -13,10 +13,10 @@ class Admin extends Authenticatable
     public function hasAccess($section)
     {
         $permissions = [
-            'admin1' => ['financiers', 'employes', 'administratif', 'rh', 'pointages'],
-            'admin2' => ['beneficiaires',  'evenement', 'communication'],
-            'admin3' => ['pointages' , 'beneficiaires'],
-            'superadmin' => ['financiers', 'employes', 'administratif', 'rh', 'beneficiaires', 'partenaires', 'evenement', 'communication','pointages', 'courriers'],
+            'admin1' => ['financiers', 'employes', 'administratif', 'rh', 'pointages', 'courriers'],
+            'admin2' => ['beneficiaires', 'evenement', 'communication', 'courriers'],
+            'admin3' => ['pointages', 'beneficiaires', 'courriers'],
+            'superadmin' => ['financiers', 'employes', 'administratif', 'rh', 'beneficiaires', 'partenaires', 'evenement', 'communication', 'pointages', 'courriers'],
         ];
 
         $userRole = $this->roles->first()->name ?? null;
